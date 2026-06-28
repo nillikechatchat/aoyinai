@@ -9,14 +9,48 @@ interface Props {
 }
 
 const {
-  data: { title, description, draft, heroImage, publishDate, updatedDate, tags, language },
+  data: { title, description, draft, heroImage, publishDate, updatedDate, tags, language, categories },
   remarkPluginFrontmatter
 } = Astro.props
 
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
-  month: 'short'
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}
+
+const categoryLabels: Record<string, string> = {
+  tutorials: 'AI 教程',
+  market: '市场分析',
+  majors: '高校专业',
+  events: '赛事活动',
+  hackathons: '黑客松',
+  'cloud-deals': '云厂商优惠',
+  't-agent': 'T-agent'
 }
 ---
+
+{/* 分类面包屑 */}
+{!!categories?.length && (
+  <nav class='mb-4 flex flex-wrap items-center gap-1 text-sm text-muted-foreground'>
+    <a href='/' class='hover:text-primary'>首页</a>
+    <span>/</span>
+    <a href='/blog' class='hover:text-primary'>文章</a>
+    <span>/</span>
+    {categories.map((cat: string, i: number) => (
+      <>
+        <a
+          href={`/categories/${cat}`}
+          class='hover:text-primary'
+          style='color: hsl(var(--primary) / 0.8);'
+        >
+          {categoryLabels[cat] ?? cat}
+        </a>
+        {i < categories.length - 1 && <span>·</span>}
+      </>
+    ))}
+  </nav>
+)}
 
 {
   heroImage && (
@@ -32,7 +66,7 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
       />
       <img
         src={heroImage.src}
-        alt='Blur image'
+        alt=''
         fetchpriority='high'
         loading='eager'
         id='blurImage'
@@ -44,20 +78,20 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
   )
 }
 
-{draft ? <span class='text-red-500'>(Draft)</span> : null}
+{draft ? <span class='text-red-500 text-sm font-medium'>(草稿)</span> : null}
 
 <div class='article-info max-lg:mx-auto'>
   <div class='flex flex-wrap gap-x-4 gap-y-2 text-xs leading-6 text-muted-foreground'>
-    {/* Article date */}
+    {/* 日期 */}
     <div class='flex items-center gap-1'>
       <Icon name='calendar' class='size-5' />
       <FormattedDate class='font-sans' date={publishDate} dateTimeOptions={dateTimeOptions} />
       {
         updatedDate && (
           <div class='flex items-center gap-1'>
-            <span> / </span>
+            <span>·</span>
             <span>
-              Update
+              更新于
               <FormattedDate
                 class='font-sans'
                 date={updatedDate}
@@ -68,13 +102,12 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
         )
       }
     </div>
-    {/* Times read */}
+    {/* 阅读时间 */}
     <div class='flex items-center gap-1'>
       <Icon name='time' class='size-5' />
       {remarkPluginFrontmatter.minutesRead}
     </div>
     {
-      // Language
       language && (
         <span class='flex items-center gap-1'>
           <Icon name='earth' class='size-5' />
@@ -83,14 +116,13 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
       )
     }
     {
-      // Tags
       !!tags?.length && (
         <span class='flex items-center gap-1'>
           <Icon name='hashtag' class='size-5' />
           {tags.map((tag: string, i: number) => (
             <div>
               <a
-                aria-label={`View more blogs with the tag ${tag}`}
+                aria-label={`查看标签 ${tag} 的文章`}
                 class='hover:underline hover:underline-offset-4'
                 data-pagefind-filter='tag'
                 href={`/tags/${tag}`}
@@ -115,7 +147,7 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
   </div>
 </div>
 
-{/* Dividing line */}
+{/* 分割线 */}
 <div class='mt-4 w-1/2 border-t max-md:mx-auto sm:mt-6 sm:w-1/3'></div>
 
 <script>
@@ -128,8 +160,6 @@ const dateTimeOptions: Intl.DateTimeFormatOptions = {
   if (image) {
     window.addEventListener('scroll', () => {
       const scrollDistance = window.scrollY
-      // console.log(scrollDistance, threshold1, threshold2, threshold3)
-
       if (scrollDistance >= threshold3) {
         image.style.opacity = '0.15'
       } else if (scrollDistance >= threshold2) {

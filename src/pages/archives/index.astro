@@ -1,52 +1,38 @@
 ---
 import PostPreview from '@/components/custom/PostPreview.astro'
 import { getBlogCollection, groupCollectionsByYear, sortMDByDate } from 'astro-pure/server'
-import { Button } from 'astro-pure/user'
-import PageLayout from '@/layouts/BaseLayout.astro'
+import { Button, Icon } from 'astro-pure/user'
+import PageLayout from '@/layouts/CommonPage.astro'
 
-export const prerender = true
-
-const allPosts = await getBlogCollection()
-const allPostsByDate = sortMDByDate(allPosts)
-const allPostsByYear = groupCollectionsByYear(allPostsByDate)
-
-const meta = {
-  description: 'A list of all the years of creating my posts',
-  title: 'Archives'
-}
+const collections = sortMDByDate(await getBlogCollection())
+const collectionsByYear = groupCollectionsByYear(collections)
+const desc = '按年份查看所有文章'
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/blog' variant='back' />
+<PageLayout title='时间线归档' {desc}>
+  <p class='mb-6 text-sm text-muted-foreground'>共 {collections.length} 篇文章</p>
 
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Archives</h1>
-    </div>
+  {
+    collectionsByYear.map(([year, posts], yi) => (
+      <div class='animate-ai mb-8' style={`animation-delay: ${yi * 120}ms;`}>
+        <div class='relative flex items-center gap-3'>
+          <span class='ai-gradient-text text-2xl font-bold'>{year}</span>
+          <span class='text-xs text-muted-foreground'>({posts.length} 篇)</span>
+          <div class='h-px flex-1 bg-border' />
+        </div>
+        <div class='relative ms-4 mt-4 flex flex-col gap-2 border-s-2 border-border ps-6'>
+          {posts.map((post, i) => (
+            <div class='animate-ai relative' style={`animation-delay: ${yi * 120 + i * 50}ms;`}>
+              <span class='absolute -left-[29px] top-3 h-3 w-3 rounded-full border-2 border-primary bg-background' />
+              <PostPreview post={post} class='border-0 bg-transparent py-2' />
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
 
-    {allPosts.length === 0 && <p>No posts yet.</p>}
-
-    <section id='content' class='animate' aria-label='Blog post list'>
-      {
-        allPostsByYear.map(([year, posts]) => (
-          <div class='relative mt-20'>
-            <h2
-              class='absolute -start-6 -top-16 z-0 text-9xl font-bold text-transparent opacity-12 dark:opacity-25'
-              style='-webkit-text-stroke-width:2px;-webkit-text-stroke-color:hsl(var(--foreground)/var(--un-text-opacity))'
-            >
-              <samp>{year}</samp>
-            </h2>
-            <p class='px-5 text-muted-foreground'>
-              {posts.length} post{posts.length > 1 && 's'}
-            </p>
-            <ul class='flex flex-col text-start'>
-              {posts.map((p) => (
-                <PostPreview post={p} class='border-0 bg-transparent py-2' />
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </section>
-  </main>
+  <div class='mt-6'>
+    <Button title='← 返回首页' href='/' variant='back' />
+  </div>
 </PageLayout>
