@@ -27,7 +27,7 @@ export const theme: ThemeUserConfig = {
   npmCDN: 'https://cdn.jsdelivr.net/npm',
 
   head: [],
-  customCss: ['/custom.css'],
+  customCss: [],
 
   header: {
     menu: [

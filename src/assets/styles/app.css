@@ -1,37 +1,53 @@
-/* Theme */
+/* ============================================
+   AI 探索者 - 全局样式（基于 astro-pure 主题）
+   ============================================ */
+
+/* ---------- 主题色 (HSL) ---------- */
 :root {
-  /* Primary */
-  --primary: 200 29% 45%;
+  /* Primary 蓝紫 */
+  --primary: 239 84% 67%;
   /* Foreground */
   --foreground: 240 10% 3.9%;
-  --muted-foreground: 240 3.8% 28.1%;
+  --muted-foreground: 240 3.8% 38%;
   /* Background */
-  --background: 210 33% 99%;
+  --background: 0 0% 100%;
   --muted: 240 4.8% 96%;
-  --card: 0 0% 90%;
+  --card: 240 5% 97%;
 
   /* Basic */
   --border: 240 5.9% 88%;
   --input: 240 5.9% 90%;
-  --ring: 240 5.9% 10%;
-  --radius: 0.5rem;
+  --ring: 239 84% 67%;
+  --radius: 0.625rem;
+
+  /* AI 主题专用 CSS 变量 */
+  --ai-indigo: 239 84% 67%;    /* #6366f1 */
+  --ai-cyan: 188 95% 43%;      /* #06b6d4 */
+  --ai-purple: 271 91% 65%;    /* #a855f7 */
+  --ai-pink: 322 81% 60%;      /* #ec4899 */
+  --ai-amber: 38 92% 50%;      /* #f59e0b */
+  --ai-emerald: 160 84% 39%;   /* #10b981 */
+  --ai-violet: 262 83% 58%;    /* #8b5cf6 */
+  --ai-glow: hsl(239 84% 67% / 0.4);
 }
+
 .dark {
-  /* Primary */
-  --primary: 195 95% 85%;
+  /* Primary 亮蓝 */
+  --primary: 234 89% 74%;
   /* Foreground */
   --foreground: 0 0% 98%;
   --muted-foreground: 240 5% 74.9%;
   /* Background */
   --background: 240 20.54% 5.2%;
   --muted: 240 5.9% 13%;
-  --card: 240 3.7% 24.9%;
+  --card: 240 6% 9%;
 
   /* Basic */
-  --border: 240 3.7% 22.9%;
-  --input: 240 3.7% 17.9%;
-  --ring: 240 4.9% 83.9%;
+  --border: 240 3.7% 18%;
+  --input: 240 3.7% 15%;
+  --ring: 234 89% 74%;
 }
+
 :root {
   --un-default-border-color: hsl(var(--border) / 1);
 }
@@ -39,10 +55,302 @@ html.dark {
   color-scheme: dark;
 }
 
-/* Global */
+/* ---------- AI 渐变文字工具类 ---------- */
+.ai-gradient-text {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--ai-indigo)) 0%,
+    hsl(var(--ai-cyan)) 50%,
+    hsl(var(--ai-purple)) 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ai-gradient-shift 8s ease infinite;
+}
+
+@keyframes ai-gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ---------- Hero 标题（首页/分类页 h1） ---------- */
+h1.ai-hero-title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--ai-indigo)) 0%,
+    hsl(var(--ai-cyan)) 35%,
+    hsl(var(--ai-purple)) 70%,
+    hsl(var(--ai-pink)) 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ai-gradient-shift 12s ease infinite;
+}
+
+h2.ai-section-title {
+  position: relative;
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, hsl(var(--ai-indigo)), hsl(var(--ai-cyan)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+h2.ai-section-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, hsl(var(--ai-indigo)), hsl(var(--ai-cyan)));
+  transition: width 0.4s ease;
+}
+
+h2.ai-section-title:hover::after {
+  width: 100%;
+}
+
+/* ---------- 全局链接 hover ---------- */
 a {
-  transition: color 0.2s ease;
-  &:hover {
-    color: hsl(var(--primary) / var(--un-text-opacity, 1));
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* ---------- 卡片悬浮（文章列表、分类卡） ---------- */
+.ai-card-hover {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease;
+}
+
+.ai-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px var(--ai-glow);
+  border-color: hsl(var(--ai-indigo) / 0.4) !important;
+}
+
+/* ---------- 分类卡片（首页 7 宫格） ---------- */
+.ai-category-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border) / 1);
+  background: hsl(var(--card) / 1);
+  padding: 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s ease;
+}
+
+.ai-category-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card-color) / 0.08) 0%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.ai-category-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px hsl(var(--card-color) / 0.3);
+  border-color: hsl(var(--card-color) / 0.5) !important;
+}
+
+.ai-category-card:hover::before {
+  opacity: 1;
+}
+
+.ai-category-card .ai-card-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: hsl(var(--card-color) / 1);
+  position: relative;
+  z-index: 1;
+}
+
+.ai-category-card .ai-card-desc {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground) / 1);
+  position: relative;
+  z-index: 1;
+}
+
+.ai-category-card .ai-card-arrow {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  font-size: 1.125rem;
+  color: hsl(var(--muted-foreground) / 1);
+  opacity: 0.3;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1;
+}
+
+.ai-category-card:hover .ai-card-arrow {
+  opacity: 1;
+  transform: translateX(4px);
+  color: hsl(var(--card-color) / 1);
+}
+
+/* ---------- 头像光晕 ---------- */
+.ai-avatar-glow {
+  position: relative;
+  border-radius: 999px;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--ai-indigo)),
+    hsl(var(--ai-cyan)),
+    hsl(var(--ai-purple))
+  );
+  background-size: 200% 200%;
+  animation: ai-gradient-shift 6s ease infinite;
+}
+
+.ai-avatar-glow::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--ai-indigo) / 0.4),
+    hsl(var(--ai-purple) / 0.4)
+  );
+  filter: blur(16px);
+  z-index: -1;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.ai-avatar-glow:hover::after {
+  opacity: 1;
+}
+
+/* ---------- 按钮（渐变） ---------- */
+.ai-btn-gradient {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white !important;
+  background: linear-gradient(135deg, hsl(var(--ai-indigo)), hsl(var(--ai-cyan)));
+  border: none;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 4px 12px hsl(var(--ai-indigo) / 0.25);
+}
+
+.ai-btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px hsl(var(--ai-indigo) / 0.4);
+  filter: brightness(1.1);
+}
+
+.ai-btn-gradient:active {
+  transform: translateY(0);
+}
+
+/* ---------- 标签 / 分类 pill ---------- */
+a[href*='/categories/'],
+a[href*='/tags/'] {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a[href*='/categories/']:hover,
+a[href*='/tags/']:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px var(--ai-glow);
+}
+
+/* ---------- 滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, hsl(var(--ai-indigo)), hsl(var(--ai-cyan)));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, hsl(var(--ai-cyan)), hsl(var(--ai-purple)));
+}
+
+/* ---------- 全局动画：内容入场 ---------- */
+@keyframes ai-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-ai {
+  animation: ai-fade-in-up 0.6s ease forwards;
+  opacity: 0;
+}
+
+/* ---------- 选中文本 ---------- */
+::selection {
+  background: hsl(var(--ai-indigo) / 1);
+  color: white;
+}
+
+/* ---------- 平滑滚动 ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------- 减少动效（用户偏好） ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

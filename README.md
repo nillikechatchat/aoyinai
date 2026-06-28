@@ -1,103 +1,147 @@
-# AI 探索者 (AI Hub)
+# AI 探索者
 
-一个聚焦人工智能领域的中文博客，基于 [Hugo](https://gohugo.io/) + [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题（深度定制），部署在 [Vercel](https://vercel.com/)。
+一个聚焦人工智能的中文博客，覆盖 **7 大主题分类**，持续更新。
 
-## 栏目
+## 内容栏目
 
 | 栏目 | 简介 |
 |------|------|
-| AI 教程 | LLM / RAG / Agent 实战入门到进阶 |
-| 市场分析 | 大模型厂商竞争格局、价格趋势 |
-| 高校专业 | 国内 AI 强校课程与就业去向 |
-| 赛事活动 | Kaggle、NeurIPS 等顶赛清单 |
-| 黑客松 | 高质量 AI 黑客松实时推荐 |
-| 云厂商优惠 | 主流云厂商大模型 API 优惠汇总 |
-| T-agent | 我正在做的多智能体协作框架 |
+| [AI 教程](/categories/tutorials) | LLM 入门、RAG、Agent 实战的入门到进阶 |
+| [市场分析](/categories/market) | 大模型厂商竞争格局、价格趋势 |
+| [高校专业](/categories/majors) | 国内 AI 强校课程与就业去向 |
+| [赛事活动](/categories/events) | Kaggle、NeurIPS 等顶赛清单 |
+| [黑客松](/categories/hackathons) | 高质量 AI 黑客松实时推荐 |
+| [云厂商优惠](/categories/cloud-deals) | 阿里云、腾讯云、华为云、火山引擎大模型 API 优惠汇总 |
+| [T-agent](/categories/t-agent) | 我正在做的多智能体协作框架 |
+
+## 技术栈
+
+- **Astro 5** - 现代静态站点生成器，原生支持 Content Collections
+- **[astro-pure](https://github.com/cworld1/astro-theme-pure)** - Astro 生态最火的博客主题，UnoCSS + 动效拉满
+- **TypeScript** - 全量类型约束
+- **Vercel** - 自动部署 main 分支到全球边缘网络
 
 ## 本地开发
 
-需要 Hugo `extended` 版本 ≥ 0.112（推荐 0.160+）。
+需要 Node.js ≥ 18。
 
 ```bash
-# 克隆并初始化子模块
-git clone <your-repo-url>
-cd ai-hub
-git submodule update --init --recursive
+# 安装依赖
+npm install
 
-# 启动开发服务器（带热更新）
-hugo server -D --port 1313
+# 启动开发服务器（默认端口 4321，带热更新）
+npm run dev
 
-# 构建生产版本到 public/
-hugo --gc --minify
+# 构建生产版本到 dist/
+npm run build
+
+# 预览生产构建
+npm run preview
 ```
 
-打开 http://localhost:1313 即可预览。
-
-## 部署到 Vercel
-
-Vercel 默认镜像**不预装 Hugo**，`build.sh` 会下载 Hugo extended 二进制到 `.hugo_bin/` 并执行构建。
-
-1. 将仓库推送到 GitHub
-2. 在 Vercel 控制台 `Add New Project` 导入该仓库
-3. Framework Preset 保持默认（Other）即可
-4. Vercel 会执行 `vercel.json` 中的 `buildCommand`（即 `build.sh`）
-5. 部署完成后会得到一个 `xxx.vercel.app` 域名
-
-> 如需固定 Hugo 版本，修改 `build.sh` 中的 `HUGO_VERSION`。
+打开 http://localhost:4321 即可预览。
 
 ## 写新文章
 
-```bash
-hugo new posts/my-new-post.md
-```
+在 `src/content/blog/` 下新建 `.md` 文件：
 
-在前置元数据里指定分类与封面：
-
-```yaml
+```markdown
 ---
 title: "文章标题"
-date: 2026-07-01T10:00:00+08:00
-draft: false
+publishDate: 2026-07-01T10:00:00+08:00
+description: "一句话描述，搜索引擎和卡片显示用"
 categories: ["tutorials"]
 tags: ["LLM", "RAG"]
-cover:
-  image: "covers/my-cover.svg"
+heroImage:
+  src: /covers/my-cover.svg   # public 目录下的资源
   alt: "封面描述"
-  hidden: false
+draft: false
 ---
+
+## 正文
+
+从这里开始写…
 ```
+
+`categories` 取值范围：`tutorials` / `market` / `majors` / `events` / `hackathons` / `cloud-deals` / `t-agent`。
+
+封面图放在 `public/covers/`，建议 SVG 格式（体积小、矢量）。
+
+## 部署到 Vercel
+
+1. 推送到 GitHub
+2. 在 Vercel Dashboard 导入仓库 `nillikechatchat/aoyinai`
+3. Framework Preset 自动识别为 Astro
+4. 部署完成后得到 `aoyinai.vercel.app` 域名
+
+`vercel.json` 已配置：`buildCommand = npm run build`、`outputDirectory = dist`。
 
 ## 项目结构
 
 ```
 .
-├── config.toml            # Hugo 主配置
-├── vercel.json            # Vercel 部署配置
-├── archetypes/default.md  # 默认文章模板
-├── content/               # 文章源文件
-│   ├── posts/             # 博文
-│   ├── about.md           # 关于页
-│   └── categories/        # 分类定义（自动生成）
-├── layouts/               # 自定义模板
-│   ├── _default/home.html # 自定义首页
-│   └── partials/header.html
-├── assets/css/extended/   # 自定义 CSS
-├── static/                # 静态资源
-│   ├── covers/            # 文章封面 SVG
-│   └── favicon.svg
-└── themes/PaperMod/       # 主题（git submodule）
+├── src/
+│   ├── assets/              # 图片等构建期资源
+│   ├── components/
+│   │   ├── custom/          # 自定义覆盖（Hero, PostPreview）
+│   │   └── waline/          # 评论组件（已禁用）
+│   ├── content/
+│   │   └── blog/            # 8 篇文章（Markdown）
+│   ├── layouts/             # 基础布局
+│   ├── pages/
+│   │   ├── blog/            # 博客列表 + 详情路由
+│   │   ├── categories/      # 7 个分类页
+│   │   ├── about/           # 关于
+│   │   ├── archives/        # 时间线归档
+│   │   ├── search/          # 搜索（pagefind）
+│   │   └── tags/            # 标签页
+│   ├── site.config.ts       # 站点主配置（标题、菜单、社交）
+│   └── content.config.ts    # 文章 frontmatter schema
+├── public/
+│   ├── covers/              # 文章封面 SVG（8 张）
+│   ├── images/              # 头像等
+│   ├── favicon/             # 多尺寸 favicon
+│   └── custom.css           # AI 风格定制样式
+├── astro.config.ts          # Astro 配置
+├── vercel.json              # Vercel 部署配置
+├── package.json
+└── tsconfig.json
 ```
 
 ## 定制
 
-主题样式在 `assets/css/extended/custom.css`，所有 AI 风格相关的变量（颜色、渐变、玻璃拟态等）都集中在此文件。
+### 改站点标题、菜单、社交链接
 
-需要新栏目时：
+编辑 `src/site.config.ts`：
 
-1. 在 `config.toml` 的 `[[menu.main]]` 中加一项
-2. 在文章 frontmatter `categories` 中使用该名称
-3. 在首页 `layouts/_default/home.html` 添加对应卡片
+- `title` / `description` / `logo`：基础元信息
+- `header.menu`：顶部导航（已配齐 7 个分类 + 关于）
+- `footer.social`：底部社交链接
+- `content.blogPageSize`：博客每页文章数
+
+### 改主题色 / 加动效
+
+编辑 `public/custom.css`，已包含：
+
+- AI 渐变文字（`#6366f1` → `#06b6d4` → `#a855f7`）
+- 卡片悬浮上浮 + 阴影动效
+- 链接 / 按钮 / 滚动条动效
+- `h1-h6` 标题背景渐变循环动画
+
+直接在 CSS 顶部修改 `--ai-primary` / `--ai-secondary` / `--ai-accent` 三个变量即可。
+
+### 加新分类
+
+1. 在 `src/site.config.ts` 的 `header.menu` 加菜单项
+2. 写文章时在 `categories` 数组里加 slug
+3. `src/pages/categories/[category].astro` 自动生成对应页面
+
+### 加新文章封面
+
+SVG 推荐尺寸 1200×630（与 og:image 一致），放到 `public/covers/`，文件名与 frontmatter 中 `heroImage.src` 一致。
 
 ## 许可
 
-MIT
+博客内容遵循 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 协议。
+
+代码遵循 MIT 协议。
