@@ -1,30 +1,20 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": ["./.astro/types.d.ts", "./**/*"],
   "compilerOptions": {
-    // Basic
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    // Building for a library
-    "declaration": true,
-    // Code runs in the DOM
-    "lib": ["es2022", "dom", "dom.iterable"],
-    // Type Imports
-    "verbatimModuleSyntax": true,
-    // Others
-    "strictNullChecks": true,
-    // Paths
-    "paths": {
-      "@/assets/*": ["./src/assets/*"],
-      "@/public/*": ["./public/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/layouts/*": ["./src/layouts/*"],
-      "@/utils": ["./src/utils/index.ts"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/plugins/*": ["./src/plugins/*"],
-      "@/pages/*": ["./src/pages/*"],
-      "@/types": ["./src/types/index.ts"],
-      "@/site-config": ["./src/site.config.ts"]
-    }
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": { "@/*": ["./*"] }
   },
-  "exclude": ["./node_modules", "./**/node_modules/*", "./.vscode", "./dist", "./public/scripts/*", "./test/*"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
