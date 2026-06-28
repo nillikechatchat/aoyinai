@@ -35,13 +35,15 @@ hugo --gc --minify
 
 ## 部署到 Vercel
 
-1. 将仓库推送到 GitHub/GitLab/Bitbucket
-2. 在 Vercel 控制台 `New Project` 导入该仓库
-3. Framework Preset 选择 **Hugo**
-4. Vercel 会自动使用 `vercel.json` 里的配置构建
+Vercel 默认镜像**不预装 Hugo**，`build.sh` 会下载 Hugo extended 二进制到 `.hugo_bin/` 并执行构建。
+
+1. 将仓库推送到 GitHub
+2. 在 Vercel 控制台 `Add New Project` 导入该仓库
+3. Framework Preset 保持默认（Other）即可
+4. Vercel 会执行 `vercel.json` 中的 `buildCommand`（即 `build.sh`）
 5. 部署完成后会得到一个 `xxx.vercel.app` 域名
 
-> Vercel 已预装 Hugo extended，无需额外配置构建命令。
+> 如需固定 Hugo 版本，修改 `build.sh` 中的 `HUGO_VERSION`。
 
 ## 写新文章
 

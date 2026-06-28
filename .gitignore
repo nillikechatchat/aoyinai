@@ -3,6 +3,7 @@ public/
 resources/
 .hugo_build.lock
 .hugo_build.cache
+.hugo_bin/
 
 # OS
 .DS_Store
