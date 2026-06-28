@@ -1,0 +1,50 @@
+---
+title: "云厂商大模型 API 优惠汇总（持续更新）"
+date: 2026-06-25T08:00:00+08:00
+draft: false
+description: "整理阿里云、腾讯云、华为云、火山引擎等主流云厂商的模型 API 优惠。"
+categories: ["cloud-deals"]
+heroImage:
+  src: /covers/cloud-deals.svg
+  alt: 云厂商
+  inferSize: true
+tags: ["云厂商", "API 优惠", "大模型"]
+image: "covers/cloud-deals.svg"
+cover:
+  image: "covers/cloud-deals.svg"
+  alt: "云厂商"
+  hidden: false
+---
+
+## 阿里云（百炼）
+
+- **通义千问 Qwen3 系列**：新人 1 亿 tokens 免费
+- **千万级 TPS 推理资源包**：限时 5 折
+- **活动入口**：百炼控制台 → 优惠活动
+
+## 腾讯云（TI 平台）
+
+- **混元大模型**：注册送 50 万 tokens
+- **HAI 高性能应用服务**：GPU 时长 1 元/卡时
+- **活动入口**：腾讯云开发者社区
+
+## 华为云（盘古 / 昇腾）
+
+- **盘古大模型**：行业套件首购 7 折
+- **昇腾 910B 算力包**：企业认证送 1000 卡时
+- **活动入口**：华为云 ModelArts
+
+## 火山引擎（豆包）
+
+- **豆包大模型 1.5 Pro**：注册即送 50 万 tokens
+- **方舟企业版**：首年 6 折
+- **活动入口**：火山方舟控制台
+
+## 海外厂商
+
+- **OpenAI**：新账号 3 个月内 $5 信用额度
+- **Anthropic Claude**：API 充值赠金 10%
+- **Google Gemini**：免费层每分钟 15 次请求
+- **Groq**：开源模型极速推理，注册送 $25
+
+> 提示：建议注册一个主账号 + 多个子账号，分别用于开发、测试、线上。

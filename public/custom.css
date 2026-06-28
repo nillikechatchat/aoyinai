@@ -1,0 +1,81 @@
+/* AI 探索者 - 自定义样式（加载顺序：主题 base → custom.css） */
+
+/* 全局 AI 渐变文字 */
+h1, h2, h3, h4, h5, h6, .site-title, .post-title, .title {
+  background: linear-gradient(135deg, #6366f1 0%, #06b6d4 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: ai-gradient 8s ease infinite;
+}
+
+@keyframes ai-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+::selection {
+  background: #6366f1;
+  color: white;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 卡片悬浮动效 */
+a[class*="card"], article, .group, .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+a[class*="card"]:hover, article:hover, .group:hover, .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.35);
+}
+
+/* 链接 hover 动效 */
+a {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* 分类/标签 pill 悬浮 */
+a[href*="/categories/"], a[href*="/tags/"], .badge, [class*="tag"] {
+  transition: all 0.2s ease;
+}
+
+a[href*="/categories/"]:hover, a[href*="/tags/"]:hover, .badge:hover, [class*="tag"]:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+/* 渐变按钮 */
+button, .button, a.button, [class*="btn"] {
+  background: linear-gradient(135deg, #6366f1, #06b6d4) !important;
+  border: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover, .button:hover, a.button:hover, [class*="btn"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #4f46e5, #0891b2);
+}

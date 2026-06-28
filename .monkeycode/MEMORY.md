@@ -73,3 +73,43 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
 - Instructions:
   - Stack 主题的 page bundle (content/page/search/index.md 等) 不要加 slug: "search"，否则 URL 变成 /page/search/，正确路径是 /search/
   - 同样适用于 archives、about 等 page 类型内容
+
+[Astro 项目重写时删除 Hugo]
+- Date: 2026-06-28
+- Context: 用户决定从 Hugo 切到 Astro 时
+- Category: 工作流协作
+- Instructions:
+  - 删 Hugo 文件用 `git rm -rf`；public/ resources/ 已被 .gitignore 忽略，但 `.hugo_bin/`、themes/、content/、layouts/、data/、archetypes/、config.toml、build.sh、vercel.json、.gitmodules 都在 git 里
+  - 删除后必须 `git rm .gitmodules` 解除 submodule
+  - Astro 静态项目最终结构：src/、public/、astro.config.ts、package.json、tsconfig.json、vercel.json
+
+[astro-pure 主题与 Astro 5 集成]
+- Date: 2026-06-28
+- Context: Agent 在用 npm create astro template 装 cworld1/astro-theme-pure 时发现
+- Category: 构建方法
+- Instructions:
+  - 包名是 `astro-pure`（不是 astro-theme-pure），template 命令是 `npm create astro@latest -- --template cworld1/astro-theme-pure`
+  - template 自带 Waline/Katex/Shiki 等可选功能，禁用了仍会被 rollup 分析；最简方法是覆盖 `src/components/waline/Comment.astro` 为空内容
+  - katex import 在 BlogPost.astro 必须删除（不装 katex 依赖）
+  - 模板的 `src/content/blog/` 自带示例文章，必须先清空再放自己的文章
+  - 子模块路径：`astro-pure/user`、`astro-pure/advanced`、`astro-pure/components/pages`、`astro-pure/server`、`astro-pure/utils`、`astro-pure/types`（注意 user 没有 /components/ 前缀）
+  - Astro 5 字体系统是 experimental：`experimental: { fonts: [...] }`，顶层 `fonts:` 是 Astro 6
+
+[Astro content collection 中 image() schema 的陷阱]
+- Date: 2026-06-28
+- Context: Agent 为 8 篇文章配 heroImage 时发现
+- Category: 排错调试
+- Instructions:
+  - `image()` schema 只能处理 `src/` 下的图片资源，对 `public/` 下文件报错 "ImageNotFound"
+  - 路径用 `/covers/xxx.svg`（public 路径）+ `z.string()` schema，不要用 `image()`
+  - 渲染时用 `<img src={...} />` 普通标签，不用 `<Image />` 组件
+  - 即使设了 `inferSize: true`，public 路径下 `Image` 组件仍报 MissingImageDimension
+
+[Astro pagefind 中文搜索]
+- Date: 2026-06-28
+- Context: Agent 启用 astro-pure 自带搜索时发现
+- Category: 排错调试
+- Instructions:
+  - astro-pure 集成默认开启 pagefind，build 时自动索引；中文 (zh-cn) 无词干化支持但搜索仍工作
+  - 警告 `Did not find a data-pagefind-body element` 不影响功能，只是索引范围更大
+

@@ -1,0 +1,107 @@
+---
+import { Image } from 'astro:assets'
+
+import { Quote } from 'astro-pure/advanced'
+import PostPreview from '@/components/custom/PostPreview.astro'
+import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import { Button, Icon, Label } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import config from '@/site-config'
+
+const MAX_POSTS = 10
+const allPosts = await getBlogCollection()
+const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
+
+const imagePath = config.logo.src
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/*.{svg,png,jpg,jpeg,webp,avif}'
+)
+if (!images[imagePath])
+  throw new Error(
+    `"${imagePath}" does not exist in glob: "src/assets/*.{svg,png,jpg,jpeg,webp,avif}"`
+  )
+
+const categoryCards = [
+  { name: 'AI 教程', slug: 'tutorials', desc: '从 LLM 入门到 RAG、Agent 实战', color: '#6366f1' },
+  { name: '市场分析', slug: 'market', desc: '大模型厂商竞争格局与价格趋势', color: '#06b6d4' },
+  { name: '高校专业', slug: 'majors', desc: '国内 AI 强校课程与就业去向', color: '#a855f7' },
+  { name: '赛事活动', slug: 'events', desc: 'Kaggle、NeurIPS 等顶赛清单', color: '#ec4899' },
+  { name: '黑客松', slug: 'hackathons', desc: '高质量 AI 黑客松实时推荐', color: '#f59e0b' },
+  { name: '云厂商', slug: 'cloud-deals', desc: '主流云厂商大模型 API 优惠汇总', color: '#10b981' },
+  { name: 'T-agent', slug: 't-agent', desc: '我正在做的多智能体协作框架', color: '#8b5cf6' }
+]
+---
+
+<PageLayout meta={{ title: 'AI 探索者' }} highlightColor='#6366f1'>
+  <main class='flex w-full flex-col items-center'>
+    <section class='animate mb-10 flex flex-col items-center gap-y-7' id='content-header'>
+      <Image
+        src={images[imagePath]()}
+        alt={config.logo.alt || 'AI 探索者'}
+        class='h-28 w-auto rounded-full border p-1'
+        loading='eager'
+        fetchpriority='high'
+      />
+
+      <div class='flex flex-col items-center gap-y-4 text-center'>
+        <h1 class='text-4xl font-bold'>{config.title}</h1>
+        <p class='max-w-2xl text-base text-muted-foreground'>
+          聚焦人工智能的中文博客 — 7 大主题分类、动效拉满的现代风格
+        </p>
+        <div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
+          <Label title='中文 · 持续更新'>
+            <Icon name='sparkles' class='size-5' slot='icon' />
+          </Label>
+          <Label
+            title='GitHub 源码'
+            as='a'
+            href='https://github.com/nillikechatchat/aoyinai'
+            target='_blank'
+          >
+            <Icon name='github' class='size-5' slot='icon' />
+          </Label>
+        </div>
+      </div>
+    </section>
+
+    <div id='content' class='animate flex w-full flex-col gap-y-10 md:w-4/5 lg:w-5/6'>
+      <section>
+        <h2 class='mb-6 text-2xl font-semibold'>主题分类</h2>
+        <div class='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          {categoryCards.map((c) => (
+            <a
+              href={`/categories/${c.slug}`}
+              class='group relative flex flex-col gap-2 overflow-hidden rounded-lg border p-5 transition-all hover:scale-[1.02] hover:shadow-lg'
+              style={`border-left: 4px solid ${c.color};`}
+            >
+              <h3 class='text-lg font-semibold' style={`color: ${c.color};`}>{c.name}</h3>
+              <p class='text-sm text-muted-foreground'>{c.desc}</p>
+              <span class='absolute right-3 top-3 text-xs opacity-30 transition-opacity group-hover:opacity-100'>
+                →
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {
+        allPostsByDate.length > 0 && (
+          <section>
+            <h2 class='mb-6 text-2xl font-semibold'>最新文章</h2>
+            <ul class='flex flex-col gap-y-2'>
+              {allPostsByDate.map((p) => (
+                <li>
+                  <PostPreview post={p} />
+                </li>
+              ))}
+            </ul>
+            <div class='mt-4 flex justify-end'>
+              <Button title='查看全部' href='/blog' variant='ahead' />
+            </div>
+          </section>
+        )
+      }
+    </div>
+    <Quote class='mt-12' />
+  </main>
+</PageLayout>

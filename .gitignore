@@ -1,6 +1,9 @@
-# Hugo
-public/
-resources/
+# Astro
+dist/
+.astro/
+node_modules/
+
+# Hugo 残留
 .hugo_build.lock
 .hugo_build.cache
 .hugo_bin/
@@ -16,7 +19,6 @@ Thumbs.db
 *~
 
 # Node
-node_modules/
 package-lock.json
 yarn.lock
 pnpm-lock.yaml

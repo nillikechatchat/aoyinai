@@ -1,0 +1,90 @@
+---
+import type { GetStaticPaths } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+
+import PostPreview from '@/components/custom/PostPreview.astro'
+import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import PageLayout from '@/layouts/BaseLayout.astro'
+
+export const prerender = true
+
+export const getStaticPaths = (async () => {
+  const collections = await getBlogCollection()
+  const categories = new Set<string>()
+  for (const post of collections) {
+    for (const c of post.data.categories ?? []) categories.add(c)
+  }
+  return Array.from(categories).map((category) => ({ params: { category } }))
+}) satisfies GetStaticPaths
+
+interface Props {
+  category: string
+}
+
+const { category } = Astro.params as Props
+const collections = sortMDByDate(await getBlogCollection())
+const posts = collections.filter((p) => (p.data.categories ?? []).includes(category))
+
+const categoryLabels: Record<string, string> = {
+  tutorials: 'AI 教程',
+  market: '市场分析',
+  majors: '高校专业',
+  events: '赛事活动',
+  hackathons: '黑客松',
+  'cloud-deals': '云厂商优惠',
+  't-agent': 'T-agent'
+}
+
+const label = categoryLabels[category] ?? category
+const meta = {
+  title: `${label} - 分类归档`,
+  description: `AI 探索者「${label}」分类下的所有文章。`
+}
+---
+
+<PageLayout {meta}>
+  <main class='mt-6 lg:mt-10'>
+    <div id='content-header' class='animate'>
+      <a href='/' class='text-sm text-muted-foreground hover:underline'>← 返回首页</a>
+      <h1 class='mb-2 mt-4 text-3xl font-medium'>{label}</h1>
+      <p class='text-sm text-muted-foreground'>
+        共 {posts.length} 篇文章
+      </p>
+    </div>
+    <div class='mt-8 grid gap-y-8 sm:grid-cols-[3fr_1fr] sm:gap-x-8'>
+      <section class='animate' id='content'>
+        {posts.length === 0 ? (
+          <p class='text-muted-foreground'>该分类下暂无文章。</p>
+        ) : (
+          <ul class='flex flex-col gap-y-4'>
+            {posts.map((post) => (
+              <li>
+                <PostPreview post={post} detailed />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <aside class='animate' id='sidebar'>
+        <h2 class='mb-4 flex items-center text-lg font-medium'>
+          其他分类
+        </h2>
+        <ul class='flex flex-col gap-2 text-sm'>
+          {Object.entries(categoryLabels)
+            .filter(([slug]) => slug !== category)
+            .map(([slug, name]) => (
+              <li>
+                <a
+                  href={`/categories/${slug}`}
+                  class='inline-flex items-center gap-1 rounded border px-3 py-1 transition-all hover:scale-105'
+                >
+                  {name}
+                </a>
+              </li>
+            ))}
+        </ul>
+      </aside>
+    </div>
+  </main>
+</PageLayout>
