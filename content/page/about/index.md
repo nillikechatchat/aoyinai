@@ -1,10 +1,7 @@
 ---
 title: "关于"
-slug: "about"
 layout: "single"
-url: "/about/"
 description: "AI 探索者 - 一个 AI 主题的个人博客"
-hiddenFromSearch: true
 ---
 
 <div class="ai-about-card">
@@ -46,6 +43,6 @@ hiddenFromSearch: true
 
 ## 技术栈
 
-本站基于 **Hugo** + **PaperMod**（深度定制）+ **Vercel** 部署，全程使用 Markdown 写作。
+本站基于 **Hugo** + **Stack**（深度定制）+ **Vercel** 部署，全程使用 Markdown 写作。
 
 </div>

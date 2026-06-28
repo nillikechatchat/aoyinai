@@ -5,6 +5,7 @@ draft: false
 description: "整理阿里云、腾讯云、华为云、火山引擎等主流云厂商的模型 API 优惠。"
 categories: ["cloud-deals"]
 tags: ["云厂商", "API 优惠", "大模型"]
+image: "covers/cloud-deals.svg"
 cover:
   image: "covers/cloud-deals.svg"
   alt: "云厂商"

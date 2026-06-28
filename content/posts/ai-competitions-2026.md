@@ -5,6 +5,7 @@ draft: false
 description: "梳理今年值得关注的 AI 赛事，附报名截止时间。"
 categories: ["events"]
 tags: ["赛事", "Kaggle", "AI 竞赛"]
+image: "covers/ai-competition.svg"
 cover:
   image: "covers/ai-competition.svg"
   alt: "AI 比赛"

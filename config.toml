@@ -1,113 +1,157 @@
-baseURL = 'https://example.com/'
-languageCode = 'zh-cn'
-defaultContentLanguage = 'zh-cn'
+baseURL = '/'
+locale = 'zh-cn'
 title = 'AI 探索者'
-theme = 'PaperMod'
-
-# 多语言支持（简化为单中文站点，结构上预留多语言）
-defaultContentLanguageInSubdir = false
+theme = 'stack'
+defaultContentLanguage = 'zh-cn'
 hasCJKLanguage = true
-
-# Pagination
-paginate = 9
-paginatePath = 'page'
-
-# Enable Feeds
 enableRobotsTXT = true
+pagination.pagerSize = 9
 
+[permalinks]
+  post = '/posts/:slug/'
+  page = '/:slug/'
+
+[outputs]
+  home = ['HTML', 'RSS']
+  section = ['HTML', 'RSS']
+  taxonomy = ['HTML', 'RSS']
+  term = ['HTML', 'RSS']
+
+# 全站参数
 [params]
-  env = 'production'
+  mainSections = ['posts']
+  rssFullContent = true
+  favicon = '/favicon.svg'
   description = 'AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent 项目一站式探索'
   keywords = ['AI', '人工智能', '大模型', 'T-agent', '黑客松', 'AI 教程']
-  author = 'AI 探索者'
-  DateFormat = '2006-01-02'
+  since = 2026
+  [params.dateFormat]
+    published = '2006-01-02'
+    lastUpdated = '2006-01-02'
+  # 主页模式：左侧侧边栏 + 右侧文章卡片
+  layout = 'left-sidebar'
+  # 列表布局：默认卡片式
+  list.layout = 'compact'
+  # 暗色模式
   defaultTheme = 'auto'
-  ShowShareButtons = false
-  ShowPostNavLinks = true
-  ShowBreadCrumbs = true
-  ShowCodeCopyButtons = true
-  disableSpecial1stPost = true
-  disableScrollToTop = false
-  comments = false
-  hidemeta = false
-  hideSummary = false
-  showtoc = true
-  tocopen = false
+  showDarkMode = true
+  # 标签云显示
+  showTagCloud = true
+  showRSS = true
+  showCodeCopyButtons = true
+  # 阅读进度
+  readingTime = true
+  wordCount = true
+  # 文章底部分享
+  shareButtons = ['twitter', 'facebook', 'pinterest', 'linkedin', 'reddit']
+  # 文章底部导航
+  showPostNavLinks = true
+  # 版权声明
+  [params.article]
+    showImage = true
+    showSummary = true
+    showAuthor = true
+    showDate = true
+    showReadingTime = true
+    showWordCount = true
+    showEdit = false
+    [params.article.license]
+      enabled = true
+      default = 'Licensed under [MIT](https://opensource.org/licenses/MIT)'
 
-  # 自定义 Logo / 标题区
-  label.text = 'AI · HUB'
-  label.icon = '/favicon.svg'
-  label.iconHeight = 35
+# 侧边栏
+[params.sidebar]
+  emoji = '🚀'
+  subtitle = 'AI · HUB'
+  avatar = '/images/avatar.svg'
+  avatarHeight = 120
 
-  # 社交账号
-  [[params.socialIcons]]
-    name = 'github'
-    title = 'GitHub'
-    url = 'https://github.com/'
-  [[params.socialIcons]]
-    name = 'twitter'
-    title = 'Twitter'
-    url = 'https://twitter.com/'
+# 主页 widget
+[[params.widgets.homepage]]
+  type = 'search'
 
-  # 主页模式
-  ShowLatestPost = true
+[[params.widgets.homepage]]
+  type = 'categories'
+  params = { limit = 10 }
 
-# 菜单（栏目导航）
+[[params.widgets.homepage]]
+  type = 'tag-cloud'
+  params = { limit = 10 }
+
+[[params.widgets.homepage]]
+  type = 'archives'
+  params = { limit = 5 }
+
+# 文章页 widget
+[[params.widgets.page]]
+  type = 'toc'
+
+# 文章页底部 widget
+#[[params.widgets.page]]
+#  type = 'related'
+
+# 不启用评论
+[params.comments]
+  enabled = false
+
+# 菜单
 [[menu.main]]
-  identifier = 'home'
   name = '首页'
   url = '/'
   weight = 1
 
 [[menu.main]]
-  identifier = 'tutorials'
   name = 'AI 教程'
   url = '/categories/tutorials/'
   weight = 2
 
 [[menu.main]]
-  identifier = 'market'
   name = '市场分析'
   url = '/categories/market/'
   weight = 3
 
 [[menu.main]]
-  identifier = 'majors'
   name = '高校专业'
   url = '/categories/majors/'
   weight = 4
 
 [[menu.main]]
-  identifier = 'events'
   name = '赛事活动'
   url = '/categories/events/'
   weight = 5
 
 [[menu.main]]
-  identifier = 'hackathons'
   name = '黑客松'
   url = '/categories/hackathons/'
   weight = 6
 
 [[menu.main]]
-  identifier = 'cloud-deals'
   name = '云厂商优惠'
   url = '/categories/cloud-deals/'
   weight = 7
 
 [[menu.main]]
-  identifier = 't-agent-menu'
   name = 'T-agent'
   url = '/categories/t-agent/'
   weight = 8
 
 [[menu.main]]
-  identifier = 'about'
   name = '关于'
   url = '/about/'
   weight = 9
 
-# 输出 markdown 处理
+# 底部社交
+[[params.social]]
+  name = 'github'
+  url = 'https://github.com/'
+  weight = 1
+
+[[params.social]]
+  name = 'twitter'
+  url = 'https://twitter.com/'
+  weight = 2
+
+# 标记解析
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
@@ -119,9 +163,13 @@ enableRobotsTXT = true
     lineNos = true
     style = 'monokai'
     tabWidth = 2
+  [markup.tableOfContents]
+    endLevel = 3
+    ordered = false
+    startLevel = 2
 
-# 输出
-[outputs]
-  home = ['HTML', 'RSS', 'JSON']
-  section = ['HTML', 'RSS']
-  taxonomy = ['HTML', 'RSS']
+# 分类页生成 color
+[categories]
+  showCount = true
+  showDescription = true
+  showImage = true

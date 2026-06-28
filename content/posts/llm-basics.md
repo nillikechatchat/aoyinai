@@ -5,6 +5,7 @@ draft: false
 description: "用最通俗的方式讲清楚大语言模型的工作原理。"
 categories: ["tutorials"]
 tags: ["LLM", "Transformer", "入门"]
+image: "covers/llm-basics.svg"
 cover:
   image: "covers/llm-basics.svg"
   alt: "Transformer 架构图"

@@ -5,6 +5,7 @@ draft: false
 description: "整理近期含金量高的黑客松，含奖金、赛道、组队建议。"
 categories: ["hackathons"]
 tags: ["黑客松", "Hackathon", "活动"]
+image: "covers/hackathon.svg"
 cover:
   image: "covers/hackathon.svg"
   alt: "黑客松"

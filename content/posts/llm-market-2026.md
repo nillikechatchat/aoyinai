@@ -5,6 +5,7 @@ draft: false
 description: "盘点六大主流模型家族的市场份额、定价策略与开发者偏好。"
 categories: ["market"]
 tags: ["市场分析", "行业洞察"]
+image: "covers/market-2026.svg"
 cover:
   image: "covers/market-2026.svg"
   alt: "市场分析图表"

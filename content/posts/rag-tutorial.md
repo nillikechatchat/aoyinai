@@ -5,6 +5,7 @@ draft: false
 description: "用 LangChain + 向量数据库构建一个可落地的 RAG 系统。"
 categories: ["tutorials"]
 tags: ["RAG", "LangChain", "向量数据库"]
+image: "covers/rag-system.svg"
 cover:
   image: "covers/rag-system.svg"
   alt: "RAG 架构图"

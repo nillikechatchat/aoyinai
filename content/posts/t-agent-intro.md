@@ -5,6 +5,7 @@ draft: false
 description: "T-agent 是一个面向研究场景的多智能体协作框架。"
 categories: ["t-agent"]
 tags: ["T-agent", "多智能体", "开源项目"]
+image: "covers/t-agent.svg"
 cover:
   image: "covers/t-agent.svg"
   alt: "T-agent"

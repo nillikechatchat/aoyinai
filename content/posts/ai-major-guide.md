@@ -5,6 +5,7 @@ draft: false
 description: "从课程设置、师资力量、就业去向看 AI 本科专业。"
 categories: ["majors"]
 tags: ["高校专业", "人工智能", "升学"]
+image: "covers/ai-major.svg"
 cover:
   image: "covers/ai-major.svg"
   alt: "校园 AI"
