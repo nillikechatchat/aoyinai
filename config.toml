@@ -1,0 +1,127 @@
+baseURL = 'https://example.com/'
+languageCode = 'zh-cn'
+defaultContentLanguage = 'zh-cn'
+title = 'AI 探索者'
+theme = 'PaperMod'
+
+# 多语言支持（简化为单中文站点，结构上预留多语言）
+defaultContentLanguageInSubdir = false
+hasCJKLanguage = true
+
+# Pagination
+paginate = 9
+paginatePath = 'page'
+
+# Enable Feeds
+enableRobotsTXT = true
+
+[params]
+  env = 'production'
+  description = 'AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent 项目一站式探索'
+  keywords = ['AI', '人工智能', '大模型', 'T-agent', '黑客松', 'AI 教程']
+  author = 'AI 探索者'
+  DateFormat = '2006-01-02'
+  defaultTheme = 'auto'
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  disableSpecial1stPost = true
+  disableScrollToTop = false
+  comments = false
+  hidemeta = false
+  hideSummary = false
+  showtoc = true
+  tocopen = false
+
+  # 自定义 Logo / 标题区
+  label.text = 'AI · HUB'
+  label.icon = '/favicon.svg'
+  label.iconHeight = 35
+
+  # 社交账号
+  [[params.socialIcons]]
+    name = 'github'
+    title = 'GitHub'
+    url = 'https://github.com/'
+  [[params.socialIcons]]
+    name = 'twitter'
+    title = 'Twitter'
+    url = 'https://twitter.com/'
+
+  # 主页模式
+  ShowLatestPost = true
+
+# 菜单（栏目导航）
+[[menu.main]]
+  identifier = 'home'
+  name = '首页'
+  url = '/'
+  weight = 1
+
+[[menu.main]]
+  identifier = 'tutorials'
+  name = 'AI 教程'
+  url = '/categories/tutorials/'
+  weight = 2
+
+[[menu.main]]
+  identifier = 'market'
+  name = '市场分析'
+  url = '/categories/market/'
+  weight = 3
+
+[[menu.main]]
+  identifier = 'majors'
+  name = '高校专业'
+  url = '/categories/majors/'
+  weight = 4
+
+[[menu.main]]
+  identifier = 'events'
+  name = '赛事活动'
+  url = '/categories/events/'
+  weight = 5
+
+[[menu.main]]
+  identifier = 'hackathons'
+  name = '黑客松'
+  url = '/categories/hackathons/'
+  weight = 6
+
+[[menu.main]]
+  identifier = 'cloud-deals'
+  name = '云厂商优惠'
+  url = '/categories/cloud-deals/'
+  weight = 7
+
+[[menu.main]]
+  identifier = 't-agent-menu'
+  name = 'T-agent'
+  url = '/categories/t-agent/'
+  weight = 8
+
+[[menu.main]]
+  identifier = 'about'
+  name = '关于'
+  url = '/about/'
+  weight = 9
+
+# 输出 markdown 处理
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    noClasses = false
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    style = 'monokai'
+    tabWidth = 2
+
+# 输出
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+  section = ['HTML', 'RSS']
+  taxonomy = ['HTML', 'RSS']

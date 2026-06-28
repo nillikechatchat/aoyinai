@@ -1,0 +1,9 @@
+{
+  "buildCommand": "hugo --gc --minify",
+  "outputDirectory": "public",
+  "framework": "hugo",
+  "installCommand": "echo 'hugo is preinstalled on vercel'",
+  "github": {
+    "silent": true
+  }
+}

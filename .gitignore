@@ -1,0 +1,24 @@
+# Hugo
+public/
+resources/
+.hugo_build.lock
+.hugo_build.cache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+*.log

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="100%" stop-color="#1a1f3a"/>
+    </linearGradient>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#bg)"/>
+  <g transform="translate(400,200)">
+    <path d="M-80 0 L-40 -60 L-20 -20 L20 -80 L40 -40 L80 -100 L60 0 Z" fill="url(#grad)"/>
+    <path d="M-80 0 L80 0 L70 40 L-70 40 Z" fill="url(#grad)" opacity="0.7"/>
+  </g>
+  <text x="400" y="320" text-anchor="middle" font-family="system-ui,sans-serif" font-size="32" font-weight="800" fill="#fff">HACKATHON · 黑客松</text>
+  <text x="400" y="360" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#94a3b8">48 小时 · 灵感 → MVP → 演示</text>
+</svg>

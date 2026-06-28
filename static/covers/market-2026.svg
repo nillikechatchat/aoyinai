@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="100%" stop-color="#1a1f3a"/>
+    </linearGradient>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#bg)"/>
+  <g opacity="0.6">
+    <rect x="80" y="220" width="40" height="120" fill="url(#grad)" rx="4"/>
+    <rect x="150" y="180" width="40" height="160" fill="url(#grad)" rx="4"/>
+    <rect x="220" y="240" width="40" height="100" fill="url(#grad)" rx="4"/>
+    <rect x="290" y="120" width="40" height="220" fill="url(#grad)" rx="4"/>
+    <rect x="360" y="200" width="40" height="140" fill="url(#grad)" rx="4"/>
+    <rect x="430" y="160" width="40" height="180" fill="url(#grad)" rx="4"/>
+    <rect x="500" y="100" width="40" height="240" fill="url(#grad)" rx="4"/>
+    <rect x="570" y="140" width="40" height="200" fill="url(#grad)" rx="4"/>
+    <rect x="640" y="190" width="40" height="150" fill="url(#grad)" rx="4"/>
+    <rect x="710" y="220" width="40" height="120" fill="url(#grad)" rx="4"/>
+  </g>
+  <text x="400" y="60" text-anchor="middle" font-family="system-ui,sans-serif" font-size="38" font-weight="800" fill="#fff">2026 LLM 市场格局</text>
+</svg>

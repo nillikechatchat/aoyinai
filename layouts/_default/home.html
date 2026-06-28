@@ -1,0 +1,142 @@
+{{- define "main" }}
+
+{{- /* === Hero === */}}
+<section class="ai-hero">
+  <span class="ai-hero-eyebrow">AI · HUB</span>
+  <h1 class="ai-hero-title">探索 AI 的无限可能</h1>
+  <p class="ai-hero-subtitle">
+    教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠，以及正在研发的 T-agent 多智能体框架。
+  </p>
+  <div class="ai-hero-actions">
+    <a class="ai-btn ai-btn-primary" href="/categories/tutorials/">
+      开始学习 →
+    </a>
+    <a class="ai-btn ai-btn-ghost" href="/about/">
+      了解更多
+    </a>
+  </div>
+</section>
+
+{{- /* === 栏目导航 === */}}
+<h2 class="ai-section-title">栏目导航 <span class="ai-pill">7 大主题</span></h2>
+<div class="ai-categories">
+  <a class="ai-cat-card" href="/categories/tutorials/">
+    <div class="ai-cat-icon">📘</div>
+    <div class="ai-cat-title">AI 教程</div>
+    <p class="ai-cat-desc">从入门到进阶，覆盖 LLM、RAG、Agent 实战。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "tutorials")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+
+  <a class="ai-cat-card" href="/categories/market/">
+    <div class="ai-cat-icon">📊</div>
+    <div class="ai-cat-title">市场分析</div>
+    <p class="ai-cat-desc">大模型厂商竞争格局、价格趋势、开发者偏好。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "market")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+
+  <a class="ai-cat-card" href="/categories/majors/">
+    <div class="ai-cat-icon">🎓</div>
+    <div class="ai-cat-title">高校专业</div>
+    <p class="ai-cat-desc">国内 AI 强校课程、师资、就业去向横评。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "majors")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+
+  <a class="ai-cat-card" href="/categories/events/">
+    <div class="ai-cat-icon">🏆</div>
+    <div class="ai-cat-title">赛事活动</div>
+    <p class="ai-cat-desc">Kaggle、NeurIPS 等顶赛清单与备赛攻略。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "events")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+
+  <a class="ai-cat-card" href="/categories/hackathons/">
+    <div class="ai-cat-icon">⚡</div>
+    <div class="ai-cat-title">黑客松</div>
+    <p class="ai-cat-desc">高质量黑客松清单、奖金、组队与时间管理。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "hackathons")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+
+  <a class="ai-cat-card" href="/categories/cloud-deals/">
+    <div class="ai-cat-icon">☁️</div>
+    <div class="ai-cat-title">云厂商优惠</div>
+    <p class="ai-cat-desc">主流云厂商大模型 API 优惠活动实时汇总。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "cloud-deals")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+
+  <a class="ai-cat-card" href="/categories/t-agent/">
+    <div class="ai-cat-icon">🤖</div>
+    <div class="ai-cat-title">T-agent</div>
+    <p class="ai-cat-desc">我正在做的多智能体协作框架，公开记录全过程。</p>
+    {{- $count := len (where .Site.RegularPages "Params.categories" "intersect" (slice "t-agent")) }}
+    <span class="ai-cat-count">{{ $count }} 篇</span>
+  </a>
+</div>
+
+{{- /* === 特色：T-agent 横幅 === */}}
+<a class="ai-cat-card" href="/categories/t-agent/" style="display:block; margin:0 0 48px; padding:28px;">
+  <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+    <div class="ai-cat-icon" style="width:60px; height:60px; font-size:1.8rem; flex-shrink:0;">🚀</div>
+    <div style="flex:1; min-width:240px;">
+      <div class="ai-cat-title" style="font-size:1.3rem;">T-agent · 多智能体协作框架</div>
+      <p class="ai-cat-desc" style="margin-top:4px;">
+        任务分解 + 角色分工 + 协同验证。已发布 v0.2，支持 Planner / Researcher / Coder / Reviewer 角色编排。
+      </p>
+    </div>
+    <div style="color: var(--ai-accent); font-weight:600;">查看项目 →</div>
+  </div>
+</a>
+
+{{- /* === 最新文章 === */}}
+<h2 class="ai-section-title">最新文章 <span class="ai-pill">持续更新</span></h2>
+
+{{- $pages := where .Site.RegularPages "Section" "posts" }}
+{{- $paginator := .Paginate $pages 9 }}
+
+{{- range $index, $page := $paginator.Pages }}
+{{- $class := "post-entry" }}
+{{- if (and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0)) }}
+{{- $class = "first-entry" }}
+{{- end }}
+
+<article class="{{ $class }}">
+  {{- $isHidden := (.Param "cover.hiddenInList") | default (.Param "cover.hidden") | default false }}
+  {{- partial "cover.html" (dict "cxt" . "IsSingle" false "isHidden" $isHidden) }}
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">
+      {{- .Title }}
+      {{- if .Draft }}<span class="entry-hint" title="Draft">📝</span>{{- end }}
+    </h2>
+  </header>
+  {{- if (ne (.Param "hideSummary") true) }}
+  <div class="entry-content">
+    <p>{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}</p>
+  </div>
+  {{- end }}
+  {{- if not (.Param "hideMeta") }}
+  <footer class="entry-footer">
+    {{- partial "post_meta.html" . -}}
+  </footer>
+  {{- end }}
+  <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+</article>
+{{- end }}
+
+{{- if gt $paginator.TotalPages 1 }}
+<footer class="page-footer">
+  <nav class="pagination">
+    {{- if $paginator.HasPrev }}
+    <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">« {{ i18n "prev_page" }}</a>
+    {{- end }}
+    {{- if $paginator.HasNext }}
+    <a class="next" href="{{ $paginator.Next.URL | absURL }}">{{ i18n "next_page" }} »</a>
+    {{- end }}
+  </nav>
+</footer>
+{{- end }}
+
+{{- end }}
