@@ -1,15 +1,17 @@
 import Link from 'next/link'
 
-export default function NotFoundPage() {
+export default function NotFound() {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
-      <div className="ai-gradient-text text-8xl font-bold">404</div>
-      <p className="text-lg text-muted-foreground">页面不存在或已被移除</p>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+      <span className="ink-gradient font-serif text-7xl font-bold">404</span>
+      <p className="mt-4 font-serif text-lg text-ink-600 dark:text-ink-400">
+        此页不知所踪
+      </p>
       <Link
         href="/"
-        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:scale-105 hover:shadow-lg"
+        className="mt-6 inline-flex items-center gap-1.5 text-sm text-vermilion hover:underline"
       >
-        ← 返回首页
+        返回首页
       </Link>
     </div>
   )

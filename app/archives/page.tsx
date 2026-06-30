@@ -1,79 +1,74 @@
 import Link from 'next/link'
-import { Calendar, ArrowLeft } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 import { getPostsByYear } from '@/lib/posts'
+import { categoryMeta } from '@/lib/categories'
+
+export const metadata = { title: '归档' }
 
 export default function ArchivesPage() {
-  const postsByYear = getPostsByYear()
-  const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a))
+  const byYear = getPostsByYear()
+  const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a))
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-      <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-foreground">首页</Link>
-        <span>/</span>
-        <span className="text-foreground">归档</span>
-      </nav>
-
-      <header className="mb-12">
-        <h1 className="ai-gradient-text mb-4 text-4xl font-bold">时间线归档</h1>
-        <p className="text-muted-foreground">
-          共 {Object.values(postsByYear).flat().length} 篇文章
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <div className="mb-8">
+        <h1 className="font-serif text-2xl font-bold text-ink-900 dark:text-ink-100">
+          <span className="seal mr-2 text-xs px-2 py-0.5">档</span>
+          归档
+        </h1>
+        <p className="mt-1 text-sm text-ink-500 dark:text-ink-600">
+          按时间浏览全部文章
         </p>
-      </header>
+      </div>
 
-      <div className="space-y-12">
+      <div className="space-y-8">
         {years.map((year) => (
-          <div key={year}>
-            <div className="mb-6 flex items-center gap-3">
-              <span className="ai-gradient-text text-3xl font-bold">{year}</span>
-              <span className="text-sm text-muted-foreground">
-                ({postsByYear[year].length} 篇)
-              </span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-
-            <div className="space-y-4 border-l-2 border-border pl-6">
-              {postsByYear[year].map((post) => {
-                const date = new Date(post.date).toLocaleDateString('zh-CN', {
-                  month: 'long',
-                  day: 'numeric'
-                })
-
+          <section key={year}>
+            <h2 className="mb-4 font-serif text-lg font-bold text-ink-800 dark:text-ink-200">
+              {year}
+            </h2>
+            <div className="relative border-l border-ink-200/30 pl-5 dark:border-ink-800/30">
+              {byYear[year].map((post) => {
+                const d = new Date(post.date)
+                const md = `${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`
                 return (
-                  <div key={post.id} className="relative">
-                    <div className="absolute -left-[29px] top-3 h-3 w-3 rounded-full border-2 border-primary bg-background" />
-                    <Link href={`/blog/${post.id}`} className="group block">
-                      <div className="flex items-start justify-between gap-4 rounded-lg p-4 transition-colors hover:bg-muted">
-                        <div>
-                          <h3 className="font-medium group-hover:text-primary">
+                  <div key={post.id} className="relative mb-4 last:mb-0">
+                    {/* 时间轴节点 */}
+                    <span className="absolute -left-[25px] top-1.5 h-2 w-2 rounded-full border border-vermilion bg-rice dark:bg-ink-950" />
+                    <Link
+                      href={`/blog/${post.id}`}
+                      className="group block rounded p-2 transition-colors hover:bg-vermilion/5"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="mt-0.5 shrink-0 font-mono text-xs text-ink-400 dark:text-ink-600">
+                          {md}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="line-clamp-1 text-sm font-medium group-hover:text-vermilion">
                             {post.title}
                           </h3>
-                          <p className="mt-1 line-clamp-1 text-sm text-muted-foreground">
-                            {post.description}
-                          </p>
+                          {post.categories.length > 0 && (
+                            <div className="mt-1 flex flex-wrap gap-1">
+                              {post.categories.map((cat) => (
+                                <span
+                                  key={cat}
+                                  className="rounded-full px-1.5 py-0 text-[9px]"
+                                  style={{ color: categoryMeta[cat]?.color }}
+                                >
+                                  {categoryMeta[cat]?.seal}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="size-3" />
-                          {date}
-                        </span>
                       </div>
                     </Link>
                   </div>
                 )
               })}
             </div>
-          </div>
+          </section>
         ))}
-      </div>
-
-      <div className="mt-12">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          返回首页
-        </Link>
       </div>
     </div>
   )

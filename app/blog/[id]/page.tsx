@@ -1,30 +1,28 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, Clock, ArrowLeft, Tag } from 'lucide-react'
-import { getPostById, getSortedPosts, markdownToHtml, calculateReadingTime } from '@/lib/posts'
+import { getPostById, getSortedPosts, markdownToHtml } from '@/lib/posts'
+import { calculateReadingTime } from '@/lib/reading'
 import { categoryMeta } from '@/lib/categories'
+
+export function generateStaticParams() {
+  return getSortedPosts().map((p) => ({ id: p.id }))
+}
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const post = getPostById(params.id)
   if (!post) return {}
   return {
-    title: `${post.title} — AI 探索者`,
+    title: post.title,
     description: post.description,
     openGraph: {
       title: post.title,
       description: post.description,
-      type: 'article',
+      type: 'article' as const,
       publishedTime: post.date,
-      modifiedTime: post.updated,
       tags: post.tags
     }
   }
-}
-
-export function generateStaticParams() {
-  const posts = getSortedPosts()
-  return posts.map((post) => ({ id: post.id }))
 }
 
 export default async function PostPage({ params }: { params: { id: string } }) {
@@ -39,15 +37,13 @@ export default async function PostPage({ params }: { params: { id: string } }) {
     day: 'numeric'
   })
 
-  const coverImage = post.cover?.image || post.image
-
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       {/* 面包屑 */}
-      <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-foreground">首页</Link>
+      <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-ink-500 dark:text-ink-600">
+        <Link href="/" className="hover:text-vermilion">首页</Link>
         <span>/</span>
-        <Link href="/blog" className="hover:text-foreground">文章</Link>
+        <Link href="/blog" className="hover:text-vermilion">文章</Link>
         {post.categories.length > 0 && (
           <>
             <span>/</span>
@@ -55,10 +51,10 @@ export default async function PostPage({ params }: { params: { id: string } }) {
               <span key={cat}>
                 <Link
                   href={`/categories/${cat}`}
-                  className="hover:text-foreground"
+                  className="hover:text-vermilion"
                   style={{ color: categoryMeta[cat]?.color }}
                 >
-                  {categoryMeta[cat]?.label || cat}
+                  {categoryMeta[cat]?.label}
                 </Link>
                 {i < post.categories.length - 1 && <span> · </span>}
               </span>
@@ -67,44 +63,43 @@ export default async function PostPage({ params }: { params: { id: string } }) {
         )}
       </nav>
 
-      {/* 封面图 */}
-      {coverImage && (
-        <div className="relative mb-8 h-64 overflow-hidden rounded-2xl sm:h-96">
-          <Image
-            src={coverImage}
-            alt={post.title}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-        </div>
-      )}
-
       {/* 文章头部 */}
       <header className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold sm:text-4xl">{post.title}</h1>
+        {/* 分类印章 */}
+        {post.categories.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {post.categories.map((cat) => (
+              <span key={cat} className="seal text-xs px-2 py-0.5">
+                {categoryMeta[cat]?.seal || cat}
+              </span>
+            ))}
+          </div>
+        )}
 
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <h1 className="mb-4 font-serif text-2xl font-bold leading-snug text-ink-900 sm:text-3xl dark:text-ink-100">
+          {post.title}
+        </h1>
+
+        <div className="flex flex-wrap items-center gap-3 text-xs text-ink-500 dark:text-ink-600">
           <span className="flex items-center gap-1">
-            <Calendar className="size-4" />
+            <Calendar className="size-3" />
             {date}
           </span>
           <span className="flex items-center gap-1">
-            <Clock className="size-4" />
+            <Clock className="size-3" />
             {readingTime} 分钟阅读
           </span>
         </div>
 
         {post.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-1.5">
             {post.tags.map((tag) => (
               <Link
                 key={tag}
                 href={`/tags/${tag}`}
-                className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                className="inline-flex items-center gap-1 rounded-full border border-ink-200/30 px-2.5 py-0.5 text-[11px] text-ink-500 transition-colors hover:border-vermilion/30 hover:text-vermilion dark:border-ink-800/30 dark:text-ink-600"
               >
-                <Tag className="size-3" />
+                <Tag className="size-2.5" />
                 {tag}
               </Link>
             ))}
@@ -112,22 +107,24 @@ export default async function PostPage({ params }: { params: { id: string } }) {
         )}
       </header>
 
-      {/* 文章内容 */}
+      {/* 分隔线 */}
+      <div className="bamboo-divider mb-8" />
+
+      {/* 正文 */}
       <article
-        className="prose prose-invert max-w-none"
+        className="prose"
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
 
-      {/* 返回按钮 */}
-      <div className="mt-12">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          返回文章列表
-        </Link>
-      </div>
+      {/* 返回 */}
+      <div className="bamboo-divider mt-12 mb-6" />
+      <Link
+        href="/blog"
+        className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-vermilion dark:text-ink-600"
+      >
+        <ArrowLeft className="size-3.5" />
+        返回文章列表
+      </Link>
     </div>
   )
 }

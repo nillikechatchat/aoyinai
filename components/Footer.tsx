@@ -1,45 +1,35 @@
 import Link from 'next/link'
-import { Github, Rss } from 'lucide-react'
+import { Feather } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/50">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div>
-            <h3 className="ai-gradient-text text-lg font-bold">AI 探索者</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              聚焦人工智能的中文博客，持续更新中。
-            </p>
+    <footer className="mt-auto border-t border-ink-200/30 bg-rice-warm/50 dark:border-ink-800/30 dark:bg-ink-950/50">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex items-center gap-2">
+            <Feather className="size-4 text-vermilion" />
+            <span className="font-serif text-sm font-bold text-ink-700 dark:text-ink-300">
+              AI 探索者
+            </span>
           </div>
-          <div>
-            <h4 className="mb-4 text-sm font-semibold">快速链接</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/blog" className="hover:text-foreground">全部文章</Link></li>
-              <li><Link href="/categories/tutorials" className="hover:text-foreground">AI 教程</Link></li>
-              <li><Link href="/categories/market" className="hover:text-foreground">市场分析</Link></li>
-              <li><Link href="/archives" className="hover:text-foreground">归档</Link></li>
-            </ul>
+
+          <p className="max-w-md text-xs text-ink-500 dark:text-ink-600">
+            聚焦人工智能的中文博客 — 教程 · 市场 · 高校 · 赛事 · 黑客松 · 云厂商 · T-agent
+          </p>
+
+          <div className="flex gap-4 text-xs text-ink-500 dark:text-ink-600">
+            <Link href="/blog" className="hover:text-vermilion">文章</Link>
+            <Link href="/archives" className="hover:text-vermilion">归档</Link>
+            <Link href="/tags" className="hover:text-vermilion">标签</Link>
+            <Link href="/about" className="hover:text-vermilion">关于</Link>
+            <a href="/rss.xml" className="hover:text-vermilion">RSS</a>
           </div>
-          <div>
-            <h4 className="mb-4 text-sm font-semibold">关注我们</h4>
-            <div className="flex gap-4">
-              <a
-                href="https://github.com/nillikechatchat/aoyinai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Github className="size-5" />
-              </a>
-              <a href="/rss.xml" className="text-muted-foreground hover:text-foreground">
-                <Rss className="size-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} AI 探索者. All rights reserved.</p>
+
+          <div className="bamboo-divider w-24" />
+
+          <p className="text-[10px] text-ink-400 dark:text-ink-700">
+            © {new Date().getFullYear()} AI 探索者 · 以墨为舟，探索 AI 世界
+          </p>
         </div>
       </div>
     </footer>

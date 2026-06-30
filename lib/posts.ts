@@ -7,7 +7,7 @@ import remarkRehype from 'remark-rehype'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeStringify from 'rehype-stringify'
 
-const postsDirectory = path.join(process.cwd(), 'content/blog')
+const postsDirectory = path.join(process.cwd(), 'content/posts')
 
 export interface Post {
   id: string
@@ -18,31 +18,26 @@ export interface Post {
   categories: string[]
   tags: string[]
   image?: string
-  cover?: {
-    image?: string
-    alt?: string
-  }
+  cover?: { image?: string; alt?: string }
   draft: boolean
   content: string
-  htmlContent?: string
 }
 
 export function getSortedPosts(): Post[] {
+  if (!fs.existsSync(postsDirectory)) return []
   const fileNames = fs.readdirSync(postsDirectory)
-  const allPosts = fileNames
+  return fileNames
     .filter((name) => name.endsWith('.md'))
     .map((fileName) => {
       const id = fileName.replace(/\.md$/, '')
       const fullPath = path.join(postsDirectory, fileName)
-      const fileContents = fs.readFileSync(fullPath, 'utf8')
-      const { data, content } = matter(fileContents)
-
+      const { data, content } = matter(fs.readFileSync(fullPath, 'utf8'))
       return {
         id,
         title: data.title || '',
         description: data.description || '',
-        date: data.date || data.publishDate || new Date().toISOString(),
-        updated: data.updated || data.updatedDate,
+        date: data.date || new Date().toISOString(),
+        updated: data.updated,
         categories: data.categories || [],
         tags: data.tags || [],
         image: data.image,
@@ -52,24 +47,19 @@ export function getSortedPosts(): Post[] {
       }
     })
     .filter((post) => !post.draft)
-    .sort((a, b) => (new Date(b.date) as any) - (new Date(a.date) as any))
-
-  return allPosts
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
 export function getPostById(id: string): Post | null {
   const fullPath = path.join(postsDirectory, `${id}.md`)
   if (!fs.existsSync(fullPath)) return null
-
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const { data, content } = matter(fileContents)
-
+  const { data, content } = matter(fs.readFileSync(fullPath, 'utf8'))
   return {
     id,
     title: data.title || '',
     description: data.description || '',
-    date: data.date || data.publishDate || new Date().toISOString(),
-    updated: data.updated || data.updatedDate,
+    date: data.date || new Date().toISOString(),
+    updated: data.updated,
     categories: data.categories || [],
     tags: data.tags || [],
     image: data.image,
@@ -94,42 +84,31 @@ export async function markdownToHtml(markdown: string): Promise<string> {
 }
 
 export function getAllCategories(): string[] {
-  const posts = getSortedPosts()
-  const categories = new Set<string>()
-  posts.forEach((post) => {
-    post.categories.forEach((cat) => categories.add(cat))
-  })
-  return Array.from(categories)
+  const set = new Set<string>()
+  getSortedPosts().forEach((p) => p.categories.forEach((c) => set.add(c)))
+  return Array.from(set)
 }
 
 export function getAllTags(): string[] {
-  const posts = getSortedPosts()
-  const tags = new Set<string>()
-  posts.forEach((post) => {
-    post.tags.forEach((tag) => tags.add(tag))
-  })
-  return Array.from(tags)
+  const set = new Set<string>()
+  getSortedPosts().forEach((p) => p.tags.forEach((t) => set.add(t)))
+  return Array.from(set)
 }
 
 export function getPostsByCategory(category: string): Post[] {
-  return getSortedPosts().filter((post) => post.categories.includes(category))
+  return getSortedPosts().filter((p) => p.categories.includes(category))
 }
 
 export function getPostsByTag(tag: string): Post[] {
-  return getSortedPosts().filter((post) => post.tags.includes(tag))
+  return getSortedPosts().filter((p) => p.tags.includes(tag))
 }
 
 export function getPostsByYear(): Record<string, Post[]> {
-  const posts = getSortedPosts()
   const byYear: Record<string, Post[]> = {}
-  posts.forEach((post) => {
-    const year = new Date(post.date).getFullYear().toString()
-    if (!byYear[year]) byYear[year] = []
-    byYear[year].push(post)
+  getSortedPosts().forEach((p) => {
+    const y = new Date(p.date).getFullYear().toString()
+    if (!byYear[y]) byYear[y] = []
+    byYear[y].push(p)
   })
   return byYear
 }
-
-const WORDS_PER_MINUTE_CN = 350
-
-export { calculateReadingTime } from './reading'

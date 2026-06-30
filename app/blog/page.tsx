@@ -1,46 +1,45 @@
 import { PostCard } from '@/components/PostCard'
-import { CategoryCard } from '@/components/CategoryCard'
 import { getSortedPosts } from '@/lib/posts'
 import { categoryMeta } from '@/lib/categories'
+import Link from 'next/link'
+
+export const metadata = { title: '全部文章' }
 
 export default function BlogPage() {
   const posts = getSortedPosts()
+  const categories = Object.keys(categoryMeta)
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
-        <a href="/" className="hover:text-foreground">首页</a>
-        <span>/</span>
-        <span className="text-foreground">全部文章</span>
-      </nav>
-
-      <header className="mb-12">
-        <h1 className="ai-gradient-text mb-4 text-4xl font-bold">全部文章</h1>
-        <p className="text-muted-foreground">共 {posts.length} 篇，持续更新中</p>
-      </header>
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      <div className="mb-8">
+        <h1 className="font-serif text-2xl font-bold text-ink-900 dark:text-ink-100">
+          <span className="seal mr-2 text-xs px-2 py-0.5">文</span>
+          全部文章
+        </h1>
+        <p className="mt-1 text-sm text-ink-500 dark:text-ink-600">
+          共 {posts.length} 篇
+        </p>
+      </div>
 
       {/* 分类快筛 */}
       <div className="mb-8 flex flex-wrap gap-2">
-        {Object.entries(categoryMeta).map(([slug, meta]) => (
-          <a
-            key={slug}
-            href={`/categories/${slug}`}
-            className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all hover:scale-105"
-            style={{
-              borderColor: `${meta.color}50`,
-              color: meta.color,
-              background: `${meta.color}10`
-            }}
+        <span className="rounded-full border border-vermilion/30 bg-vermilion/10 px-3 py-1 text-xs font-medium text-vermilion">
+          全部
+        </span>
+        {categories.map((cat) => (
+          <Link
+            key={cat}
+            href={`/categories/${cat}`}
+            className="rounded-full border border-ink-200/30 px-3 py-1 text-xs text-ink-600 transition-colors hover:border-vermilion/30 hover:bg-vermilion/10 hover:text-vermilion dark:border-ink-800/30 dark:text-ink-400"
           >
-            <span>{meta.emoji}</span>
-            {meta.label}
-          </a>
+            {categoryMeta[cat]?.label}
+          </Link>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post, index) => (
-          <PostCard key={post.id} post={post} index={index} detailed />
+      <div className="grid gap-4 sm:grid-cols-2">
+        {posts.map((post, i) => (
+          <PostCard key={post.id} post={post} index={i} />
         ))}
       </div>
     </div>

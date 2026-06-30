@@ -1,70 +1,54 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
 import { PostCard } from '@/components/PostCard'
-import { getPostsByCategory } from '@/lib/posts'
+import { getPostsByCategory, getAllCategories } from '@/lib/posts'
 import { categoryMeta } from '@/lib/categories'
+import Link from 'next/link'
 
 export function generateStaticParams() {
-  return Object.keys(categoryMeta).map((slug) => ({ slug }))
+  return getAllCategories().map((slug) => ({ slug }))
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const meta = categoryMeta[params.slug]
+  return { title: meta?.label || params.slug }
 }
 
 export default function CategoryPage({ params }: { params: { slug: string } }) {
-  const { slug } = params
-  const meta = categoryMeta[slug]
+  const meta = categoryMeta[params.slug]
   if (!meta) notFound()
-
-  const posts = getPostsByCategory(slug)
+  const posts = getPostsByCategory(params.slug)
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <nav className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-foreground">首页</Link>
-        <span>/</span>
-        <span className="text-foreground">{meta.label}</span>
-      </nav>
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+      {/* 色块头部 */}
+      <div className="mb-8 rounded border border-ink-200/30 bg-rice-warm/80 p-6 text-center dark:border-ink-800/30 dark:bg-ink-900/50">
+        <span
+          className="seal mx-auto mb-3 text-lg px-4 py-2"
+          style={{ borderColor: meta.color, color: meta.color }}
+        >
+          {meta.seal}
+        </span>
+        <h1 className="font-serif text-2xl font-bold text-ink-900 dark:text-ink-100">{meta.label}</h1>
+        <p className="mt-1 text-sm text-ink-500 dark:text-ink-600">{meta.desc}</p>
+        <p className="mt-2 text-xs text-ink-400 dark:text-ink-700">{posts.length} 篇文章</p>
+      </div>
 
-      <header
-        className="mb-12 rounded-2xl border p-8"
-        style={{
-          borderColor: `${meta.color}30`,
-          background: `linear-gradient(135deg, ${meta.color}08, transparent)`
-        }}
-      >
-        <div className="flex items-start gap-4">
-          <span className="text-5xl">{meta.emoji}</span>
-          <div>
-            <h1 className="text-3xl font-bold" style={{ color: meta.color }}>
-              {meta.label}
-            </h1>
-            <p className="mt-2 text-muted-foreground">{meta.desc}</p>
-            <p className="mt-4 text-sm text-muted-foreground">共 {posts.length} 篇文章</p>
-          </div>
-        </div>
-      </header>
+      {/* 返回 */}
+      <Link href="/blog" className="mb-6 inline-block text-xs text-ink-500 hover:text-vermilion dark:text-ink-600">
+        ← 返回全部文章
+      </Link>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post, index) => (
-          <PostCard key={post.id} post={post} index={index} detailed />
+      <div className="grid gap-4 sm:grid-cols-2">
+        {posts.map((post, i) => (
+          <PostCard key={post.id} post={post} index={i} />
         ))}
       </div>
 
       {posts.length === 0 && (
-        <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">
-          <p className="mb-2 text-2xl">📭</p>
-          <p>该分类下暂无文章。</p>
+        <div className="rounded border border-dashed border-ink-200/30 p-12 text-center dark:border-ink-800/30">
+          <p className="text-sm text-ink-500 dark:text-ink-600">暂无文章</p>
         </div>
       )}
-
-      <div className="mt-12">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          返回文章列表
-        </Link>
-      </div>
     </div>
   )
 }
