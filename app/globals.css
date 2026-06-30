@@ -91,3 +91,223 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #4f46e5, #0891b2);
 }
+
+/* ============ Prose 文章正文样式 ============ */
+.prose {
+  color: hsl(var(--foreground));
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  scroll-margin-top: 6rem;
+}
+
+.prose h1 {
+  font-size: 2rem;
+  margin: 2.5rem 0 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.prose h2 {
+  font-size: 1.625rem;
+  margin: 2.25rem 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.prose h3 {
+  font-size: 1.35rem;
+  margin: 2rem 0 0.875rem;
+}
+
+.prose p {
+  margin: 1rem 0;
+  color: hsl(var(--foreground) / 0.92);
+}
+
+.prose a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+
+.prose a:hover {
+  opacity: 0.75;
+}
+
+.prose strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.prose ul,
+.prose ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin: 0.4rem 0;
+  color: hsl(var(--foreground) / 0.92);
+}
+
+.prose ul li {
+  list-style: disc;
+}
+
+.prose ol li {
+  list-style: decimal;
+}
+
+.prose blockquote {
+  margin: 1.25rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 3px solid hsl(var(--primary));
+  background: hsl(var(--primary) / 0.06);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.prose hr {
+  margin: 2rem 0;
+  border-color: hsl(var(--border));
+}
+
+.prose img {
+  margin: 1.5rem auto;
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.prose table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.prose th,
+.prose td {
+  padding: 0.6rem 0.9rem;
+  border: 1px solid hsl(var(--border));
+  text-align: left;
+}
+
+.prose th {
+  background: hsl(var(--muted));
+  font-weight: 600;
+}
+
+/* 行内代码 */
+.prose :not(pre) > code {
+  padding: 0.15rem 0.4rem;
+  margin: 0 0.15rem;
+  font-size: 0.875em;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.35rem;
+  color: hsl(var(--primary));
+  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* 代码块 — rehype-pretty-code 容器 */
+.prose pre {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  background: #0d1117 !important;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.prose pre code {
+  display: block;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  counter-reset: line;
+}
+
+.prose pre code [data-line] {
+  padding: 0 0.25rem;
+  display: inline-block;
+  width: 100%;
+}
+
+.prose pre code [data-highlighted-line] {
+  background: rgba(99, 102, 241, 0.12);
+  margin: 0 -1.25rem;
+  padding: 0 1.25rem;
+  border-left: 2px solid hsl(var(--primary));
+}
+
+.prose pre code [data-highlighted-chars] {
+  background: rgba(99, 102, 241, 0.18);
+  border-radius: 0.25rem;
+  padding: 0.05rem 0.2rem;
+}
+
+/* rehype-pretty-code 行号 */
+.prose figure[data-rehype-pretty-code-figure] {
+  margin: 1.5rem 0;
+}
+
+.prose figure[data-rehype-pretty-code-figure] pre {
+  margin: 0;
+}
+
+.prose figcaption[data-rehype-pretty-code-title] {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-bottom: 0;
+  border-radius: 0.75rem 0.75rem 0 0;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+.prose figcaption[data-rehype-pretty-code-title] + pre {
+  border-radius: 0 0 0.75rem 0.75rem;
+  border-top: 0;
+}
+
+/* ============ Hero 网格背景 ============ */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+
+.dark .hero-grid {
+  opacity: 0.06;
+}
+
+/* ============ 主题切换过渡 ============ */
+html {
+  transition: background-color 0.3s ease;
+}
+
+body,
+header,
+footer,
+.card-hover {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

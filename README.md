@@ -16,12 +16,24 @@
 
 ## 技术栈
 
-- **Next.js 14** - React 框架，App Router
-- **Tailwind CSS** - 原子化 CSS
-- **Framer Motion** - 动效库，科技感动画
+- **Next.js 14** - React 框架，App Router（`output: 'export'` 静态导出）
+- **Tailwind CSS** - 原子化 CSS，自定义 AI 渐变变量
+- **Framer Motion** - 入场动画、悬浮动效
+- **rehype-pretty-code + Shiki** - GitHub Dark Dimmed 主题代码高亮
+- **remark-gfm** - GitHub Flavored Markdown（表格、删除线、任务列表）
 - **Lucide React** - 图标库
 - **gray-matter** - Markdown 前置元数据解析
-- **remark** - Markdown 转 HTML
+
+## 核心功能
+
+- **7 大主题分类** — 教程 / 市场 / 高校 / 赛事 / 黑客松 / 云厂商 / T-agent
+- **暗/亮色主题切换** — Header 右上角一键切换 + localStorage 持久化 + 系统偏好检测
+- **代码高亮** — rehype-pretty-code + Shiki 双主题，标题栏 + 行号 + 高亮行
+- **本地全文搜索** — `/search` 页面，标题/描述/标签/分类/正文多字段加权匹配 + 高亮
+- **RSS 订阅** — `/rss.xml`，标准 RSS 2.0 + Atom 自描述
+- **SEO 优化** — 自动 sitemap.xml（5 静态 + 7 分类 + 23 标签 + 8 文章）、robots.txt、OpenGraph、Twitter Card、每篇文章独立 metadata
+- **阅读时长统计** — 中文 350 字 / 分钟 + 英文 200 词 / 分钟，中英混合精确计算
+- **科技感动效** — AI 渐变文字循环、Hero 网格背景、卡片悬浮上浮、Framer Motion 错开入场
 
 ## 本地开发
 

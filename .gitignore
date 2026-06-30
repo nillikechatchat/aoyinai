@@ -24,3 +24,11 @@ pnpm-lock.yaml
 # Build
 dist/
 build/
+
+# Local env
+.env.local
+.env*.local
+
+# Misc
+*.tsbuildinfo
+next-env.d.ts.bak

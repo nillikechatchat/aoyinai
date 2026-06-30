@@ -10,6 +10,8 @@ export function Hero() {
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-0 -z-10 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-gradient-to-br from-primary/20 via-accent-cyan/20 to-accent-purple/20 blur-3xl" />
         <div className="absolute bottom-0 left-0 -z-10 h-[400px] w-[400px] rounded-full bg-gradient-to-tr from-accent-pink/10 to-transparent blur-3xl" />
+        {/* 网格背景 */}
+        <div className="hero-grid absolute inset-0 opacity-[0.04]" />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

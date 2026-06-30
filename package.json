@@ -6,17 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "node scripts/postbuild.js"
   },
   "dependencies": {
+    "framer-motion": "^11.0.0",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.300.0",
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "gray-matter": "^4.0.3",
+    "rehype-pretty-code": "^0.14.3",
+    "rehype-stringify": "^10.0.1",
     "remark": "^15.0.0",
+    "remark-gfm": "^4.0.1",
     "remark-html": "^16.0.0",
-    "framer-motion": "^11.0.0",
-    "lucide-react": "^0.300.0"
+    "remark-rehype": "^11.1.2",
+    "shiki": "^4.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

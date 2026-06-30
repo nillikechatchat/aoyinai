@@ -2,8 +2,25 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, Clock, ArrowLeft, Tag } from 'lucide-react'
-import { getPostById, getSortedPosts, markdownToHtml } from '@/lib/posts'
+import { getPostById, getSortedPosts, markdownToHtml, calculateReadingTime } from '@/lib/posts'
 import { categoryMeta } from '@/lib/categories'
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const post = getPostById(params.id)
+  if (!post) return {}
+  return {
+    title: `${post.title} — AI 探索者`,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: 'article',
+      publishedTime: post.date,
+      modifiedTime: post.updated,
+      tags: post.tags
+    }
+  }
+}
 
 export function generateStaticParams() {
   const posts = getSortedPosts()
@@ -15,6 +32,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   if (!post) notFound()
 
   const htmlContent = await markdownToHtml(post.content)
+  const readingTime = calculateReadingTime(post.content)
   const date = new Date(post.date).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -74,7 +92,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
           </span>
           <span className="flex items-center gap-1">
             <Clock className="size-4" />
-            5 分钟阅读
+            {readingTime} 分钟阅读
           </span>
         </div>
 

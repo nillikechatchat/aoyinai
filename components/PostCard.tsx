@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Calendar, Clock, ArrowRight } from 'lucide-react'
 import type { Post } from '@/lib/posts'
+import { calculateReadingTime } from '@/lib/reading'
 
 interface PostCardProps {
   post: Post
@@ -20,6 +21,7 @@ export function PostCard({ post, index = 0, detailed = false }: PostCardProps) {
   })
 
   const coverImage = post.cover?.image || post.image
+  const readingTime = calculateReadingTime(post.content)
 
   return (
     <motion.article
@@ -73,7 +75,7 @@ export function PostCard({ post, index = 0, detailed = false }: PostCardProps) {
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="size-3" />
-                  5 分钟
+                  {readingTime} 分钟
                 </span>
               </div>
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />

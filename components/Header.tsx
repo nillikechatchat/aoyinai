@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X, Search, Rss } from 'lucide-react'
+import { ThemeToggle } from './ThemeToggle'
 
 const navItems = [
   { href: '/', label: '首页' },
@@ -67,6 +68,7 @@ export function Header() {
           >
             <Rss className="size-5" />
           </a>
+          <ThemeToggle />
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
