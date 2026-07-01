@@ -30,13 +30,17 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: 'Noto Sans SC', 'Source Han Sans SC', system-ui, sans-serif;
   background-color: var(--bg-rice);
   color: var(--ink);
   line-height: 1.8;
+  min-height: 100%;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
