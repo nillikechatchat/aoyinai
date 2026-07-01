@@ -1,7 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Feather, Github, Rss } from 'lucide-react'
+import { Github, Rss } from 'lucide-react'
+import Image from 'next/image'
 
 export function Hero() {
   return (
@@ -14,14 +15,21 @@ export function Hero() {
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="text-center">
-          {/* 印章 */}
+          {/* Logo */}
           <motion.div
-            initial={{ opacity: 0, scale: 1.5, rotate: -8 }}
-            animate={{ opacity: 1, scale: 1, rotate: -2 }}
-            transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
-            className="mx-auto mb-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, type: 'spring', stiffness: 150 }}
+            className="mx-auto mb-6 w-20 h-20 sm:w-24 sm:h-24"
           >
-            <span className="seal text-base px-3 py-1.5">鸿渐</span>
+            <Image
+              src="/logo.svg"
+              alt="鸿渐 Logo"
+              width={96}
+              height={96}
+              className="w-full h-full"
+              priority
+            />
           </motion.div>
 
           {/* 标题 */}
@@ -31,7 +39,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="ink-gradient font-serif text-4xl font-bold tracking-wide sm:text-5xl"
           >
-            以墨为舟，探索 AI 世界
+            鸿渐
           </motion.h1>
 
           <motion.p
@@ -40,7 +48,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mx-auto mt-4 max-w-xl text-base text-ink-500 sm:text-lg dark:text-ink-500"
           >
-            聚焦人工智能的中文博客 — <span className="font-medium text-vermilion">7 大主题</span>，持续更新
+            以墨为舟，探索 AI 世界 — <span className="font-medium text-vermilion">7 大主题</span>，持续更新
           </motion.p>
 
           {/* 状态行 */}
