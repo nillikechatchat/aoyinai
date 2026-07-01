@@ -22,7 +22,7 @@ export function PostCard({ post, index = 0, showCover = false }: PostCardProps) 
   return (
     <article
       className="animate-in group"
-      style={{ opacity: 0, animationDelay: `${index * 0.08}s` }}
+      style={{ animationDelay: `${index * 0.08}s` }}
     >
       <Link href={`/blog/${post.id}`}>
         <div className="card overflow-hidden p-5 sm:p-6">

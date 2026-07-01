@@ -16,7 +16,7 @@ export function CategoryCard({ slug, index = 0 }: CategoryCardProps) {
   return (
     <article
       className="animate-in group"
-      style={{ opacity: 0, animationDelay: `${index * 0.08}s` }}
+      style={{ animationDelay: `${index * 0.08}s` }}
     >
       <Link href={`/categories/${slug}`}>
         <div className="card overflow-hidden p-5 text-center">

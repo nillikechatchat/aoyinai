@@ -134,14 +134,30 @@ body {
 }
 
 /* ===== 滚动条 ===== */
-::-webkit-scrollbar { width: 6px; }
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-muted) transparent;
+}
+
+/* Chrome / Safari / Edge */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--ink-muted);
+  background: linear-gradient(180deg, var(--ink-muted), var(--vermilion));
   border-radius: 3px;
-  opacity: 0.5;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--ink-light); }
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--ink-light), var(--vermilion));
+}
+
+/* 暗色模式滚动条加深 */
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--ink-muted), var(--gold));
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--ink-light), var(--gold));
+}
 
 /* ===== Prose 文章正文 ===== */
 .prose {
@@ -310,7 +326,7 @@ body {
 
 /* ===== 动画工具类 ===== */
 .animate-in {
-  animation: inkFade 0.6s ease-out forwards;
+  animation: inkFade 0.6s ease-out both;
 }
 
 .animate-in-delay-1 { animation-delay: 0.1s; }
