@@ -96,7 +96,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
             {post.tags.map((tag) => (
               <Link
                 key={tag}
-                href={`/tags/${tag}`}
+                href={`/tags/${encodeURIComponent(tag)}`}
                 className="inline-flex items-center gap-1 rounded-full border border-ink-200/30 px-2.5 py-0.5 text-[11px] text-ink-500 transition-colors hover:border-vermilion/30 hover:text-vermilion dark:border-ink-800/30 dark:text-ink-600"
               >
                 <Tag className="size-2.5" />

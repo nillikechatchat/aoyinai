@@ -22,7 +22,7 @@ export default function TagsPage() {
         {tags.map((tag) => (
           <Link
             key={tag}
-            href={`/tags/${tag}`}
+            href={`/tags/${encodeURIComponent(tag)}`}
             className="card inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-ink-600 transition-colors hover:border-vermilion/30 hover:text-vermilion dark:text-ink-400"
           >
             #{tag}

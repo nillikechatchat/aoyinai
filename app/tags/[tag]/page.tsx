@@ -4,22 +4,24 @@ import { PostCard } from '@/components/PostCard'
 import { getPostsByTag, getAllTags } from '@/lib/posts'
 
 export function generateStaticParams() {
-  return getAllTags().map((tag) => ({ tag }))
+  return getAllTags().map((tag) => ({ tag: encodeURIComponent(tag) }))
 }
 
 export async function generateMetadata({ params }: { params: { tag: string } }) {
-  return { title: `#${params.tag}` }
+  const decoded = decodeURIComponent(params.tag)
+  return { title: `#${decoded}` }
 }
 
 export default function TagDetailPage({ params }: { params: { tag: string } }) {
-  const posts = getPostsByTag(params.tag)
+  const decoded = decodeURIComponent(params.tag)
+  const posts = getPostsByTag(decoded)
   if (posts.length === 0) notFound()
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <div className="mb-8">
         <h1 className="font-serif text-2xl font-bold text-ink-900 dark:text-ink-100">
-          #{params.tag}
+          #{decoded}
         </h1>
         <p className="mt-1 text-sm text-ink-500 dark:text-ink-600">
           {posts.length} 篇文章
