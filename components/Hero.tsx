@@ -21,7 +21,7 @@ export function Hero() {
             transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
             className="mx-auto mb-6"
           >
-            <span className="seal text-base px-3 py-1.5">AI 探索者</span>
+            <span className="seal text-base px-3 py-1.5">鸿渐</span>
           </motion.div>
 
           {/* 标题 */}

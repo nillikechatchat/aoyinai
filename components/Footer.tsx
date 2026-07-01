@@ -9,7 +9,7 @@ export function Footer() {
           <div className="flex items-center gap-2">
             <Feather className="size-4 text-vermilion" />
             <span className="font-serif text-sm font-bold text-ink-700 dark:text-ink-300">
-              AI 探索者
+              鸿渐
             </span>
           </div>
 
@@ -28,7 +28,7 @@ export function Footer() {
           <div className="bamboo-divider w-24" />
 
           <p className="text-[10px] text-ink-400 dark:text-ink-700">
-            © {new Date().getFullYear()} AI 探索者 · 以墨为舟，探索 AI 世界
+            © {new Date().getFullYear()} 鸿渐 · 以墨为舟，探索 AI 世界
           </p>
         </div>
       </div>

@@ -40,7 +40,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           <Feather className="size-5 text-vermilion" />
           <span className="font-serif text-lg font-bold tracking-wide text-ink-900 dark:text-ink-100">
-            AI 探索者
+            鸿渐
           </span>
         </Link>
 

@@ -7,15 +7,15 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aoyinai.vercel.app'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: 'AI 探索者', template: '%s — AI 探索者' },
+  title: { default: '鸿渐', template: '%s — 鸿渐' },
   description: '聚焦人工智能的中文博客 — 教程、市场、高校、赛事、黑客松、云厂商、T-agent。',
   keywords: ['AI', '人工智能', '大模型', 'LLM', 'RAG', 'Agent'],
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
     url: siteUrl,
-    siteName: 'AI 探索者',
-    title: 'AI 探索者',
+    siteName: '鸿渐',
+    title: '鸿渐',
     description: '聚焦人工智能的中文博客'
   },
   alternates: {
