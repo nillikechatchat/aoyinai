@@ -27,6 +27,16 @@ export function Footer() {
 
           <div className="bamboo-divider w-24" />
 
+          {/* 访问量统计 */}
+          <div className="flex items-center gap-4 text-[10px] text-ink-400 dark:text-ink-700">
+            <span id="busuanzi_container_site_pv">
+              本站总访问量 <span id="busuanzi_value_site_pv" className="font-medium text-vermilion"></span> 次
+            </span>
+            <span id="busuanzi_container_site_uv">
+              总访客 <span id="busuanzi_value_site_uv" className="font-medium text-vermilion"></span> 人
+            </span>
+          </div>
+
           <p className="text-[10px] text-ink-400 dark:text-ink-700">
             © {new Date().getFullYear()} 鸿渐 · 以墨为舟，探索 AI 世界
           </p>

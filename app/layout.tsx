@@ -45,6 +45,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        {/* 不蒜子访问量统计 */}
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       </body>
     </html>
   )

@@ -89,6 +89,10 @@ export default async function PostPage({ params }: { params: { id: string } }) {
             <Clock className="size-3" />
             {readingTime} 分钟阅读
           </span>
+          <span id="busuanzi_container_page_pv" className="flex items-center gap-1">
+            <span className="size-3">👁</span>
+            <span id="busuanzi_value_page_pv"></span> 次阅读
+          </span>
         </div>
 
         {post.tags.length > 0 && (
