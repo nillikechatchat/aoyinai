@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Github, GitBranch, Code2, BookOpen, Globe, MessageSquare, Mail, Rss } from 'lucide-react'
 
 export const metadata = { title: '关于' }
@@ -120,6 +121,42 @@ export default function AboutPage() {
                 {tech}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 二维码 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">码</span>
+          扫码关注
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="card p-5 text-center">
+            <div className="mx-auto mb-3 w-40 h-40 relative">
+              <Image
+                src="/qrcode-knowledge.webp"
+                alt="知识码"
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+            <p className="text-sm font-medium text-ink-800 dark:text-ink-200">知识码</p>
+            <p className="text-xs text-ink-500 dark:text-ink-600 mt-1">Hiclaw 深度实践</p>
+          </div>
+          <div className="card p-5 text-center">
+            <div className="mx-auto mb-3 w-40 h-40 relative">
+              <Image
+                src="/qrcode-wechat.webp"
+                alt="微信扫码"
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </div>
+            <p className="text-sm font-medium text-ink-800 dark:text-ink-200">微信扫码</p>
+            <p className="text-xs text-ink-500 dark:text-ink-600 mt-1">搜索联合传播</p>
           </div>
         </div>
       </section>
