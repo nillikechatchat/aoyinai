@@ -113,3 +113,16 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
   - astro-pure 集成默认开启 pagefind，build 时自动索引；中文 (zh-cn) 无词干化支持但搜索仍工作
   - 警告 `Did not find a data-pagefind-body element` 不影响功能，只是索引范围更大
 
+[Next.js 移动端页脚定位修复]
+- Date: 2026-07-02
+- Context: Agent 修复手机浏览器（Chrome/Safari）页脚不在底部的问题时发现
+- Category: 排错调试
+- Instructions:
+  - 根因：Tailwind base 层设置 `html { height: 100% }`，锁死 html 高度恰好等于视口，内容超出时 body 无法撑开，页脚被截断或不在底部
+  - 在 globals.css 中用 `html { height: auto }` 覆盖 Tailwind base 的 `height: 100%`，让 html 随内容自然撑高
+  - body 设置 `min-height: 100dvh`（动态视口高度，排除手机浏览器地址栏/底栏），`min-h-screen` 作为旧浏览器回退
+  - 内层 flex 容器用 `flex min-h-dvh flex-col`，main 用 `flex-1` 撑满剩余空间
+  - 不要在 html 上设 `height: 100dvh`（固定值），只在 body 和内层容器上用 `min-height`（最小值）
+  - `dvh`（dynamic viewport height）在 Tailwind 3.4+ 中对应 `min-h-dvh` 类，Chrome 108+、Safari 15.4+ 支持
+  - 诊断口诀：页脚不在底部 → 检查 html 是否被 height:100% 锁死 → 改为 height:auto
+

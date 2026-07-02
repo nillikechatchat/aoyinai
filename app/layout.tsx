@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen min-h-dvh bg-rice text-ink-900 dark:bg-ink-950 dark:text-ink-100">
-        <div className="relative flex min-h-screen min-h-dvh flex-col">
+        <div className="flex min-h-dvh flex-col">
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
