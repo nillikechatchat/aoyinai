@@ -24,7 +24,7 @@ export function Hero() {
           >
             <Image
               src="/logo.svg"
-              alt="鸿渐 Logo"
+              alt="敖胤AI Logo"
               width={96}
               height={96}
               className="w-full h-full"
@@ -39,7 +39,7 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="ink-gradient font-serif text-4xl font-bold tracking-wide sm:text-5xl"
           >
-            鸿渐
+            敖胤AI
           </motion.h1>
 
           <motion.p

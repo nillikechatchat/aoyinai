@@ -8,7 +8,7 @@ export default function AboutPage() {
       </div>
 
       <article className="prose">
-        <h1>鸿渐</h1>
+        <h1>敖胤AI</h1>
         <p>
           一个聚焦人工智能的中文博客，以墨为舟，探索 AI 世界。
         </p>
