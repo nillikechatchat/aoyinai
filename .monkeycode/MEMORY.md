@@ -126,3 +126,14 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
   - `dvh`（dynamic viewport height）在 Tailwind 3.4+ 中对应 `min-h-dvh` 类，Chrome 108+、Safari 15.4+ 支持
   - 诊断口诀：页脚不在底部 → 检查 html 是否被 height:100% 锁死 → 改为 height:auto
 
+[不蒜子访问量 display:none 导致数据丢失]
+- Date: 2026-07-02
+- Context: Agent 修复网站访问量和文章阅读量不显示的问题时发现
+- Category: 排错调试
+- Instructions:
+  - 根因：busuanzi.pure.mini.js 只设置 value 元素的 innerHTML，不修改容器的 display 属性
+  - 之前为避免脚本加载失败时显示空数据，在容器上加了 style="display:none"，导致数据被写入但容器永远隐藏
+  - 正确做法：容器保持默认可见，添加一个 5 秒延迟的兜底脚本，检测 value 元素是否有内容，无则显示 "--" 占位
+  - 不要在 busuanzi 容器上设 display:none，busuanzi 脚本不管理容器可见性
+  - 兜底脚本示例：setTimeout(function(){var pv=document.getElementById('busuanzi_value_site_pv');if(pv&&!pv.innerText)pv.innerText='--';},5000);
+
