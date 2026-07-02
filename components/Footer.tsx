@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Feather } from 'lucide-react'
+import { siteConfig } from '@/lib/site'
 
 export function Footer() {
   return (
@@ -9,12 +10,12 @@ export function Footer() {
           <div className="flex items-center gap-2">
             <Feather className="size-4 text-vermilion" />
             <span className="font-serif text-sm font-bold text-ink-700 dark:text-ink-300">
-              敖胤AI
+              {siteConfig.name}
             </span>
           </div>
 
           <p className="max-w-md text-xs text-ink-500 dark:text-ink-600">
-            聚焦人工智能的中文博客 — 教程 · 市场 · 高校 · 赛事 · 黑客松 · 云厂商 · T-agent
+            聚焦人工智能的中文博客 — AI 入门实战 · 行业动态 · 升学就业 · 竞赛活动 · 黑客松 · 算力优惠 · T-agent
           </p>
 
           <div className="flex gap-4 text-xs text-ink-500 dark:text-ink-600">
@@ -29,10 +30,10 @@ export function Footer() {
 
           {/* 访问量统计 */}
           <div className="flex items-center gap-4 text-[10px] text-ink-400 dark:text-ink-700">
-            <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_container_site_pv" style={{ display: 'none' }}>
               本站总访问量 <span id="busuanzi_value_site_pv" className="font-medium text-vermilion"></span> 次
             </span>
-            <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_container_site_uv" style={{ display: 'none' }}>
               总访客 <span id="busuanzi_value_site_uv" className="font-medium text-vermilion"></span> 人
             </span>
           </div>

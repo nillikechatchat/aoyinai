@@ -2,8 +2,12 @@ import Link from 'next/link'
 import { Calendar } from 'lucide-react'
 import { getPostsByYear } from '@/lib/posts'
 import { categoryMeta } from '@/lib/categories'
+import { siteConfig } from '@/lib/site'
 
-export const metadata = { title: '归档' }
+export const metadata = {
+  title: '归档',
+  alternates: { canonical: `${siteConfig.url}/archives` }
+}
 
 export default function ArchivesPage() {
   const byYear = getPostsByYear()

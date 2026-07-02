@@ -1,8 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Github, GitBranch, Code2, BookOpen, Globe, MessageSquare, Mail, Rss } from 'lucide-react'
+import { siteConfig } from '@/lib/site'
 
-export const metadata = { title: '关于' }
+export const metadata = {
+  title: '关于',
+  description: `关于 ${siteConfig.name} — 聚焦人工智能的中文博客`,
+  alternates: { canonical: `${siteConfig.url}/about` }
+}
 
 const socialLinks = [
   { href: 'https://github.com/nillikechatchat/aoyinai', icon: Github, label: 'GitHub', desc: '开源项目与代码' },
@@ -38,13 +43,13 @@ export default function AboutPage() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            { title: 'AI 教程', desc: 'LLM 入门到 RAG、Agent 实战的进阶之路', color: '#c53d43' },
-            { title: '市场分析', desc: '大模型厂商竞争格局、价格趋势与商业洞察', color: '#b8860b' },
-            { title: '高校专业', desc: '国内 AI 强校课程、师资与就业去向', color: '#2e8b57' },
-            { title: '赛事活动', desc: 'Kaggle、NeurIPS 等顶赛清单与报名截止', color: '#c53d43' },
-            { title: '黑客松', desc: '高质量 AI 黑客松实时推荐', color: '#b8860b' },
-            { title: '云厂商优惠', desc: '阿里云、腾讯云、华为云、火山引擎大模型 API 优惠', color: '#2e8b57' },
-            { title: 'T-agent', desc: '多智能体协作框架', color: '#c53d43' },
+            { title: 'AI 入门实战', desc: '从零基础到大模型、RAG、Agent 开发全流程', color: '#c53d43' },
+            { title: '行业动态', desc: '大模型厂商竞争格局、投融资与价格趋势', color: '#b8860b' },
+            { title: '升学就业', desc: 'AI 强校专业选择、课程师资与求职路径', color: '#2e8b57' },
+            { title: '竞赛活动', desc: 'Kaggle、顶会赛题、算法大赛报名与攻略', color: '#c53d43' },
+            { title: '黑客松', desc: 'AI 黑客松最新资讯与获奖经验分享', color: '#b8860b' },
+            { title: '算力优惠', desc: 'GPU 云服务器、大模型 API 免费额度汇总', color: '#2e8b57' },
+            { title: 'T-agent', desc: '多智能体协作框架教程与落地案例', color: '#c53d43' },
           ].map((item) => (
             <div
               key={item.title}

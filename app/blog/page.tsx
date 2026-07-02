@@ -1,9 +1,13 @@
 import { PostCard } from '@/components/PostCard'
 import { getSortedPosts } from '@/lib/posts'
 import { categoryMeta } from '@/lib/categories'
+import { siteConfig } from '@/lib/site'
 import Link from 'next/link'
 
-export const metadata = { title: '全部文章' }
+export const metadata = {
+  title: '全部文章',
+  alternates: { canonical: `${siteConfig.url}/blog` }
+}
 
 export default function BlogPage() {
   const posts = getSortedPosts()

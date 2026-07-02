@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { PostCard } from '@/components/PostCard'
 import { getPostsByTag, getAllTags } from '@/lib/posts'
+import { siteConfig } from '@/lib/site'
 
 export function generateStaticParams() {
   return getAllTags().map((tag) => ({ tag: encodeURIComponent(tag) }))
@@ -9,7 +10,10 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: { tag: string } }) {
   const decoded = decodeURIComponent(params.tag)
-  return { title: `#${decoded}` }
+  return {
+    title: `#${decoded}`,
+    alternates: { canonical: `${siteConfig.url}/tags/${params.tag}` }
+  }
 }
 
 export default function TagDetailPage({ params }: { params: { tag: string } }) {

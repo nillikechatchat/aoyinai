@@ -4,6 +4,7 @@ import { Calendar, Clock, ArrowLeft, Tag } from 'lucide-react'
 import { getPostById, getSortedPosts, markdownToHtml } from '@/lib/posts'
 import { calculateReadingTime } from '@/lib/reading'
 import { categoryMeta } from '@/lib/categories'
+import { siteConfig } from '@/lib/site'
 
 export function generateStaticParams() {
   return getSortedPosts().map((p) => ({ id: p.id }))
@@ -12,15 +13,18 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const post = getPostById(params.id)
   if (!post) return {}
+  const url = `${siteConfig.url}/blog/${params.id}`
   return {
     title: post.title,
     description: post.description,
+    alternates: { canonical: url },
     openGraph: {
       title: post.title,
       description: post.description,
       type: 'article' as const,
       publishedTime: post.date,
-      tags: post.tags
+      tags: post.tags,
+      url
     }
   }
 }
@@ -89,7 +93,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
             <Clock className="size-3" />
             {readingTime} 分钟阅读
           </span>
-          <span id="busuanzi_container_page_pv" className="flex items-center gap-1">
+          <span id="busuanzi_container_page_pv" className="flex items-center gap-1" style={{ display: 'none' }}>
             <span className="size-3">👁</span>
             <span id="busuanzi_value_page_pv"></span> 次阅读
           </span>

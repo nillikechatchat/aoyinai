@@ -57,7 +57,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mx-auto mt-4 max-w-xl text-base text-ink-500 sm:text-lg dark:text-ink-500"
           >
-            以墨为舟，探索 AI 世界 — <span className="font-medium text-vermilion">7 大主题</span>，持续更新
+            以墨为舟，探索 AI 世界 — <span className="font-medium text-vermilion">7 大主题</span>，助你从入门到实战
           </motion.p>
 
           {/* 社交链接 */}

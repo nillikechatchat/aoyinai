@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { PostCard } from '@/components/PostCard'
 import { getPostsByCategory, getAllCategories } from '@/lib/posts'
 import { categoryMeta } from '@/lib/categories'
+import { siteConfig } from '@/lib/site'
 import Link from 'next/link'
 
 export function generateStaticParams() {
@@ -10,7 +11,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const meta = categoryMeta[params.slug]
-  return { title: meta?.label || params.slug }
+  const label = meta?.label || params.slug
+  return {
+    title: label,
+    description: meta?.desc,
+    alternates: { canonical: `${siteConfig.url}/categories/${params.slug}` }
+  }
 }
 
 export default function CategoryPage({ params }: { params: { slug: string } }) {

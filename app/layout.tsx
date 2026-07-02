@@ -2,25 +2,24 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aoyinai.vercel.app'
+import { siteConfig } from '@/lib/site'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: { default: '敖胤AI', template: '%s — 敖胤AI' },
-  description: '聚焦人工智能的中文博客 — 教程、市场、高校、赛事、黑客松、云厂商、T-agent。',
-  keywords: ['AI', '人工智能', '大模型', 'LLM', 'RAG', 'Agent'],
+  metadataBase: new URL(siteConfig.url),
+  title: { default: siteConfig.title, template: '%s — 敖胤AI' },
+  description: siteConfig.description,
+  keywords: ['AI', '人工智能', '大模型', 'LLM', 'RAG', 'Agent', '机器学习', '深度学习', '教程', '竞赛', '黑客松'],
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
-    url: siteUrl,
-    siteName: '敖胤AI',
-    title: '敖胤AI',
-    description: '聚焦人工智能的中文博客'
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description
   },
   alternates: {
-    canonical: siteUrl,
-    types: { 'application/rss+xml': `${siteUrl}/rss.xml` }
+    canonical: siteConfig.url,
+    types: { 'application/rss+xml': `${siteConfig.url}/rss.xml` }
   },
   robots: { index: true, follow: true }
 }
@@ -39,8 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-rice text-ink-900 dark:bg-ink-950 dark:text-ink-100">
-        <div className="relative flex min-h-screen flex-col">
+      <body className="min-h-screen min-h-dvh bg-rice text-ink-900 dark:bg-ink-950 dark:text-ink-100">
+        <div className="relative flex min-h-screen min-h-dvh flex-col">
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

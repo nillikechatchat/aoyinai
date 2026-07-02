@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import { getAllTags } from '@/lib/posts'
+import { siteConfig } from '@/lib/site'
 
-export const metadata = { title: '标签' }
+export const metadata = {
+  title: '标签',
+  alternates: { canonical: `${siteConfig.url}/tags` }
+}
 
 export default function TagsPage() {
   const tags = getAllTags()
