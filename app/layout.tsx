@@ -26,6 +26,8 @@ export const metadata: Metadata = {
 
 const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(!t)t='dark';document.documentElement.classList.toggle('dark',t==='dark');}catch(e){}})();`
 
+const busuanziFallback = `(function(){setTimeout(function(){var pv=document.getElementById('busuanzi_value_site_pv');if(pv&&!pv.innerText)pv.innerText='--';var uv=document.getElementById('busuanzi_value_site_uv');if(uv&&!uv.innerText)uv.innerText='--';},5000);})();`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
@@ -46,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         {/* 不蒜子访问量统计 */}
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+        <script dangerouslySetInnerHTML={{ __html: busuanziFallback }} />
       </body>
     </html>
   )
