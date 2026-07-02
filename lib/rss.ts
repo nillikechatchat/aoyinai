@@ -1,6 +1,6 @@
 import { getSortedPosts } from './posts'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aoyinai.vercel.app'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sunzhizhi.cn'
 
 function escapeXml(s: string) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')

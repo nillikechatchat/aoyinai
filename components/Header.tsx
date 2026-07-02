@@ -7,12 +7,13 @@ import { Menu, X, Search, Rss, Feather } from 'lucide-react'
 const navItems = [
   { href: '/', label: '首页' },
   { href: '/blog', label: '文章' },
-  { href: '/categories/tutorials', label: 'AI 教程' },
-  { href: '/categories/market', label: '市场分析' },
-  { href: '/categories/majors', label: '高校专业' },
-  { href: '/categories/events', label: '赛事活动' },
+  { href: '/roadmap', label: '学习路线图' },
+  { href: '/categories/tutorials', label: 'AI 入门实战' },
+  { href: '/categories/market', label: '行业动态' },
+  { href: '/categories/majors', label: '升学就业' },
+  { href: '/categories/events', label: '竞赛活动' },
   { href: '/categories/hackathons', label: '黑客松' },
-  { href: '/categories/cloud-deals', label: '云厂商' },
+  { href: '/categories/cloud-deals', label: '算力优惠' },
   { href: '/categories/t-agent', label: 'T-agent' }
 ]
 

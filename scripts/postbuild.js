@@ -5,7 +5,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aoyinai.vercel.app'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sunzhizhi.cn'
 
 function parseFrontmatter(filePath) {
   const raw = fs.readFileSync(filePath, 'utf8')
@@ -64,6 +64,7 @@ function generate() {
   const urls = [
     { loc: '/', priority: '1.0', changefreq: 'weekly', lastmod: now },
     { loc: '/blog', priority: '0.9', changefreq: 'weekly', lastmod: now },
+    { loc: '/roadmap', priority: '0.9', changefreq: 'monthly', lastmod: now },
     { loc: '/archives', priority: '0.7', changefreq: 'monthly', lastmod: now },
     { loc: '/tags', priority: '0.6', changefreq: 'monthly', lastmod: now },
     { loc: '/about', priority: '0.5', changefreq: 'yearly', lastmod: now },
