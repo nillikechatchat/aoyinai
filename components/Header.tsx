@@ -9,6 +9,7 @@ const navItems = [
   { href: '/blog', label: '文章' },
   { href: '/roadmap', label: '学习路线图' },
   { href: '/categories/tutorials', label: 'AI 入门实战' },
+  { href: '/categories/inspiration', label: '灵感' },
   { href: '/categories/market', label: '行业动态' },
   { href: '/categories/majors', label: '升学就业' },
   { href: '/categories/events', label: '竞赛活动' },

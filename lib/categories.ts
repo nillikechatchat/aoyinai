@@ -8,5 +8,6 @@ export const categoryMeta: Record<
   events:       { label: '竞赛活动',   desc: 'Kaggle、顶会赛题、算法大赛报名与攻略',     color: '#c53d43', seal: '竞赛' },
   hackathons:   { label: '黑客松',     desc: 'AI 黑客松最新资讯与获奖经验分享',          color: '#b8860b', seal: '黑客' },
   'cloud-deals': { label: '算力优惠',  desc: 'GPU 云服务器、大模型 API 免费额度汇总',   color: '#2e8b57', seal: '算力' },
-  't-agent':    { label: 'T-agent',    desc: '多智能体协作框架教程与落地案例',            color: '#c53d43', seal: '智能' }
+  't-agent':    { label: 'T-agent',    desc: '多智能体协作框架教程与落地案例',            color: '#c53d43', seal: '智能' },
+  inspiration:  { label: '灵感',       desc: 'AI 落地场景启发，用技术解决真实问题',       color: '#b8860b', seal: '灵感' }
 }

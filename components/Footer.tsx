@@ -15,7 +15,7 @@ export function Footer() {
           </div>
 
           <p className="max-w-md text-xs text-ink-500 dark:text-ink-600">
-            聚焦人工智能的中文博客 — AI 入门实战 · 行业动态 · 升学就业 · 竞赛活动 · 黑客松 · 算力优惠 · T-agent
+            聚焦人工智能的中文博客 — AI 入门实战 · 行业动态 · 升学就业 · 竞赛活动 · 灵感 · 黑客松 · 算力优惠 · T-agent
           </p>
 
           <div className="flex gap-4 text-xs text-ink-500 dark:text-ink-600">

@@ -47,6 +47,7 @@ export default function AboutPage() {
             { title: '行业动态', desc: '大模型厂商竞争格局、投融资与价格趋势', color: '#b8860b' },
             { title: '升学就业', desc: 'AI 强校专业选择、课程师资与求职路径', color: '#2e8b57' },
             { title: '竞赛活动', desc: 'Kaggle、顶会赛题、算法大赛报名与攻略', color: '#c53d43' },
+            { title: '灵感', desc: 'AI 落地场景启发，用技术解决真实问题', color: '#b8860b' },
             { title: '黑客松', desc: 'AI 黑客松最新资讯与获奖经验分享', color: '#b8860b' },
             { title: '算力优惠', desc: 'GPU 云服务器、大模型 API 免费额度汇总', color: '#2e8b57' },
             { title: 'T-agent', desc: '多智能体协作框架教程与落地案例', color: '#c53d43' },
