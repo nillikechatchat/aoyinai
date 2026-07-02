@@ -1,43 +1,169 @@
+import Link from 'next/link'
+import { Github, GitBranch, Code2, BookOpen, Globe, MessageSquare, Mail, Rss } from 'lucide-react'
+
 export const metadata = { title: '关于' }
+
+const socialLinks = [
+  { href: 'https://github.com/nillikechatchat/aoyinai', icon: Github, label: 'GitHub', desc: '开源项目与代码' },
+  { href: 'https://gitee.com/hongjian_Ai', icon: GitBranch, label: 'Gitee', desc: '国内代码托管' },
+  { href: 'https://atomgit.com/u012823422', icon: Code2, label: 'AtomGit', desc: 'AtomGit 社区' },
+  { href: 'https://blog.csdn.net/u012823422', icon: BookOpen, label: 'CSDN', desc: '技术博客' },
+  { href: 'https://my.oschina.net/mfeng', icon: Globe, label: 'OSCHINA', desc: '开源中国社区' },
+  { href: 'https://segmentfault.com/u/nillikechatchat/articles', icon: MessageSquare, label: 'SegmentFault', desc: '技术问答与文章' },
+]
 
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <div className="mb-8">
-        <span className="seal text-lg px-4 py-2">关于</span>
+      {/* 头部 */}
+      <div className="mb-10 text-center">
+        <span className="seal text-lg px-4 py-2 mb-4 inline-block">关于</span>
+        <h1 className="font-serif text-3xl font-bold text-ink-900 dark:text-ink-100 mb-3">
+          敖胤AI
+        </h1>
+        <p className="text-ink-500 dark:text-ink-600 max-w-lg mx-auto">
+          一个聚焦人工智能的中文博客，以墨为舟，探索 AI 世界
+        </p>
       </div>
 
-      <article className="prose">
-        <h1>敖胤AI</h1>
-        <p>
-          一个聚焦人工智能的中文博客，以墨为舟，探索 AI 世界。
+      {/* 竹节分隔 */}
+      <div className="bamboo-divider mb-10" />
+
+      {/* 内容主题 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">览</span>
+          内容主题
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { title: 'AI 教程', desc: 'LLM 入门到 RAG、Agent 实战的进阶之路', color: '#c53d43' },
+            { title: '市场分析', desc: '大模型厂商竞争格局、价格趋势与商业洞察', color: '#b8860b' },
+            { title: '高校专业', desc: '国内 AI 强校课程、师资与就业去向', color: '#2e8b57' },
+            { title: '赛事活动', desc: 'Kaggle、NeurIPS 等顶赛清单与报名截止', color: '#c53d43' },
+            { title: '黑客松', desc: '高质量 AI 黑客松实时推荐', color: '#b8860b' },
+            { title: '云厂商优惠', desc: '阿里云、腾讯云、华为云、火山引擎大模型 API 优惠', color: '#2e8b57' },
+            { title: 'T-agent', desc: '多智能体协作框架', color: '#c53d43' },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="card p-4 flex items-start gap-3"
+            >
+              <span
+                className="seal text-[10px] px-1.5 py-0.5 shrink-0"
+                style={{ borderColor: item.color, color: item.color }}
+              >
+                {item.title.slice(0, 2)}
+              </span>
+              <div>
+                <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200">{item.title}</h3>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mt-1">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 社交链接 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">链</span>
+          关注我
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {socialLinks.map(({ href, icon: Icon, label, desc }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card group p-4 flex items-center gap-3 transition-all hover:border-vermilion/40"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-vermilion/10 text-vermilion group-hover:bg-vermilion/20 transition-colors">
+                <Icon className="size-5" />
+              </div>
+              <div>
+                <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                  {label}
+                </h3>
+                <p className="text-xs text-ink-500 dark:text-ink-600">{desc}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* 技术栈 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">技</span>
+          技术栈
+        </h2>
+        <div className="card p-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              'Next.js 14',
+              'Tailwind CSS',
+              'TypeScript',
+              'rehype-pretty-code',
+              'Shiki 代码高亮',
+              'gray-matter',
+              'remark-gfm',
+              'Vercel 部署',
+              '不蒜子统计',
+            ].map((tech) => (
+              <div
+                key={tech}
+                className="flex items-center gap-2 text-sm text-ink-600 dark:text-ink-400"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-vermilion/60" />
+                {tech}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 联系方式 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">联</span>
+          联系我
+        </h2>
+        <div className="card p-5">
+          <p className="text-sm text-ink-600 dark:text-ink-400 mb-4">
+            如果你有任何问题、建议或合作意向，欢迎通过以下方式联系我：
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="https://github.com/nillikechatchat/aoyinai/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-vermilion hover:underline"
+            >
+              <Github className="size-4" />
+              GitHub Issues
+            </a>
+            <a
+              href="/rss.xml"
+              className="inline-flex items-center gap-1.5 text-sm text-vermilion hover:underline"
+            >
+              <Rss className="size-4" />
+              RSS 订阅
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 竹节分隔 */}
+      <div className="bamboo-divider mb-10" />
+
+      {/* 底部 */}
+      <div className="text-center">
+        <p className="text-xs text-ink-400 dark:text-ink-700">
+          © {new Date().getFullYear()} 敖胤AI · 以墨为舟，探索 AI 世界
         </p>
-
-        <h2>内容主题</h2>
-        <ul>
-          <li><strong>AI 教程</strong> — LLM 入门到 RAG、Agent 实战的进阶之路</li>
-          <li><strong>市场分析</strong> — 大模型厂商竞争格局、价格趋势与商业洞察</li>
-          <li><strong>高校专业</strong> — 国内 AI 强校课程、师资与就业去向</li>
-          <li><strong>赛事活动</strong> — Kaggle、NeurIPS 等顶赛清单与报名截止</li>
-          <li><strong>黑客松</strong> — 高质量 AI 黑客松实时推荐</li>
-          <li><strong>云厂商优惠</strong> — 阿里云、腾讯云、华为云、火山引擎大模型 API 优惠</li>
-          <li><strong>T-agent</strong> — 我正在做的多智能体协作框架</li>
-        </ul>
-
-        <h2>技术栈</h2>
-        <ul>
-          <li>Next.js 14（App Router + 静态导出）</li>
-          <li>Tailwind CSS + 自定义水墨主题</li>
-          <li>rehype-pretty-code + Shiki 代码高亮</li>
-          <li>gray-matter + remark-gfm Markdown 渲染</li>
-          <li>Vercel 静态站点托管</li>
-        </ul>
-
-        <h2>联系方式</h2>
-        <p>
-          GitHub: <a href="https://github.com/nillikechatchat/aoyinai" target="_blank" rel="noopener noreferrer">nillikechatchat/aoyinai</a>
-        </p>
-      </article>
+      </div>
     </div>
   )
 }
