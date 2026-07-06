@@ -67,6 +67,7 @@ function generate() {
     { loc: '/roadmap', priority: '0.9', changefreq: 'monthly', lastmod: now },
     { loc: '/stats', priority: '0.8', changefreq: 'weekly', lastmod: now },
     { loc: '/community', priority: '0.8', changefreq: 'monthly', lastmod: now },
+    { loc: '/bookmarks', priority: '0.7', changefreq: 'weekly', lastmod: now },
     { loc: '/archives', priority: '0.7', changefreq: 'monthly', lastmod: now },
     { loc: '/tags', priority: '0.6', changefreq: 'monthly', lastmod: now },
     { loc: '/about', priority: '0.5', changefreq: 'yearly', lastmod: now },
