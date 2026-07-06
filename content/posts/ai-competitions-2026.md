@@ -1,11 +1,11 @@
 ---
 title: "2026 年 AI 赛事活动汇总：7 月最新报名截止与进行中比赛"
-date: 2026-07-02T12:00:00+08:00
-updated: 2026-07-02T12:00:00+08:00
+date: 2026-07-03T18:00:00+08:00
+updated: 2026-07-03T18:00:00+08:00
 draft: false
-description: "整理 2026 年 7 月值得关注的 AI 赛事，涵盖 B 站 AI 创造公开赛、Kaggle、HuggingFace、昇腾、技嘉超算、Datawhale 组队学习与黑客松等平台，附报名截止、奖金与赛道详情。"
+description: "整理 2026 年 7 月值得关注的 AI 赛事，涵盖 CCF BDCI、B 站 AI 创造公开赛、Kaggle、HuggingFace、昇腾、技嘉超算、Datawhale 组队学习与黑客松等平台，附报名截止、奖金与赛道详情。"
 categories: ["events"]
-tags: ["赛事", "Kaggle", "Hackathon", "Agent", "昇腾", "奖金", "B站", "AI创造", "Datawhale", "组队学习"]
+tags: ["赛事", "Kaggle", "Hackathon", "Agent", "昇腾", "奖金", "B站", "AI创造", "Datawhale", "组队学习", "CCF", "华为"]
 image: "covers/ai-competitions-2026.svg"
 cover:
   image: "covers/ai-competitions-2026.svg"
@@ -87,6 +87,22 @@ cover:
   - 量子科学：量子计算与 AI 交叉
 - **赛程**：报名 → 社区投票 → 专家评审（9 月 14 日 ~ 20 日）→ 9 月下旬黑客松及颁奖
 - **特点**：学术产业联动，顶会级评委
+
+### 2026 CCF BDCI 大数据与计算智能大赛（第十四届）
+
+- **报名时间**：2026 年 6 月 23 日起开放报名
+- **初赛**：2026 年 6 月 ~ 9 月中旬
+- **决赛**：2026 年 10 月（线上评审 + 线下颁奖典礼）
+- **主办**：中国计算机学会（CCF）
+- **出题方**：华为 openJiuwen 开源 AI Agent 社区
+- **奖金**：每赛题一等奖 2 万元、二等奖 1 万元/队、三等奖 5000 元/队，CCF 权威证书 + 奖杯
+- **首批赛题（3 道）**：
+  - **Agent 职场长程生存与晋升挑战**：在 48 个月职业周期内完成事件决策、体力分配与行动规划，以 Skill 形式沉淀策略
+  - **Agent 量化投资报告生成**：在六大板块股票池内自主选股与仓位配置，初赛看回测指标，决赛看报告质量
+  - **Agent 科研论文自动生成**：基于 JiuwenSwarm 蜂群智能体架构，自动化撰写适配 ICLR 模板的科研短论文
+- **特点**：累计 13 年历史，20 万+ 参赛者，真实产业场景赛题；华为 JiuwenSwarm 蜂群智能体架构实战
+- **报名**：[大赛官网](https://www.xir.cn/competition/races/BDCI2026)
+- **推荐理由**：CCF 权威赛事，Agent 方向赛题前沿，适合 AI Agent 开发者和研究者
 
 ### AITOP100 平台 6 月大赛汇总（7 场）
 

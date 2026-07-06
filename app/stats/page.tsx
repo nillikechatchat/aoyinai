@@ -16,6 +16,7 @@ const competitions = [
   { name: 'Decentralize AI Hack', prize: 36, unit: '万元', status: '进行中', deadline: '长期', category: 'Web3', color: '#2e8b57' },
   { name: 'Build Small Hackathon', prize: 35, unit: '万元', status: '已结束', deadline: '6月15日', category: '小模型', color: '#c53d43' },
   { name: 'AGIBOT WORLD', prize: 0, unit: '未公开', status: '已结束', deadline: '6月', category: '具身智能', color: '#b8860b' },
+  { name: 'CCF BDCI 2026', prize: 10, unit: '万元/题', status: '报名中', deadline: '9月中旬', category: 'Agent', color: '#c53d43' },
   { name: 'Datawhale 黑客松联赛', prize: 0, unit: '融资', status: '年度', deadline: '持续', category: '高校', color: '#2e8b57' },
 ]
 
