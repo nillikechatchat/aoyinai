@@ -1,6 +1,6 @@
 ---
 title: "RAG 实战：从零搭建一个文档问答系统"
-date: 2026-07-03T14:00:00+08:00
+date: 2026-07-07T14:00:00+08:00
 draft: false
 description: "RAG（检索增强生成）是 LLM 应用最广泛的架构。本文用 Python 从零搭建一个能回答私有文档问题的系统。"
 categories: ["tutorials"]

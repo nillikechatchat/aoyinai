@@ -1,6 +1,6 @@
 ---
 title: "AI + 心理健康：当 AI 成为你的第一个倾听者"
-date: 2026-07-03T17:30:00+08:00
+date: 2026-07-07T17:30:00+08:00
 draft: false
 description: "心理咨询资源严重不足，很多人在最需要帮助时找不到人说话。AI 能否成为心理健康的第一道防线？"
 categories: ["inspiration"]

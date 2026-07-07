@@ -1,6 +1,6 @@
 ---
 title: "T-agent 记忆系统设计：让 Agent 记住你说过的每一句话"
-date: 2026-07-03T17:00:00+08:00
+date: 2026-07-07T17:00:00+08:00
 draft: false
 description: "长期记忆是 Agent 从'一次性对话'进化为'持续陪伴'的关键。本文探讨 T-agent 的记忆系统架构设计。"
 categories: ["t-agent"]

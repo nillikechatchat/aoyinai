@@ -1,6 +1,6 @@
 ---
 title: "2026 年 7 月 AI 行业动态：腾讯 Hy3、GPT-5.6、中国大模型十周领跑"
-date: 2026-07-03T19:00:00+08:00
+date: 2026-07-07T19:00:00+08:00
 draft: false
 description: "2026 年 7 月第一周 AI 行业大事：腾讯混元 Hy3 正式发布、GPT-5.6 即将亮相、中国大模型周调用量连续十周全球第一、Anthropic 自研芯片。"
 categories: ["market"]
