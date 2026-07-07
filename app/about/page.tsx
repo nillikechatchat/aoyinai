@@ -167,6 +167,48 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* 友链 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">友</span>
+          志同道合
+        </h2>
+        <div className="grid gap-3">
+          {/* SCALE OS */}
+          <a
+            href="https://scale-os.hongmaple.top/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-vermilion/10 to-gold/10 text-vermilion group-hover:from-vermilion/20 group-hover:to-gold/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">S</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    SCALE OS
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-vermilion/10 text-vermilion">
+                    工具
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  AI 工作流工程化配置平台。把 Agent 的配置、调试、部署做成一套操作系统级别的体验——从"写 prompt"进化到"配置工作流"。方法论扎实，产品感很好。
+                </p>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700">
+                  scale-os.hongmaple.top
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <p className="mt-4 text-[10px] text-ink-400 dark:text-ink-700">
+          友链开放中。如果你在做 AI 相关的有趣项目，欢迎联系我交换链接。
+        </p>
+      </section>
+
       {/* 联系方式 */}
       <section className="mb-12">
         <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
