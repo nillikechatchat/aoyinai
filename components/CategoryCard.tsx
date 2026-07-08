@@ -19,7 +19,7 @@ export function CategoryCard({ slug, index = 0 }: CategoryCardProps) {
       style={{ animationDelay: `${index * 0.08}s` }}
     >
       <Link href={`/categories/${slug}`}>
-        <div className="card overflow-hidden p-5 text-center">
+        <div className="card overflow-hidden p-5 text-center h-full flex flex-col items-center justify-center">
           {/* 印章徽章 */}
           <div className="mx-auto mb-3">
             <span

@@ -25,7 +25,7 @@ export function PostCard({ post, index = 0, showCover = false }: PostCardProps) 
       style={{ animationDelay: `${index * 0.08}s` }}
     >
       <Link href={`/blog/${post.id}`}>
-        <div className="card overflow-hidden p-5 sm:p-6">
+        <div className="card overflow-hidden p-5 sm:p-6 h-full flex flex-col">
           {/* 分类印章 */}
           {post.categories.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-2">
@@ -38,7 +38,7 @@ export function PostCard({ post, index = 0, showCover = false }: PostCardProps) 
           )}
 
           {/* 标题 */}
-          <h3 className="mb-2 font-serif text-lg font-bold text-ink-900 transition-colors group-hover:text-vermilion dark:text-ink-100">
+          <h3 className="mb-2 font-serif text-lg font-bold text-ink-900 transition-colors group-hover:text-vermilion dark:text-ink-100 line-clamp-1">
             {post.title}
           </h3>
 
@@ -48,7 +48,7 @@ export function PostCard({ post, index = 0, showCover = false }: PostCardProps) 
           </p>
 
           {/* 底部信息 */}
-          <div className="flex items-center justify-between text-xs text-ink-400 dark:text-ink-600">
+          <div className="flex items-center justify-between text-xs text-ink-400 dark:text-ink-600 mt-auto pt-2">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">
                 <Calendar className="size-3" />

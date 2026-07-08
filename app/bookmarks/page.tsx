@@ -249,7 +249,7 @@ export default function BookmarksPage() {
             href={b.url.startsWith('http') ? b.url : `https://${b.url}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="card group block px-5 py-4 transition-all hover:border-vermilion/40"
+            className="card group block px-5 py-4 transition-all hover:border-vermilion/40 h-full"
           >
             <div className="flex items-start gap-3">
               <span className="mt-1 text-xs text-ink-400 dark:text-ink-600 w-6 text-right shrink-0 font-mono">

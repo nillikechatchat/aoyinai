@@ -179,7 +179,7 @@ export default function AboutPage() {
             href="https://scale-os.hongmaple.top/"
             target="_blank"
             rel="noopener noreferrer"
-            className="card group p-5 transition-all hover:border-vermilion/40"
+            className="card group p-5 transition-all hover:border-vermilion/40 h-full"
           >
             <div className="flex items-start gap-4">
               <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-vermilion/10 to-gold/10 text-vermilion group-hover:from-vermilion/20 group-hover:to-gold/20 transition-colors shrink-0">
@@ -194,7 +194,7 @@ export default function AboutPage() {
                     工具
                   </span>
                 </div>
-                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2 line-clamp-2">
                   AI 工作流工程化配置平台。把 Agent 的配置、调试、部署做成一套操作系统级别的体验——从"写 prompt"进化到"配置工作流"。方法论扎实，产品感很好。
                 </p>
                 <span className="text-[10px] text-ink-400 dark:text-ink-700">

@@ -79,7 +79,7 @@ export default function CommunityPage() {
             href={c.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="card group block p-6 transition-all hover:border-vermilion/40"
+            className="card group block p-6 transition-all hover:border-vermilion/40 h-full"
           >
             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
               {/* 左侧：印章 + 标题 */}
@@ -100,7 +100,7 @@ export default function CommunityPage() {
 
               {/* 右侧：描述 + 亮点 */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-ink-600 dark:text-ink-400 mb-3 leading-relaxed">
+                <p className="text-sm text-ink-600 dark:text-ink-400 mb-3 leading-relaxed line-clamp-3">
                   {c.desc}
                 </p>
 
