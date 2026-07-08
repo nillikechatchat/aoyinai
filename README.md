@@ -139,6 +139,10 @@ draft: false
 2. 写文章时在 `categories` 数组里加 slug
 3. `app/categories/[slug]/page.tsx` 自动生成对应页面
 
+## 致谢
+
+- [Monkeycode](https://monkeycode-ai.com) — 本博客由 Monkeycode AI 智能开发平台驱动开发，提供代码生成、架构设计、部署编排等能力支持。
+
 ## 许可
 
 博客内容遵循 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 协议。

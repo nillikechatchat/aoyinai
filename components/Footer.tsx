@@ -41,6 +41,9 @@ export function Footer() {
           <p className="text-[10px] text-ink-400 dark:text-ink-700">
             © {new Date().getFullYear()} 敖胤AI · 以墨为舟，探索 AI 世界
           </p>
+          <p className="text-[10px] text-ink-400 dark:text-ink-700">
+            由 <a href="https://monkeycode-ai.com" target="_blank" rel="noopener noreferrer" className="text-vermilion hover:underline">Monkeycode</a> 驱动开发
+          </p>
         </div>
       </div>
     </footer>
