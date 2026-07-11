@@ -1,6 +1,6 @@
 ---
 title: "T-agent 工具调用实战：让 Agent 学会使用外部工具"
-date: 2026-07-07T13:00:00+08:00
+date: 2026-07-11T13:00:00+08:00
 draft: false
 description: "工具调用是 Agent 的核心能力。本文通过实战案例，演示如何让 T-agent 调用搜索、数据库和 API 等外部工具。"
 categories: ["t-agent"]

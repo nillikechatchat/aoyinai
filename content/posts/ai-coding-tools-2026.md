@@ -1,6 +1,6 @@
 ---
 title: "AI 编程工具 2026：Cursor、Windsurf、TRAE 谁更强？"
-date: 2026-07-07T14:30:00+08:00
+date: 2026-07-11T14:30:00+08:00
 draft: false
 description: "AI 编程工具从辅助补全进化到全栈 Agent。2026 年主流 AI 编程工具的功能对比和选型建议。"
 categories: ["market"]

@@ -1,6 +1,6 @@
 ---
 title: "2026 年 7 月 AI 大乱斗：GPT-5.6、Grok 4.5、Gemini 3.5 Pro、DeepSeek V4 同期发布"
-date: 2026-07-08T14:00:00+08:00
+date: 2026-07-11T14:00:00+08:00
 draft: false
 description: "7 月全球 AI 大模型竞赛进入密集发布窗口：GPT-5.6 Sol、Grok 4.5、Gemini 3.5 Pro、DeepSeek V4 正式版同期落地，一场横跨性能、成本与生态的全面角力。"
 categories: ["market"]

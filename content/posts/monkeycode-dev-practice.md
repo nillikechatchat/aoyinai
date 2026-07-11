@@ -1,6 +1,6 @@
 ---
 title: "用 Monkeycode 开发 AI 博客：从零到上线的完整实践"
-date: 2026-07-08T13:00:00+08:00
+date: 2026-07-11T13:00:00+08:00
 draft: false
 description: "记录使用 Monkeycode AI 智能开发平台构建「敖胤AI」博客的完整流程：需求对话 → 代码生成 → GitHub 提交 → Vercel 自动部署 → Cloudflare CDN 加速。"
 categories: ["tutorials"]

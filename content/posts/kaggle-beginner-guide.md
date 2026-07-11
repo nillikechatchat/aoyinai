@@ -1,6 +1,6 @@
 ---
 title: "Kaggle 新手入门：从注册到第一枚奖牌的完整路径"
-date: 2026-07-07T15:30:00+08:00
+date: 2026-07-11T15:30:00+08:00
 draft: false
 description: "Kaggle 是全球最大的数据科学竞赛平台。本文为新手提供从注册账号到获得第一枚奖牌的完整指南。"
 categories: ["events"]

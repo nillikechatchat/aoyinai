@@ -137,3 +137,14 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
   - 不要在 busuanzi 容器上设 display:none，busuanzi 脚本不管理容器可见性
   - 兜底脚本示例：setTimeout(function(){var pv=document.getElementById('busuanzi_value_site_pv');if(pv&&!pv.innerText)pv.innerText='--';},5000);
 
+[文章日期必须使用系统当前日期]
+- Date: 2026-07-11
+- Context: Agent 多次创建文章时使用了错误的日期（凭记忆推测而非读取系统日期）
+- Category: 排错调试
+- Instructions:
+  - 创建或更新文章时，必须从系统提示中读取 "Today's date" 并使用该日期
+  - 禁止凭记忆、推测或使用"上次看到的日期"来填写文章日期
+  - 系统提示格式为 "Today's date: Sat Jul 11 2026"，提取其中的日期部分
+  - 日期格式统一为 YYYY-MM-DD，时区为 +08:00
+  - 每次写文章前，先确认当前日期，不要沿用之前文章的日期
+

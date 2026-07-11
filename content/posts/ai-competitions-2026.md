@@ -1,7 +1,7 @@
 ---
 title: "2026 年 AI 赛事活动汇总：7 月最新报名截止与进行中比赛"
-date: 2026-07-08T12:00:00+08:00
-updated: 2026-07-08T12:00:00+08:00
+date: 2026-07-11T12:00:00+08:00
+updated: 2026-07-11T12:00:00+08:00
 draft: false
 description: "整理 2026 年 7 月值得关注的 AI 赛事，涵盖 CCF BDCI、B 站 AI 创造公开赛、Kaggle、HuggingFace、昇腾、技嘉超算、Datawhale 组队学习与黑客松等平台，附报名截止、奖金与赛道详情。"
 categories: ["events"]

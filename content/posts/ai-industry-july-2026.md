@@ -1,6 +1,6 @@
 ---
 title: "2026 年 7 月 AI 行业动态：腾讯 Hy3、GPT-5.6、中国大模型十周领跑"
-date: 2026-07-08T12:30:00+08:00
+date: 2026-07-11T12:30:00+08:00
 draft: false
 description: "2026 年 7 月 AI 行业大事：腾讯混元 Hy3、GPT-5.6、苹果拟收购 Mistral、Gemini 数学奥赛金牌、GPT-4o-Realtime 全双工语音。"
 categories: ["market"]
