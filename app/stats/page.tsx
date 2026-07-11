@@ -18,6 +18,14 @@ const competitions = [
   { name: 'AGIBOT WORLD', prize: 0, unit: '未公开', status: '已结束', deadline: '6月', category: '具身智能', color: '#b8860b' },
   { name: 'CCF BDCI 2026', prize: 10, unit: '万元/题', status: '报名中', deadline: '9月中旬', category: 'Agent', color: '#c53d43' },
   { name: 'Datawhale 黑客松联赛', prize: 0, unit: '融资', status: '年度', deadline: '持续', category: '高校', color: '#2e8b57' },
+  { name: '阿里小有可为', prize: 21, unit: '万元', status: '报名中', deadline: '8月13日', category: '公益', color: '#2e8b57' },
+  { name: 'Physical AI 黑客松', prize: 0, unit: '未公开', status: '进行中', deadline: '7月12日', category: '具身智能', color: '#b8860b' },
+  { name: 'AIGC 全球挑战赛', prize: 0, unit: '未公开', status: '进行中', deadline: '持续', category: 'AIGC', color: '#c53d43' },
+  { name: 'HTX Genesis', prize: 14.5, unit: '万元', status: '决赛中', deadline: '7月19日', category: 'Web3', color: '#b8860b' },
+  { name: '阿里硬核少年节', prize: 0, unit: '未公开', status: '报名中', deadline: '7月20日', category: '综合', color: '#2e8b57' },
+  { name: 'ClawHunt Builder', prize: 2, unit: '万元', status: '报名中', deadline: '待定', category: 'Agent', color: '#c53d43' },
+  { name: 'AIGC 漫剧黑客松', prize: 0, unit: '未公开', status: '进行中', deadline: '7月12日', category: 'AIGC', color: '#b8860b' },
+  { name: '商汤小浣熊 OPC', prize: 55, unit: '万元', status: '报名中', deadline: '持续', category: 'OPC', color: '#2e8b57' },
 ]
 
 const prizeData = competitions
