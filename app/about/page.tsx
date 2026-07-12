@@ -167,6 +167,52 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* 开源项目 */}
+      <section className="mb-12">
+        <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
+          <span className="seal text-xs px-2 py-0.5">源</span>
+          开源项目
+        </h2>
+        <div className="grid gap-3">
+          <a
+            href="https://atomgit.com/u012823422/windows-universal-skill"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-jade/10 to-gold/10 text-jade group-hover:from-jade/20 group-hover:to-gold/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">W</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    windows-universal-skill
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
+                    开源
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">
+                    MIT
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  Windows 平台通用技能工具，助力 AI Agent 和自动化工作流。提供可复用的技能模块，支持自定义扩展，与主流 Agent 框架兼容。
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Windows</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">自动化</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent</span>
+                </div>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
+                  atomgit.com/u012823422/windows-universal-skill
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
+
       {/* 友链 */}
       <section className="mb-12">
         <h2 className="font-serif text-xl font-bold text-ink-800 dark:text-ink-200 mb-6 flex items-center gap-2">
