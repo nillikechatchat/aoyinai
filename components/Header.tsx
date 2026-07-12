@@ -50,22 +50,22 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-0.5 md:flex">
-          {navItems.slice(0, 4).map((item) => (
+        <nav className="hidden items-center gap-0.5 lg:flex">
+          {navItems.slice(0, 8).map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="px-3 py-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-vermilion dark:text-ink-400 dark:hover:text-vermilion-light"
+              className="px-2.5 py-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-vermilion dark:text-ink-400 dark:hover:text-vermilion-light"
             >
               {item.label}
             </Link>
           ))}
           <div className="group relative">
-            <button className="px-3 py-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-vermilion dark:text-ink-400">
+            <button className="px-2.5 py-1.5 text-sm font-medium text-ink-600 transition-colors hover:text-vermilion dark:text-ink-400">
               栏目 ▾
             </button>
             <div className="invisible absolute right-0 top-full z-50 min-w-[140px] rounded border border-ink-200/30 bg-rice-warm p-1.5 opacity-0 shadow-ink-lg transition-all group-hover:visible group-hover:opacity-100 dark:border-ink-800/30 dark:bg-ink-900">
-              {navItems.slice(4).map((item) => (
+              {navItems.slice(8).map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -100,7 +100,7 @@ export function Header() {
           </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="rounded p-1.5 text-ink-500 transition-colors hover:text-vermilion md:hidden dark:text-ink-500"
+            className="rounded p-1.5 text-ink-500 transition-colors hover:text-vermilion lg:hidden dark:text-ink-500"
           >
             {isOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
@@ -108,7 +108,7 @@ export function Header() {
       </div>
 
       {isOpen && (
-        <div className="border-t border-ink-200/30 bg-rice-warm px-4 py-3 md:hidden dark:border-ink-800/30 dark:bg-ink-900">
+        <div className="border-t border-ink-200/30 bg-rice-warm px-4 py-3 lg:hidden dark:border-ink-800/30 dark:bg-ink-900">
           <nav className="flex flex-col gap-1">
             {navItems.map((item) => (
               <Link
