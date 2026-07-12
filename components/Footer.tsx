@@ -5,7 +5,7 @@ import { siteConfig } from '@/lib/site'
 export function Footer() {
   return (
     <footer className="mt-auto border-t border-ink-200/30 bg-rice-warm/50 dark:border-ink-800/30 dark:bg-ink-950/50">
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="flex items-center gap-2">
             <Feather className="size-4 text-vermilion" />

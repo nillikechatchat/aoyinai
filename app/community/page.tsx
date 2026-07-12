@@ -57,7 +57,7 @@ const communities = [
 
 export default function CommunityPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       {/* 头部 */}
       <div className="mb-10 text-center">
         <span className="seal text-lg px-4 py-2 mb-4 inline-block">社区</span>

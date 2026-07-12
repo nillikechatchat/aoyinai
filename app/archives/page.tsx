@@ -14,7 +14,7 @@ export default function ArchivesPage() {
   const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a))
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <div className="mb-8">
         <h1 className="font-serif text-2xl font-bold text-ink-900 dark:text-ink-100">
           <span className="seal mr-2 text-xs px-2 py-0.5">档</span>

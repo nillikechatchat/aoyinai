@@ -25,7 +25,7 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
   const posts = getPostsByCategory(params.slug)
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       {/* 色块头部 */}
       <div className="mb-8 rounded border border-ink-200/30 bg-rice-warm/80 p-6 text-center dark:border-ink-800/30 dark:bg-ink-900/50">
         <span

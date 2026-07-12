@@ -22,7 +22,7 @@ export function Hero() {
         <div className="absolute bottom-0 left-1/4 h-[200px] w-[300px] rounded-full bg-vermilion/5 blur-3xl dark:bg-vermilion/3" />
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="text-center">
           {/* Logo */}
           <motion.div
@@ -126,7 +126,7 @@ export function Hero() {
       </div>
 
       {/* 底部竹节分隔 */}
-      <div className="bamboo-divider mx-auto mt-12 max-w-3xl" />
+      <div className="bamboo-divider mx-auto mt-12 max-w-4xl" />
     </section>
   )
 }

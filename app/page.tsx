@@ -13,7 +13,7 @@ export default function HomePage() {
       <Hero />
 
       {/* 分类栏目 */}
-      <section className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <h2 className="mb-6 text-center font-serif text-xl font-bold text-ink-800 dark:text-ink-200">
           <span className="seal mr-2 text-[10px] px-2 py-0.5">览</span>
           内容栏目
@@ -26,7 +26,7 @@ export default function HomePage() {
       </section>
 
       {/* 最新文章 */}
-      <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
         <div className="bamboo-divider mb-8" />
         <h2 className="mb-6 text-center font-serif text-xl font-bold text-ink-800 dark:text-ink-200">
           <span className="seal mr-2 text-[10px] px-2 py-0.5">新</span>

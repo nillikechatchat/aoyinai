@@ -20,7 +20,7 @@ const socialLinks = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       {/* 头部 */}
       <div className="mb-10 text-center">
         <span className="seal text-lg px-4 py-2 mb-4 inline-block">关于</span>

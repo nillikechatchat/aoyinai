@@ -46,7 +46,7 @@ export function SearchClient({ posts }: { posts: Post[] }) {
   }, [query, posts])
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <div className="mb-8">
         <h1 className="font-serif text-2xl font-bold text-ink-900 dark:text-ink-100">
           搜索文章

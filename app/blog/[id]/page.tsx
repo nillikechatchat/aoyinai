@@ -42,7 +42,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   })
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
       {/* 面包屑 */}
       <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-ink-500 dark:text-ink-600">
         <Link href="/" className="hover:text-vermilion">首页</Link>

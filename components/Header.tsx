@@ -42,7 +42,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-ink-200/30 bg-rice/80 backdrop-blur-lg dark:border-ink-800/30 dark:bg-ink-950/80">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Feather className="size-5 text-vermilion" />
           <span className="font-serif text-lg font-bold tracking-wide text-ink-900 dark:text-ink-100">
