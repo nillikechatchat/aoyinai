@@ -197,12 +197,13 @@ export default function AboutPage() {
                   </span>
                 </div>
                 <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
-                  Windows 平台通用技能工具，助力 AI Agent 和自动化工作流。提供可复用的技能模块，支持自定义扩展，与主流 Agent 框架兼容。
+                  面向 AI Agent 的 Windows 操作脚本模板库。~80 种操作覆盖文件/应用/系统诊断，PowerShell + CMD 双版本输出，安全加固设计，所有写操作需人工审核。
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Windows</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">自动化</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">PowerShell</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent Skill</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">安全加固</span>
                 </div>
                 <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
                   atomgit.com/u012823422/windows-universal-skill
