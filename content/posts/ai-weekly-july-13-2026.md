@@ -1,11 +1,11 @@
 ---
-title: "AI 周报（7.13-7.16）：xAI 开源 Grok Build、阿里千问接入苹果、GPT-Red 红队模型"
-date: 2026-07-11T22:30:00+08:00
-updated: 2026-07-11T22:30:00+08:00
+title: "AI 周报（7.13-7.19）：Kimi K3 开源、xAI 开源 Grok Build、阿里千问接入苹果、GPT-Red"
+date: 2026-07-11T23:00:00+08:00
+updated: 2026-07-11T23:00:00+08:00
 draft: false
-description: "本周 AI 行业重磅事件：xAI 开源 Grok Build、阿里千问集成至 Apple Intelligence、OpenAI GPT-Red 红队模型、Anthropic 智能体行为偏差研究、Telegram 无服务器架构。"
+description: "本周 AI 行业重磅事件：Kimi K3 2.8T 开源模型发布、xAI 开源 Grok Build、阿里千问集成至 Apple Intelligence、OpenAI GPT-Red 红队模型、苹果起诉 OpenAI、Sora 2 发布。"
 categories: ["market"]
-tags: ["市场", "行业动态", "OpenAI", "安全", "腾讯", "小米", "商汤", "GPT", "Cursor", "xAI", "阿里", "苹果"]
+tags: ["市场", "行业动态", "OpenAI", "安全", "腾讯", "小米", "商汤", "GPT", "Cursor", "xAI", "阿里", "苹果", "Kimi"]
 image: "covers/agent-market-2026.svg"
 ---
 
@@ -205,6 +205,90 @@ Telegram Serverless 允许开发者直接在 Telegram 基础设施上运行 Bot 
 | 数据中心电费 | 美国公众电费已增加 230 亿美元 |
 | AI 语音诈骗 | FBI 首次将 AI 诈骗单独统计，老年人占 3.52 亿美元 |
 
+## 7 月 17-19 日更新
+
+### Kimi K3 发布：2.8T 参数开源模型（16 个信源报道）
+
+月之暗面发布 Kimi K3，本周最受关注的模型发布：
+
+- **参数**：2.8 万亿参数 MoE 架构
+- **上下文**：百万 token 窗口
+- **架构创新**：Kimi Delta Attention (KDA) + Attention Residuals
+- **能力**：原生视觉、超长程编码、知识工作
+- **排名**：Frontend Code Arena 以 1679 分登顶，力压 Claude Fable 5 和 GPT-5.6 Sol
+- **开源**：7 月 27 日开放权重
+- **定价**：输入 $15/M token，对标前沿闭源模型，放弃低价路线
+
+**意义**：首个开源 3T 级模型，中国模型首次不以低价取胜，而是在长上下文编码赛道与闭源巨头正面叫板。
+
+### 月之暗面 GTC 2026 技术路线
+
+杨植麟在 GTC 2026 演讲中披露三大基础组件重构：
+- **MuonClip 优化器**：替代 Adam，数据利用效率提升近一倍
+- **Kimi Linear 线性注意力**：百万 Token 上下文下全面超越全注意力
+- **Agent Swarm**：已支持 300 个 Agent 并行工作
+
+### Sora 2 发布
+
+OpenAI 发布 Sora 2，视频克隆效果惊人：
+- 面部肌肉和步态细节全数捕获
+- 单帧截图分不清真伪
+- 影视和内容行业面临变革
+
+### 苹果起诉 OpenAI
+
+苹果对 OpenAI 提起诉讼，指控其通过挖角获取商业机密：
+- 约 40 名前 OpenAI 员工收到律师函
+- 苹果称已有超 400 名前员工在 OpenAI 工作
+- 时机正值 Siri AI 发布前夕
+
+**意义**：AI 消费硬件赛道第一起重大商业秘密诉讼。
+
+### Grok Automations：定时/邮件触发
+
+xAI 为 Grok 引入 Automations 功能：
+- 支持定时（每日/每周/每月）或邮件触发
+- 每次执行是一次完整对话
+- 邮件触发可直接处理收件箱
+
+### xAI 起诉 Grok 用户制作 CSAM
+
+xAI 首次对 Grok 用户提起诉讼，指控其制作儿童性虐待图像。这是头部 AI 公司首次对自身技术产生的违法内容追究使用者责任。
+
+### 八天四款前沿模型
+
+Artificial Analysis 数据：Grok 4.5、GPT-5.6、Muse Spark 1.1、Kimi K3 四款模型相继发布，前沿实验室从 2 家增至 6 家，前三名分差仅 3 分。
+
+**趋势**：模型选型逻辑从「谁第一」变成「够用且便宜」。
+
+### 世界人工智能合作组织
+
+7 月 16 日，29 国签署世界人工智能合作组织协定，总部设中国上海。全球 AI 治理从倡议走向落地。
+
+### 欧盟裁定 Google 开放 Android 和 Search
+
+欧盟依据 DMA 裁定 Google 必须向竞争对手开放 Android 和 Search 的关键部分，影响 Gemini 等 AI 服务。
+
+### 台积电上调资本支出至 600-640 亿美元
+
+A14 制程（1.4nm）开发进展顺利，预计 2028 年量产。AI 算力供给曲线在未来三年将持续扩张。
+
+### 其他重要更新
+
+| 事件 | 要点 |
+|------|------|
+| Kimi K3 登顶前端编码榜 | 1679 分，7 个细分赛道 6 个第一 |
+| 美团 LoHoSearch | 更难的搜索智能体基准，最佳模型仅 34.74% |
+| Schema Harness | ARC-AGI-3 公开集约 99% 成绩 |
+| NVIDIA Nemotron 3 Embed | 8B 版本 RTEB 第一，做 RAG 的值得换上 |
+| 通义 Wan-Streamer v0.2 | 端到端延迟 550ms，数字人/实时助手场景 |
+| ChatGPT 工作区 | 内置文档、表格、幻灯片，原生非插件 |
+| Claude Code 迁移 | Anthropic 用 Claude Code 两周迁移百万行 Zig 到 Rust |
+| 54% 企业 AI 安全事件 | 半数企业已遭遇智能体安全事件 |
+| 面壁 StaffDeck | 开源企业 AI 数字员工平台 |
+| Google Vids | Gemini Omni + 个人数字分身功能 |
+| 百度秒哒 3.5 | iOS App 首发，无代码开发推到移动端 |
+
 ## 本周安全提醒
 
 | 事件 | 严重程度 | 建议 |
@@ -212,6 +296,8 @@ Telegram Serverless 允许开发者直接在 Telegram 基础设施上运行 Bot 
 | GPT-5.6 Sol 删库 | 高 | 实施权限限制、备份、分阶段部署 |
 | Cursor 0day | 高 | 使用 AppLocker 或隔离虚拟机 |
 | Grok CLI 偷传代码 | 高 | 立即卸载、审查密钥 |
+| xAI 起诉 CSAM 用户 | 高 | 平台责任边界明确化 |
+| 54% 企业安全事件 | 高 | 为智能体分配独立身份和沙箱 |
 | AI 语音诈骗 | 中 | 银行和平台应承担防范责任 |
 
-> 数据来源：AIHOT (aihot.virxact.com)、TechCrunch、Hacker News、IT之家等。
+> 数据来源：AIHOT (aihot.virxact.com)、TechCrunch、Hacker News、IT之家、Moonshot AI 等。
