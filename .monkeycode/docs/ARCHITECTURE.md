@@ -40,8 +40,8 @@ public/              静态图片与资源
 
 ### 赛事统计系统
 
-- 位置：`app/stats/page.tsx`、`lib/competitions.ts`
-- 责任：维护赛事快照、来源、关键日期和追加式更新记录；统计页面展示奖金、状态、赛道和关键节点。
+- 位置：`app/stats/page.tsx`、`components/StatsPageContent.tsx`、`lib/competitions.ts`
+- 责任：维护赛事快照、来源、关键日期和追加式更新记录；派生活跃与归档赛事、奖金及时间轴；统计页面展示桌面双栏时间轴和移动端单栏内容。
 
 ### 搜索与发现系统
 

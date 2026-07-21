@@ -57,6 +57,8 @@
 | `getTotalPrize(competitions)` | `number` | 汇总赛事集合中已公开的奖金数值。 |
 | `getTimelineItems(records, asOf)` | `CompetitionTimelineItem[]` | 汇总活跃赛事的未来节点并按日期升序排列。 |
 
+`components/StatsPageContent.tsx` 导出统计页内容与 `CompetitionTable`。前者组合活跃概览、奖金比较、赛道分布、时间轴和默认折叠的归档区域；后者复用于活跃与归档赛事，提供来源链接和变更历史。
+
 ## 外部服务
 
 - Google Fonts：站点字体资源。

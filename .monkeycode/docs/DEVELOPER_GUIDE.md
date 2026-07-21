@@ -12,9 +12,10 @@ npm run dev
 npm run build
 npm run start
 npm run lint
+npm run test
 ```
 
-`npm run build` 同时执行静态页面生成和 sitemap、robots 文件写入，是当前可用的完整验证命令。
+`npm run build` 同时执行静态页面生成和 sitemap、robots 文件写入。`npm run test` 使用 Vitest 运行赛事数据属性测试和统计页服务端渲染测试。
 
 ## 内容维护
 
@@ -38,6 +39,7 @@ npm run lint
 ## 提交前检查
 
 ```bash
+npm run test
 npm run build
 git diff --check
 ```
