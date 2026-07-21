@@ -44,9 +44,18 @@
 | `CompetitionRecord` | 赛事初始快照、稳定标识、核验日期与更新记录 |
 | `CompetitionSnapshot` | 页面显示的赛事名称、赛道、奖金、状态、截止日期、来源和关键日期 |
 | `CompetitionChange` | 可追加的赛事信息修订记录 |
+| `ResolvedCompetition` | 已按变更日期合并并附带最后更新时间的展示快照 |
 | `CompetitionTimelineItem` | 与赛事关联的截止、结果、决赛或颁奖节点 |
 
-`competitionRecords` 是赛事记录集合；`competitionTimeline` 汇总每场赛事的关键日期，供当前统计页渲染。
+`competitionRecords` 是赛事记录集合；`competitionDataVerifiedAt` 是当前数据核验日期；`competitionTimeline` 汇总活跃赛事的未来关键日期。
+
+| 函数 | 返回值 | 作用 |
+| --- | --- | --- |
+| `resolveCompetition(record)` | `ResolvedCompetition` | 按更新日期合并赛事字段，并为缺少有效来源或截止日期的记录标记待核验。 |
+| `getActiveCompetitions(asOf, records?)` | `ResolvedCompetition[]` | 筛选截止日期未过、来源与日期有效且状态为报名中的赛事。 |
+| `getArchivedCompetitions(asOf, records?)` | `ResolvedCompetition[]` | 筛选截止日期早于核验日期的赛事。 |
+| `getTotalPrize(competitions)` | `number` | 汇总赛事集合中已公开的奖金数值。 |
+| `getTimelineItems(records, asOf)` | `CompetitionTimelineItem[]` | 汇总活跃赛事的未来节点并按日期升序排列。 |
 
 ## 外部服务
 
