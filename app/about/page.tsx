@@ -211,6 +211,40 @@ export default function AboutPage() {
               </div>
             </div>
           </a>
+          <a
+            href="https://github.com/agentteams-group/agentteams-dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-vermilion/10 to-gold/10 text-vermilion group-hover:from-vermilion/20 group-hover:to-gold/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">A</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    AgentTeams Dashboard
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
+                    开源
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  面向 AgentTeams 集群的轻量级管理控制台，统一管理 Worker、团队、人员、管理器与基础设施，并集成 Matrix 聊天、拓扑视图和权限审计能力。
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">AgentTeams</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Next.js</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Matrix</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">集群管理</span>
+                </div>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
+                  github.com/agentteams-group/agentteams-dashboard
+                </span>
+              </div>
+            </div>
+          </a>
         </div>
       </section>
 
