@@ -10,22 +10,12 @@ export const metadata = {
 const competitions = [
   { name: 'B站 AI 创造公开赛', prize: 130, unit: '万元', status: '报名中', deadline: '8月20日', category: '综合', color: '#c53d43' },
   { name: '书生国智科探挑战赛', prize: 60, unit: '万元', status: '报名中', deadline: '9月下旬', category: '学术', color: '#b8860b' },
-  { name: 'AITOP100 6月大赛', prize: 115.6, unit: '万元', status: '进行中', deadline: '多场', category: '综合', color: '#2e8b57' },
-  { name: '技嘉 AI 超算竞赛', prize: 0, unit: '硬件', status: '报名中', deadline: '7月18日', category: '硬件', color: '#c53d43' },
-  { name: '昇腾 Agent Hackathon', prize: 0, unit: '未公开', status: '已截止', deadline: '7月4日', category: 'Agent', color: '#b8860b' },
-  { name: 'Decentralize AI Hack', prize: 36, unit: '万元', status: '进行中', deadline: '长期', category: 'Web3', color: '#2e8b57' },
-  { name: 'Build Small Hackathon', prize: 35, unit: '万元', status: '已结束', deadline: '6月15日', category: '小模型', color: '#c53d43' },
-  { name: 'AGIBOT WORLD', prize: 0, unit: '未公开', status: '已结束', deadline: '6月', category: '具身智能', color: '#b8860b' },
   { name: 'CCF BDCI 2026', prize: 10, unit: '万元/题', status: '报名中', deadline: '9月中旬', category: 'Agent', color: '#c53d43' },
-  { name: 'Datawhale 黑客松联赛', prize: 0, unit: '融资', status: '年度', deadline: '持续', category: '高校', color: '#2e8b57' },
   { name: '阿里小有可为', prize: 21, unit: '万元', status: '报名中', deadline: '8月13日', category: '公益', color: '#2e8b57' },
-  { name: 'Physical AI 黑客松', prize: 0, unit: '未公开', status: '进行中', deadline: '7月12日', category: '具身智能', color: '#b8860b' },
-  { name: 'AIGC 全球挑战赛', prize: 0, unit: '未公开', status: '进行中', deadline: '持续', category: 'AIGC', color: '#c53d43' },
-  { name: 'HTX Genesis', prize: 14.5, unit: '万元', status: '决赛中', deadline: '7月19日', category: 'Web3', color: '#b8860b' },
-  { name: '阿里硬核少年节', prize: 0, unit: '未公开', status: '报名中', deadline: '7月20日', category: '综合', color: '#2e8b57' },
-  { name: 'ClawHunt Builder', prize: 2, unit: '万元', status: '报名中', deadline: '待定', category: 'Agent', color: '#c53d43' },
-  { name: 'AIGC 漫剧黑客松', prize: 0, unit: '未公开', status: '进行中', deadline: '7月12日', category: 'AIGC', color: '#b8860b' },
-  { name: '商汤小浣熊 OPC', prize: 55, unit: '万元', status: '报名中', deadline: '持续', category: 'OPC', color: '#2e8b57' },
+  { name: 'AI 新睿人才星探计划', prize: 9, unit: '万元', status: '报名中', deadline: '8月31日', category: '产业AI', color: '#2e8b57' },
+  { name: '猎鹰微波智探挑战', prize: 14.5, unit: '万元', status: '报名中', deadline: '8月31日', category: '智能感知', color: '#b8860b' },
+  { name: '多模态客服智能体设计', prize: 14.5, unit: '万元', status: '报名中', deadline: '8月31日', category: 'Agent', color: '#c53d43' },
+  { name: '红外开放世界分割挑战', prize: 14.5, unit: '万元', status: '报名中', deadline: '7月30日', category: '计算机视觉', color: '#b8860b' },
 ]
 
 const prizeData = competitions
@@ -41,10 +31,6 @@ const statusCounts = competitions.reduce((acc, c) => {
 
 const statusColors: Record<string, string> = {
   '报名中': '#2e8b57',
-  '进行中': '#b8860b',
-  '已截止': '#c53d43',
-  '已结束': '#8c7044',
-  '年度': '#4d3d27',
 }
 
 const categoryCounts = competitions.reduce((acc, c) => {
@@ -53,15 +39,13 @@ const categoryCounts = competitions.reduce((acc, c) => {
 }, {} as Record<string, number>)
 
 const timeline = [
-  { date: '6月2日', event: 'Decentralize AI Hackathon 启动', type: 'start' },
-  { date: '6月5日', event: 'B站 AI 创造公开赛 开赛', type: 'start' },
-  { date: '6月6日', event: '昇腾 Agent Hackathon 开赛', type: 'start' },
-  { date: '6月15日', event: 'Build Small Hackathon 结束', type: 'end' },
-  { date: '6月16日', event: 'AIEC 2026 生态大会', type: 'event' },
-  { date: '7月1日', event: '技嘉 AI 超算竞赛 报名开始', type: 'start' },
-  { date: '7月4日', event: '昇腾 Agent Hackathon 截止', type: 'end' },
-  { date: '7月18日', event: '技嘉 AI 超算竞赛 报名截止', type: 'deadline' },
+  { date: '7月30日', event: '红外开放世界分割挑战 截止', type: 'deadline' },
+  { date: '8月13日', event: '阿里小有可为 初赛材料截止', type: 'deadline' },
   { date: '8月20日', event: 'B站 AI 创造公开赛 投稿截止', type: 'deadline' },
+  { date: '8月21日', event: '阿里小有可为 决赛名单公布', type: 'event' },
+  { date: '8月31日', event: 'DataFountain 三场赛事截止', type: 'deadline' },
+  { date: '9月3日', event: '阿里小有可为 决赛材料截止', type: 'deadline' },
+  { date: '9月5日', event: '阿里小有可为 线下决赛拟举行', type: 'event' },
   { date: '9月下旬', event: '书生国智科探挑战赛 颁奖', type: 'end' },
 ]
 
@@ -75,7 +59,7 @@ export default function StatsPage() {
           2026 AI 赛事统计
         </h1>
         <p className="text-ink-500 dark:text-ink-600 max-w-xl mx-auto text-sm">
-          基于当前收录的 {competitions.length} 场赛事，展示奖金池、时间轴、状态分布等关键数据。
+          截至 2026 年 7 月 21 日，当前收录 {competitions.length} 场可报名赛事，展示奖金池、截止时间与赛道分布。
         </p>
       </div>
 
@@ -87,7 +71,7 @@ export default function StatsPage() {
           { value: competitions.length, label: '收录赛事', icon: '奖' },
           { value: `${competitions.filter(c => c.status === '报名中').length}`, label: '可报名', icon: '报' },
           { value: `${prizeData.reduce((s, c) => s + c.prize, 0).toFixed(0)}万`, label: '总奖金池', icon: '金' },
-          { value: `${competitions.filter(c => c.status === '已结束').length}`, label: '已结束', icon: '终' },
+          { value: '7月21日', label: '最近核验', icon: '校' },
         ].map((s) => (
           <div key={s.label} className="card p-4 text-center">
             <span className="seal text-xs px-1.5 py-0.5 mb-2 inline-block">{s.icon}</span>
@@ -188,7 +172,7 @@ export default function StatsPage() {
               ))}
           </div>
           <div className="mt-4 text-xs text-ink-400 dark:text-ink-600">
-            赛道覆盖：综合 / 学术 / Agent / 硬件 / Web3 / 小模型 / 具身智能 / 高校
+            赛道覆盖：综合 / 学术 / Agent / 公益 / 产业 AI / 智能感知 / 计算机视觉
           </div>
         </section>
       </div>
