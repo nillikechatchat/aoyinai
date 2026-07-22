@@ -43,7 +43,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-07-21'
+export const competitionDataVerifiedAt = '2026-07-22'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -254,6 +254,111 @@ export const competitionRecords: CompetitionRecord[] = [
         date: '2026-07-30',
         label: '红外开放世界分割挑战 截止',
         type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'goai-global-open-source-ai-challenge-2026',
+    name: 'GOAI 世界人工智能开源大赛',
+    category: '开源AI',
+    prize: 500,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-15',
+    deadlineLabel: '8月中旬',
+    sourceUrl: 'https://goaihz.com',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'goai-global-open-source-ai-challenge-2026-deadline',
+        competitionId: 'goai-global-open-source-ai-challenge-2026',
+        date: '2026-08-15',
+        label: 'GOAI 世界人工智能开源大赛 初赛作品提交预计截止',
+        type: 'deadline',
+      },
+      {
+        id: 'goai-global-open-source-ai-challenge-2026-final',
+        competitionId: 'goai-global-open-source-ai-challenge-2026',
+        date: '2026-09-22',
+        label: 'GOAI 世界人工智能开源大赛 线下决赛',
+        type: 'final',
+      },
+      {
+        id: 'goai-global-open-source-ai-challenge-2026-award',
+        competitionId: 'goai-global-open-source-ai-challenge-2026',
+        date: '2026-09-23',
+        label: 'GOAI DAY 与颁奖典礼',
+        type: 'award',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'postgraduate-ai-innovation-2026',
+    name: '第八届中国研究生人工智能创新大赛',
+    category: '学术',
+    prize: 30,
+    prizeUnit: '万元起',
+    status: '报名中',
+    deadline: '2026-08-25',
+    deadlineLabel: '8月25日',
+    sourceUrl:
+      'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'postgraduate-ai-innovation-2026-deadline',
+        competitionId: 'postgraduate-ai-innovation-2026',
+        date: '2026-08-25',
+        label: '中国研究生人工智能创新大赛 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'postgraduate-ai-innovation-2026-submission',
+        competitionId: 'postgraduate-ai-innovation-2026',
+        date: '2026-09-01',
+        label: '中国研究生人工智能创新大赛 作品提交截止',
+        type: 'deadline',
+      },
+      {
+        id: 'postgraduate-ai-innovation-2026-result',
+        competitionId: 'postgraduate-ai-innovation-2026',
+        date: '2026-09-30',
+        label: '中国研究生人工智能创新大赛 晋级决赛名单预计公布',
+        type: 'result',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'national-ai-creation-2026',
+    name: '2026 全民 AI 创作大赛',
+    category: 'AIGC',
+    prize: 15,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日',
+    sourceUrl: 'https://zhjw.jnu.edu.cn/2026/0720/c7164a860655/page.htm',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'national-ai-creation-2026-deadline',
+        competitionId: 'national-ai-creation-2026',
+        date: '2026-08-31',
+        label: '全民 AI 创作大赛 作品征集截止',
+        type: 'deadline',
+      },
+      {
+        id: 'national-ai-creation-2026-result',
+        competitionId: 'national-ai-creation-2026',
+        date: '2026-09-15',
+        label: '全民 AI 创作大赛 结果公示结束',
+        type: 'result',
       },
     ],
     changes: [],
