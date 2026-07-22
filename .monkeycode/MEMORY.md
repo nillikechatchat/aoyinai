@@ -163,3 +163,9 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
   - 参考文档：https://github.com/liucongg/liucong-skills/tree/main/skills/gzh-title-strategist
   - 参考文章：/blog/gzh-title-strategist
 
+[提交默认推送远程]
+- Date: 2026-07-22
+- Context: 用户明确提交操作的协作约定
+- Category: 工作流协作
+- Instructions:
+  - 用户要求“提交”时，完成本地 git commit 后同步推送到对应远程分支。
