@@ -2,7 +2,10 @@
 const nextConfig = {
   output: 'export',
   images: { unoptimized: true },
-  trailingSlash: false
+  trailingSlash: false,
+  experimental: {
+    allowedHosts: ['.monkeycode-ai.online']
+  }
 }
 
 module.exports = nextConfig
