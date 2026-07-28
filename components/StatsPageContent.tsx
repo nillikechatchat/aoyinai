@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import {
   competitionDataVerifiedAt,
   competitionRecords,
@@ -121,9 +124,15 @@ export function CompetitionTable({ competitions }: { competitions: ResolvedCompe
 }
 
 export default function StatsPageContent() {
-  const activeCompetitions = getActiveCompetitions(competitionDataVerifiedAt)
-  const archivedCompetitions = getArchivedCompetitions(competitionDataVerifiedAt)
-  const timelineItems = getTimelineItems(competitionRecords, competitionDataVerifiedAt)
+  const [asOf, setAsOf] = useState(competitionDataVerifiedAt)
+
+  useEffect(() => {
+    setAsOf(new Date().toISOString().slice(0, 10))
+  }, [])
+
+  const activeCompetitions = getActiveCompetitions(asOf)
+  const archivedCompetitions = getArchivedCompetitions(asOf)
+  const timelineItems = getTimelineItems(competitionRecords, asOf)
   const prizeData = activeCompetitions.filter((competition): competition is ResolvedCompetition & { prize: number } => competition.prize !== null && competition.prize > 0).sort((left, right) => right.prize - left.prize)
   const maxPrize = Math.max(...prizeData.map((competition) => competition.prize), 1)
   const categoryCounts = activeCompetitions.reduce<Record<string, number>>((counts, competition) => {

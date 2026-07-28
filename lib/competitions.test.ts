@@ -3,6 +3,7 @@ import {
   getArchivedCompetitions,
   getTimelineItems,
   getTotalPrize,
+  competitionRecords,
   resolveCompetition,
   type CompetitionRecord,
 } from './competitions'
@@ -106,5 +107,13 @@ describe('赛事数据派生', () => {
 
     expect(timeline.map((item) => item.date)).toEqual(['2026-07-22', '2026-07-28'])
     expect(timeline.every((item) => item.competitionId === 'active')).toBe(true)
+  })
+
+  it('已结束的已核验赛事会显示在历史赛事中', () => {
+    const archived = getArchivedCompetitions('2026-07-28', competitionRecords)
+      .filter((competition) => competition.id === 'build-small-hackathon-2026')
+
+    expect(archived).toHaveLength(1)
+    expect(archived[0].status).toBe('已结束')
   })
 })

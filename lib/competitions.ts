@@ -47,6 +47,29 @@ export const competitionDataVerifiedAt = '2026-07-28'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
+    id: 'build-small-hackathon-2026',
+    name: 'Build Small Hackathon 2026',
+    category: '开源AI',
+    prize: null,
+    prizeUnit: '$48,000+',
+    status: '已结束',
+    deadline: '2026-06-15',
+    deadlineLabel: '6月15日（UTC）',
+    sourceUrl: 'https://huggingface.co/build-small-hackathon',
+    color: '#8c7044',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'build-small-hackathon-2026-deadline',
+        competitionId: 'build-small-hackathon-2026',
+        date: '2026-06-15',
+        label: 'Build Small Hackathon 2026 提交截止（UTC）',
+        type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
     id: 'bilibili-ai-creation-2026',
     name: 'B站 AI 创造公开赛',
     category: '综合',
