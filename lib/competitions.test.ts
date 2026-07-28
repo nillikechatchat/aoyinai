@@ -84,7 +84,8 @@ describe('赛事数据派生', () => {
       'active-without-prize',
       'deadline-today',
     ])
-    expect(archived.map((record) => record.id)).toEqual(['archived'])
+    expect(archived.map((record) => record.id)).toEqual(['archived', 'closed-status'])
+    expect(archived[0].status).toBe('已截止')
     expect(getTotalPrize(active)).toBe(30)
   })
 

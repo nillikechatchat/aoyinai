@@ -547,7 +547,18 @@ export function getArchivedCompetitions(
 
   return records
     .map(resolveCompetition)
-    .filter((competition) => isValidDate(competition.deadline) && competition.deadline < asOf)
+    .filter(
+      (competition) =>
+        competition.status === '已截止' ||
+        competition.status === '已结束' ||
+        (isValidDate(competition.deadline) && competition.deadline < asOf),
+    )
+    .map((competition) => {
+      if (competition.status === '报名中' && isValidDate(competition.deadline) && competition.deadline < asOf) {
+        return { ...competition, status: '已截止' as const }
+      }
+      return competition
+    })
 }
 
 export function getTotalPrize(competitions: ResolvedCompetition[]): number {
