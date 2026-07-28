@@ -75,7 +75,7 @@ describe('赛事数据派生', () => {
       createCompetitionRecord({ id: 'archived', deadline: '2026-07-20' }),
       createCompetitionRecord({ id: 'missing-source', sourceUrl: '' }),
       createCompetitionRecord({ id: 'invalid-deadline', deadline: '2026-02-30' }),
-      createCompetitionRecord({ id: 'closed-status', status: '已截止' }),
+      createCompetitionRecord({ id: 'closed-status', status: '已结束' }),
     ]
     const active = getActiveCompetitions('2026-07-21', records)
     const archived = getArchivedCompetitions('2026-07-21', records)
@@ -86,7 +86,7 @@ describe('赛事数据派生', () => {
       'deadline-today',
     ])
     expect(archived.map((record) => record.id)).toEqual(['archived', 'closed-status'])
-    expect(archived[0].status).toBe('已截止')
+    expect(archived[0].status).toBe('已结束')
     expect(getTotalPrize(active)).toBe(30)
   })
 
@@ -115,5 +115,15 @@ describe('赛事数据派生', () => {
 
     expect(archived).toHaveLength(1)
     expect(archived[0].status).toBe('已结束')
+  })
+
+  it('报名截止后保留赛事并显示报名截止状态', () => {
+    const records = [createCompetitionRecord({ deadlineType: '报名截止', deadline: '2026-07-20' })]
+    const active = getActiveCompetitions('2026-07-21', records)
+    const archived = getArchivedCompetitions('2026-07-21', records)
+
+    expect(active).toHaveLength(1)
+    expect(active[0].status).toBe('报名截止')
+    expect(archived).toHaveLength(0)
   })
 })

@@ -30,6 +30,7 @@ export function createCompetitionRecord(
     status: '报名中',
     deadline: '2026-07-25',
     deadlineLabel: '7月25日',
+    deadlineType: '赛事截止',
     sourceUrl,
     color: '#c53d43',
     verifiedAt: '2026-07-01',

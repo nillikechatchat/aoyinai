@@ -15,6 +15,7 @@ import {
 
 const statusColors: Record<string, string> = {
   报名中: '#2e8b57',
+  报名截止: '#8c7044',
   待核验: '#b8860b',
   已截止: '#8c7044',
   已结束: '#8c7044',
@@ -77,7 +78,8 @@ export function CompetitionTable({ competitions }: { competitions: ResolvedCompe
             <th className="text-left py-2 pr-3 font-medium text-ink-600 dark:text-ink-400">赛事</th>
             <th className="text-left py-2 pr-3 font-medium text-ink-600 dark:text-ink-400">赛道</th>
             <th className="text-right py-2 pr-3 font-medium text-ink-600 dark:text-ink-400">奖金</th>
-            <th className="text-center py-2 pr-3 font-medium text-ink-600 dark:text-ink-400">截止</th>
+            <th className="text-center py-2 pr-3 font-medium text-ink-600 dark:text-ink-400">截止类型</th>
+            <th className="text-center py-2 pr-3 font-medium text-ink-600 dark:text-ink-400">截止日期</th>
             <th className="text-center py-2 font-medium text-ink-600 dark:text-ink-400">状态</th>
           </tr>
         </thead>
@@ -108,6 +110,7 @@ export function CompetitionTable({ competitions }: { competitions: ResolvedCompe
                 </td>
                 <td className="py-2.5 pr-3 text-ink-500 dark:text-ink-600">{competition.category}</td>
                 <td className="py-2.5 pr-3 text-right text-ink-600 dark:text-ink-400">{competition.prize === null ? competition.prizeUnit : `${competition.prize}${competition.prizeUnit}`}</td>
+                <td className="py-2.5 pr-3 text-center text-ink-500 dark:text-ink-600">{competition.deadlineType}</td>
                 <td className="py-2.5 pr-3 text-center text-ink-500 dark:text-ink-600">{competition.deadlineLabel}</td>
                 <td className="py-2.5 text-center">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: `${color}15`, color }}>

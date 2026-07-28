@@ -1,4 +1,5 @@
-export type CompetitionStatus = '报名中' | '待核验' | '已截止' | '已结束'
+export type CompetitionStatus = '报名中' | '报名截止' | '待核验' | '已结束'
+export type CompetitionDeadlineType = '报名截止' | '赛事截止'
 
 export type TimelineItemType = 'deadline' | 'result' | 'final' | 'award'
 
@@ -18,6 +19,7 @@ export type CompetitionSnapshot = {
   status: CompetitionStatus
   deadline: string | null
   deadlineLabel: string
+  deadlineType: CompetitionDeadlineType
   sourceUrl: string
   color: string
   keyDates: CompetitionTimelineItem[]
@@ -55,6 +57,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '已结束',
     deadline: '2026-06-15',
     deadlineLabel: '6月15日（UTC）',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://huggingface.co/build-small-hackathon',
     color: '#8c7044',
     verifiedAt: competitionDataVerifiedAt,
@@ -78,6 +81,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-20',
     deadlineLabel: '8月20日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.bilibili.com/blackboard/era/Vf5kaXL0HnJyfqIG.html',
     color: '#c53d43',
     verifiedAt: competitionDataVerifiedAt,
@@ -108,6 +112,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-09-20',
     deadlineLabel: '9月下旬',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.intern-ai.org.cn/',
     color: '#b8860b',
     verifiedAt: competitionDataVerifiedAt,
@@ -131,6 +136,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-09-15',
     deadlineLabel: '9月中旬',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.xir.cn/competition/races/BDCI2026',
     color: '#c53d43',
     verifiedAt: competitionDataVerifiedAt,
@@ -154,6 +160,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-13',
     deadlineLabel: '8月13日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://opc.aliyun.com/xiaoyoukewei?display_mode=3',
     color: '#2e8b57',
     verifiedAt: competitionDataVerifiedAt,
@@ -198,6 +205,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-31',
     deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.datafountain.cn/competitions/1169',
     color: '#2e8b57',
     verifiedAt: competitionDataVerifiedAt,
@@ -221,6 +229,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-31',
     deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.datafountain.cn/competitions/1166',
     color: '#b8860b',
     verifiedAt: competitionDataVerifiedAt,
@@ -244,6 +253,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-31',
     deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.datafountain.cn/competitions/1165',
     color: '#c53d43',
     verifiedAt: competitionDataVerifiedAt,
@@ -267,6 +277,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-07-30',
     deadlineLabel: '7月30日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.datafountain.cn/competitions/1164',
     color: '#b8860b',
     verifiedAt: competitionDataVerifiedAt,
@@ -290,6 +301,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-15',
     deadlineLabel: '8月中旬',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://goaihz.com',
     color: '#2e8b57',
     verifiedAt: competitionDataVerifiedAt,
@@ -367,6 +379,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-25',
     deadlineLabel: '8月25日',
+    deadlineType: '报名截止',
     sourceUrl:
       'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
     color: '#b8860b',
@@ -405,6 +418,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-31',
     deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://zhjw.jnu.edu.cn/2026/0720/c7164a860655/page.htm',
     color: '#c53d43',
     verifiedAt: competitionDataVerifiedAt,
@@ -435,6 +449,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-09-24',
     deadlineLabel: '9月24日',
+    deadlineType: '报名截止',
     sourceUrl: 'https://www.zjitc.net/info/1012/65627.htm',
     color: '#2e8b57',
     verifiedAt: competitionDataVerifiedAt,
@@ -458,6 +473,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-09-16',
     deadlineLabel: '9月16日（UTC）',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://www.drivendata.org/competitions/311/dat-parkinsons-challenge/',
     color: '#2e8b57',
     verifiedAt: competitionDataVerifiedAt,
@@ -481,6 +497,7 @@ export const competitionRecords: CompetitionRecord[] = [
     status: '报名中',
     deadline: '2026-08-27',
     deadlineLabel: '8月27日（UTC）',
+    deadlineType: '赛事截止',
     sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
     color: '#b8860b',
     verifiedAt: competitionDataVerifiedAt,
@@ -553,12 +570,13 @@ export function getActiveCompetitions(
 
   return records
     .map(resolveCompetition)
+    .map((competition) => resolveCompetitionStatus(competition, asOf))
     .filter(
       (competition) =>
-        competition.status === '报名中' &&
+        (competition.status === '报名中' || competition.status === '报名截止') &&
         isValidSourceUrl(competition.sourceUrl) &&
         isValidDate(competition.deadline) &&
-        competition.deadline >= asOf,
+        (competition.status === '报名截止' || competition.deadline >= asOf),
     )
 }
 
@@ -570,18 +588,19 @@ export function getArchivedCompetitions(
 
   return records
     .map(resolveCompetition)
-    .filter(
-      (competition) =>
-        competition.status === '已截止' ||
-        competition.status === '已结束' ||
-        (isValidDate(competition.deadline) && competition.deadline < asOf),
-    )
-    .map((competition) => {
-      if (competition.status === '报名中' && isValidDate(competition.deadline) && competition.deadline < asOf) {
-        return { ...competition, status: '已截止' as const }
-      }
-      return competition
-    })
+    .map((competition) => resolveCompetitionStatus(competition, asOf))
+    .filter((competition) => competition.status === '已结束')
+}
+
+function resolveCompetitionStatus(competition: ResolvedCompetition, asOf: string): ResolvedCompetition {
+  if (competition.status !== '报名中' || !isValidDate(competition.deadline) || competition.deadline >= asOf) {
+    return competition
+  }
+
+  return {
+    ...competition,
+    status: competition.deadlineType === '报名截止' ? '报名截止' : '已结束',
+  }
 }
 
 export function getTotalPrize(competitions: ResolvedCompetition[]): number {
