@@ -104,7 +104,7 @@ export function CompetitionTable({ competitions }: { competitions: ResolvedCompe
                   )}
                 </td>
                 <td className="py-2.5 pr-3 text-ink-500 dark:text-ink-600">{competition.category}</td>
-                <td className="py-2.5 pr-3 text-right text-ink-600 dark:text-ink-400">{competition.prize === null ? '未公开' : `${competition.prize}${competition.prizeUnit}`}</td>
+                <td className="py-2.5 pr-3 text-right text-ink-600 dark:text-ink-400">{competition.prize === null ? competition.prizeUnit : `${competition.prize}${competition.prizeUnit}`}</td>
                 <td className="py-2.5 pr-3 text-center text-ink-500 dark:text-ink-600">{competition.deadlineLabel}</td>
                 <td className="py-2.5 text-center">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-medium" style={{ background: `${color}15`, color }}>

@@ -43,7 +43,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-07-22'
+export const competitionDataVerifiedAt = '2026-07-28'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -422,6 +422,59 @@ export const competitionRecords: CompetitionRecord[] = [
         date: '2026-09-24',
         label: '大学生“AI+信息素养”大赛 高职高专组报名截止',
         type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'dat-parkinsons-challenge-2026',
+    name: "DaT Parkinson's Challenge",
+    category: '医疗AI',
+    prize: null,
+    prizeUnit: '€25,000',
+    status: '报名中',
+    deadline: '2026-09-16',
+    deadlineLabel: '9月16日（UTC）',
+    sourceUrl: 'https://www.drivendata.org/competitions/311/dat-parkinsons-challenge/',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'dat-parkinsons-challenge-2026-deadline',
+        competitionId: 'dat-parkinsons-challenge-2026',
+        date: '2026-09-16',
+        label: "DaT Parkinson's Challenge 提交截止（UTC）",
+        type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'trace-the-ace-2026',
+    name: 'Trace the Ace',
+    category: '教育AI',
+    prize: null,
+    prizeUnit: '$50,000',
+    status: '报名中',
+    deadline: '2026-08-27',
+    deadlineLabel: '8月27日（UTC）',
+    sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'trace-the-ace-2026-model-deadline',
+        competitionId: 'trace-the-ace-2026',
+        date: '2026-08-27',
+        label: 'Trace the Ace 模型提交截止（UTC）',
+        type: 'deadline',
+      },
+      {
+        id: 'trace-the-ace-2026-writeup-deadline',
+        competitionId: 'trace-the-ace-2026',
+        date: '2026-09-15',
+        label: 'Trace the Ace 入围队伍技术报告截止（UTC）',
+        type: 'final',
       },
     ],
     changes: [],
