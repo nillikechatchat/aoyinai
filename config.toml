@@ -1,7 +1,7 @@
 baseURL = 'https://example.com/'
 languageCode = 'zh-cn'
 defaultContentLanguage = 'zh-cn'
-title = 'AI 探索者'
+title = '鸿渐于陆 · 易经智慧'
 theme = 'PaperMod'
 
 # 多语言支持（简化为单中文站点，结构上预留多语言）
@@ -17,15 +17,15 @@ enableRobotsTXT = true
 
 [params]
   env = 'production'
-  description = 'AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent 项目一站式探索'
-  keywords = ['AI', '人工智能', '大模型', 'T-agent', '黑客松', 'AI 教程']
-  author = 'AI 探索者'
+  description = '易经渐卦智慧 - 鸿雁渐进，修身齐家，感悟东方哲学之美'
+  keywords = ['易经', '渐卦', '鸿渐', '国学', '传统文化', '哲学']
+  author = '易经传承者'
   DateFormat = '2006-01-02'
-  defaultTheme = 'auto'
+  defaultTheme = 'dark'
   ShowShareButtons = false
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
-  ShowCodeCopyButtons = true
+  ShowCodeCopyButtons = false
   disableSpecial1stPost = true
   disableScrollToTop = false
   comments = false
@@ -35,7 +35,7 @@ enableRobotsTXT = true
   tocopen = false
 
   # 自定义 Logo / 标题区
-  label.text = 'AI · HUB'
+  label.text = '鸿渐 · 易经'
   label.icon = '/favicon.svg'
   label.iconHeight = 35
 
@@ -44,13 +44,6 @@ enableRobotsTXT = true
     name = 'github'
     title = 'GitHub'
     url = 'https://github.com/'
-  [[params.socialIcons]]
-    name = 'twitter'
-    title = 'Twitter'
-    url = 'https://twitter.com/'
-
-  # 主页模式
-  ShowLatestPost = true
 
 # 菜单（栏目导航）
 [[menu.main]]
@@ -60,52 +53,34 @@ enableRobotsTXT = true
   weight = 1
 
 [[menu.main]]
-  identifier = 'tutorials'
-  name = 'AI 教程'
-  url = '/categories/tutorials/'
+  identifier = 'gradual'
+  name = '渐进之道'
+  url = '/categories/gradual/'
   weight = 2
 
 [[menu.main]]
-  identifier = 'market'
-  name = '市场分析'
-  url = '/categories/market/'
+  identifier = 'wisdom'
+  name = '卦辞解读'
+  url = '/categories/wisdom/'
   weight = 3
 
 [[menu.main]]
-  identifier = 'majors'
-  name = '高校专业'
-  url = '/categories/majors/'
+  identifier = 'practice'
+  name = '修身实践'
+  url = '/categories/practice/'
   weight = 4
 
 [[menu.main]]
-  identifier = 'events'
-  name = '赛事活动'
-  url = '/categories/events/'
+  identifier = 'culture'
+  name = '文化传承'
+  url = '/categories/culture/'
   weight = 5
-
-[[menu.main]]
-  identifier = 'hackathons'
-  name = '黑客松'
-  url = '/categories/hackathons/'
-  weight = 6
-
-[[menu.main]]
-  identifier = 'cloud-deals'
-  name = '云厂商优惠'
-  url = '/categories/cloud-deals/'
-  weight = 7
-
-[[menu.main]]
-  identifier = 't-agent-menu'
-  name = 'T-agent'
-  url = '/categories/t-agent/'
-  weight = 8
 
 [[menu.main]]
   identifier = 'about'
   name = '关于'
   url = '/about/'
-  weight = 9
+  weight = 6
 
 # 输出 markdown 处理
 [markup]
