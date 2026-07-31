@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
-import { Calendar, Clock, ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ArrowUpRight } from 'lucide-react'
 import type { Post } from '@/lib/posts'
 import { calculateReadingTime } from '@/lib/reading'
 import { categoryMeta } from '@/lib/categories'
@@ -7,62 +10,49 @@ import { categoryMeta } from '@/lib/categories'
 interface PostCardProps {
   post: Post
   index?: number
-  showCover?: boolean
 }
 
-export function PostCard({ post, index = 0, showCover = false }: PostCardProps) {
-  const date = new Date(post.date).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
+export function PostCard({ post, index = 0 }: PostCardProps) {
+  const publishedAt = new Date(post.date)
+  const date = [
+    publishedAt.getUTCFullYear(),
+    String(publishedAt.getUTCMonth() + 1).padStart(2, '0'),
+    String(publishedAt.getUTCDate()).padStart(2, '0'),
+  ].join('.')
   const readingTime = calculateReadingTime(post.content)
-  const coverImage = post.cover?.image || post.image
+  const category = post.categories[0] ? categoryMeta[post.categories[0]] : null
 
   return (
-    <article
-      className="animate-in group"
-      style={{ animationDelay: `${index * 0.08}s` }}
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.01, y: -3 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+      style={{ transition: 'transform var(--dur-hover) var(--ease-ink)' }}
     >
-      <Link href={`/blog/${post.id}`}>
-        <div className="card overflow-hidden p-5 sm:p-6 h-full flex flex-col">
-          {/* 分类印章 */}
-          {post.categories.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-2">
-              {post.categories.map((cat) => (
-                <span key={cat} className="seal text-[10px] px-2 py-0.5">
-                  {categoryMeta[cat]?.seal || cat}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* 标题 */}
-          <h3 className="mb-2 font-serif text-lg font-bold text-ink-900 transition-colors group-hover:text-vermilion dark:text-ink-100 line-clamp-1">
-            {post.title}
-          </h3>
-
-          {/* 描述 */}
-          <p className="mb-3 line-clamp-2 text-sm text-ink-500 dark:text-ink-500">
-            {post.description}
-          </p>
-
-          {/* 底部信息 */}
-          <div className="flex items-center justify-between text-xs text-ink-400 dark:text-ink-600 mt-auto pt-2">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <Calendar className="size-3" />
-                {date}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="size-3" />
-                {readingTime} 分钟
-              </span>
-            </div>
-            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1 group-hover:text-vermilion" />
+      <Link href={`/blog/${post.id}`} className="post-card group">
+        <div className="flex items-center justify-between text-[10px] font-medium tracking-[0.14em] text-ink-400">
+          <span style={category ? { color: category.color } : undefined}>
+            {category?.seal || '文章'}
+          </span>
+          <span>
+            {date} / {readingTime} MIN
+          </span>
+        </div>
+        <div className="mt-9 flex items-start gap-4">
+          <span className="font-mono text-xs text-ink-300">0{index + 1}</span>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-serif text-xl font-semibold leading-snug tracking-wide text-ink-900 transition-colors duration-300 group-hover:text-vermilion">
+              {post.title}
+            </h3>
+            <p className="mt-3 line-clamp-2 text-sm leading-6 text-ink-500">
+              {post.description}
+            </p>
           </div>
+          <ArrowUpRight className="mt-1 size-4 shrink-0 text-ink-300 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-vermilion" />
         </div>
       </Link>
-    </article>
+    </motion.div>
   )
 }

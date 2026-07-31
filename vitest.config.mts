@@ -1,4 +1,5 @@
 export default {
+  oxc: false,
   esbuild: {
     jsx: 'automatic',
   },
@@ -10,6 +11,6 @@ export default {
   test: {
     environment: 'node',
     globals: true,
-    include: ['lib/**/*.test.ts', 'app/**/*.test.tsx'],
+    include: ['lib/**/*.test.ts', 'app/**/*.test.tsx', 'components/**/*.test.tsx'],
   },
 }

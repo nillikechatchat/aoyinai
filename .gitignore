@@ -32,3 +32,9 @@ build/
 # Misc
 *.tsbuildinfo
 next-env.d.ts.bak
+
+# Local quality reports and visual regression captures
+.lighthouseci/
+.monkeycode/lighthouse/
+.monkeycode/lighthouse-mobile/
+.monkeycode/visual-regression/

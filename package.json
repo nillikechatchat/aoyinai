@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
+    "test:visual": "node scripts/visual-regression.mjs",
+    "test:lighthouse": "sh scripts/lighthouse-ci.sh",
     "postbuild": "node scripts/postbuild.js"
   },
   "dependencies": {

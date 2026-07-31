@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: '敖胤AI',
+  name: '鸿渐Space',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sunzhizhi.cn',
-  title: '敖胤AI — AI 学习与实战一站式中文博客',
+  title: '鸿渐Space — AI 学习、创作与技术思考',
   description:
-    '敖胤AI 是一个聚焦人工智能的中文博客，覆盖 AI 入门实战、大模型行业动态、升学就业、竞赛活动、灵感场景、黑客松、算力优惠及 T-agent 多智能体框架，助你从入门到实战。',
+    '鸿渐Space 是一处面向长期学习者的 AI 知识空间，覆盖实战、行业、升学、竞赛、创作与多智能体研究，帮助读者把信息沉淀为能力。',
 }
