@@ -1,49 +1,51 @@
+'use client'
+
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { ArrowUpRight } from 'lucide-react'
 import { categoryMeta } from '@/lib/categories'
-import { getPostsByCategory } from '@/lib/posts'
 
 interface CategoryCardProps {
   slug: string
   index?: number
+  count: number
 }
 
-export function CategoryCard({ slug, index = 0 }: CategoryCardProps) {
+export function CategoryCard({ slug, index = 0, count }: CategoryCardProps) {
   const meta = categoryMeta[slug]
   if (!meta) return null
-  const count = getPostsByCategory(slug).length
 
   return (
-    <article
-      className="animate-in group"
-      style={{ animationDelay: `${index * 0.08}s` }}
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02, y: -5 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.55, delay: index * 0.055, ease: [0.16, 1, 0.3, 1] }}
+      style={{ transition: 'transform var(--dur-hover) var(--ease-ink)' }}
     >
-      <Link href={`/categories/${slug}`}>
-        <div className="card overflow-hidden p-5 text-center h-full flex flex-col items-center justify-center">
-          {/* 印章徽章 */}
-          <div className="mx-auto mb-3">
-            <span
-              className="seal text-base px-3 py-1.5"
-              style={{ borderColor: meta.color, color: meta.color }}
-            >
-              {meta.seal}
-            </span>
-          </div>
-
-          <h3 className="mb-1 font-serif text-base font-bold text-ink-900 dark:text-ink-100">
+      <Link href={`/categories/${slug}`} className="category-card-item group">
+        <div className="flex items-start justify-between">
+          <span className="font-mono text-[10px] tracking-[0.16em] text-ink-300">
+            0{index + 1}
+          </span>
+          <ArrowUpRight className="size-4 text-ink-300 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-vermilion" />
+        </div>
+        <div className="mt-auto">
+          <span className="text-xs font-medium tracking-[0.16em]" style={{ color: meta.color }}>
+            {meta.seal}
+          </span>
+          <h3 className="mt-2 font-serif text-lg font-semibold tracking-wide text-ink-900">
             {meta.label}
           </h3>
-
-          <p className="mb-2 text-xs text-ink-500 dark:text-ink-600 line-clamp-2">
+          <p className="mt-2 line-clamp-2 text-xs leading-5 text-ink-500">
             {meta.desc}
           </p>
-
-          <div className="flex items-center justify-center gap-1 text-xs text-vermilion">
-            <span>{count} 篇</span>
-            <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-          </div>
+          <p className="mt-5 border-t border-ink-900/10 pt-2 text-[10px] tracking-[0.12em] text-ink-400">
+            {count} 篇文章
+          </p>
         </div>
       </Link>
-    </article>
+    </motion.div>
   )
 }

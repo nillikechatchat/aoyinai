@@ -20,12 +20,12 @@ const socialLinks = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <div className="content-page mx-auto max-w-4xl px-4 py-12 sm:px-6">
       {/* 头部 */}
       <div className="mb-10 text-center">
         <span className="seal text-lg px-4 py-2 mb-4 inline-block">关于</span>
         <h1 className="font-serif text-3xl font-bold text-ink-900 dark:text-ink-100 mb-3">
-          敖胤AI
+          鸿渐Space
         </h1>
         <p className="text-ink-500 dark:text-ink-600 max-w-lg mx-auto">
           一个聚焦人工智能的中文博客，以墨为舟，探索 AI 世界
@@ -327,7 +327,7 @@ export default function AboutPage() {
       {/* 底部 */}
       <div className="text-center">
         <p className="text-xs text-ink-400 dark:text-ink-700">
-          © {new Date().getFullYear()} 敖胤AI · 以墨为舟，探索 AI 世界
+          {'\u00A9'} {new Date().getFullYear()} 鸿渐Space · 渐行，渐远，渐见天地
         </p>
       </div>
     </div>

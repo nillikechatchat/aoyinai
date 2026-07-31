@@ -5,6 +5,9 @@ import { getPostById, getSortedPosts, markdownToHtml } from '@/lib/posts'
 import { calculateReadingTime } from '@/lib/reading'
 import { categoryMeta } from '@/lib/categories'
 import { siteConfig } from '@/lib/site'
+import { extractTableOfContents } from '@/lib/toc'
+import { ReadingProgress } from '@/components/ReadingProgress'
+import { TableOfContents } from '@/components/TableOfContents'
 
 export function generateStaticParams() {
   return getSortedPosts().map((p) => ({ id: p.id }))
@@ -34,6 +37,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   if (!post) notFound()
 
   const htmlContent = await markdownToHtml(post.content)
+  const tableOfContents = extractTableOfContents(post.content)
   const readingTime = calculateReadingTime(post.content)
   const date = new Date(post.date).toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -42,9 +46,20 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   })
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="relative min-h-[calc(100dvh-3.5rem)] bg-rice">
+      <ReadingProgress />
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <Link
+          href="/blog"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm text-ink-500 transition-colors hover:text-vermilion"
+        >
+          <ArrowLeft className="size-3.5" />
+          返回文章列表
+        </Link>
+        <div className="lg:grid lg:grid-cols-[minmax(0,46rem)_12rem] lg:gap-16">
+          <div>
       {/* 面包屑 */}
-      <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-ink-500 dark:text-ink-600">
+      <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-ink-500">
         <Link href="/" className="hover:text-vermilion">首页</Link>
         <span>/</span>
         <Link href="/blog" className="hover:text-vermilion">文章</Link>
@@ -80,11 +95,11 @@ export default async function PostPage({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        <h1 className="mb-4 font-serif text-2xl font-bold leading-snug text-ink-900 sm:text-3xl dark:text-ink-100">
+        <h1 className="mb-4 font-serif text-2xl font-bold leading-snug text-ink-900 sm:text-3xl">
           {post.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-3 text-xs text-ink-500 dark:text-ink-600">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-ink-500">
           <span className="flex items-center gap-1">
             <Calendar className="size-3" />
             {date}
@@ -105,7 +120,8 @@ export default async function PostPage({ params }: { params: { id: string } }) {
               <Link
                 key={tag}
                 href={`/tags/${encodeURIComponent(tag)}`}
-                className="inline-flex items-center gap-1 rounded-full border border-ink-200/30 px-2.5 py-0.5 text-[11px] text-ink-500 transition-colors hover:border-vermilion/30 hover:text-vermilion dark:border-ink-800/30 dark:text-ink-600"
+                prefetch={false}
+                className="inline-flex items-center gap-1 rounded-full border border-ink-200/30 px-2.5 py-0.5 text-[11px] text-ink-500 transition-colors hover:border-vermilion/30 hover:text-vermilion"
               >
                 <Tag className="size-2.5" />
                 {tag}
@@ -128,11 +144,19 @@ export default async function PostPage({ params }: { params: { id: string } }) {
       <div className="bamboo-divider mt-12 mb-6" />
       <Link
         href="/blog"
-        className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-vermilion dark:text-ink-600"
+        className="inline-flex items-center gap-1.5 text-sm text-ink-500 hover:text-vermilion"
       >
         <ArrowLeft className="size-3.5" />
         返回文章列表
       </Link>
+          </div>
+          <aside className="mt-12 hidden lg:block">
+            <div className="sticky top-24">
+              <TableOfContents items={tableOfContents} />
+            </div>
+          </aside>
+        </div>
+      </div>
     </div>
   )
 }

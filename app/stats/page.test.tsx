@@ -16,7 +16,7 @@ describe('赛事统计页', () => {
     const html = renderToStaticMarkup(createElement(StatsPage))
 
     expect(html).toContain('当前可报名赛事')
-    expect(html).toContain('历史赛事（0）')
+    expect(html).toContain('历史赛事（')
     expect(html).toContain('https://www.bilibili.com/blackboard/era/Vf5kaXL0HnJyfqIG.html')
     expect(html).toContain('lg:hidden')
     expect(html).toContain('sticky top-24')

@@ -1,132 +1,102 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Github, Rss, GitBranch, BookOpen, Code2, Globe, MessageSquare } from 'lucide-react'
-import Image from 'next/image'
+import { ArrowDownRight, BookOpen } from 'lucide-react'
+import { HongjianLogo } from './HongjianLogo'
+import { getHeroParallax } from '@/lib/home-motion'
 
-const socialLinks = [
-  { href: 'https://github.com/nillikechatchat/aoyinai', icon: Github, label: 'GitHub' },
-  { href: 'https://gitee.com/hongjian_Ai', icon: GitBranch, label: 'Gitee' },
-  { href: 'https://atomgit.com/u012823422', icon: Code2, label: 'AtomGit' },
-  { href: 'https://blog.csdn.net/u012823422', icon: BookOpen, label: 'CSDN' },
-  { href: 'https://my.oschina.net/mfeng', icon: Globe, label: 'OSCHINA' },
-  { href: 'https://segmentfault.com/u/nillikechatchat/articles', icon: MessageSquare, label: 'SegmentFault' },
-]
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1]
 
-export function Hero() {
+const reveal = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay, duration: 0.85, ease },
+  }),
+}
+
+interface HeroProps {
+  scrollProgress?: number
+}
+
+export function Hero({ scrollProgress = 0 }: HeroProps) {
+  const parallax = getHeroParallax(scrollProgress)
+
   return (
-    <section className="relative overflow-hidden py-16 sm:py-24">
-      {/* 墨迹背景 */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-gradient-to-b from-ink-200/30 via-ink-100/10 to-transparent blur-3xl dark:from-ink-800/20 dark:via-ink-900/10" />
-        <div className="absolute bottom-0 left-1/4 h-[200px] w-[300px] rounded-full bg-vermilion/5 blur-3xl dark:bg-vermilion/3" />
-      </div>
+    <section className="hero-home relative isolate overflow-hidden flex items-center justify-center h-full">
+      <div className="hero-home-vignette absolute inset-0 z-[1]" aria-hidden="true" />
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="text-center">
-          {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, type: 'spring', stiffness: 150 }}
-            className="mx-auto mb-6 w-20 h-20 sm:w-24 sm:h-24"
-          >
-            <Image
-              src="/logo.svg"
-              alt="敖胤AI Logo"
-              width={96}
-              height={96}
-              className="w-full h-full"
-              priority
-            />
-          </motion.div>
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1440px] flex-col justify-between px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
+        <motion.div style={{ y: parallax.titleY, opacity: parallax.titleOpacity }} className="text-[10px] font-medium tracking-[0.22em] text-ink-500">
+          <motion.span custom={0.12} initial="hidden" animate="visible" variants={reveal}>
+            鸿渐SPACE / 二〇二六
+          </motion.span>
+        </motion.div>
 
-          {/* 标题 */}
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="ink-gradient font-serif text-4xl font-bold tracking-wide sm:text-5xl"
-          >
-            敖胤AI
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mx-auto mt-4 max-w-xl text-base text-ink-500 sm:text-lg dark:text-ink-500"
-          >
-            以墨为舟，探索 AI 世界 — <span className="font-medium text-vermilion">7 大主题</span>，助你从入门到实战
-          </motion.p>
-
-          {/* 社交链接 */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-6 flex flex-wrap items-center justify-center gap-2"
-          >
-            {socialLinks.map(({ href, icon: Icon, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded-full border border-ink-200/30 px-3 py-1.5 text-xs text-ink-600 transition-all hover:border-vermilion/40 hover:bg-vermilion/5 hover:text-vermilion dark:border-ink-800/30 dark:text-ink-400"
-              >
-                <Icon className="size-3.5" />
-                {label}
-              </a>
-            ))}
-            <a
-              href="/rss.xml"
-              className="flex items-center gap-1.5 rounded-full border border-ink-200/30 px-3 py-1.5 text-xs text-ink-600 transition-all hover:border-vermilion/40 hover:bg-vermilion/5 hover:text-vermilion dark:border-ink-800/30 dark:text-ink-400"
-            >
-              <Rss className="size-3.5" />
-              RSS
-            </a>
-          </motion.div>
-
-          {/* 状态行 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-6 flex items-center justify-center gap-2 text-xs text-ink-500 dark:text-ink-600"
-          >
-            <span className="flex items-center gap-1.5">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-jade opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-jade" />
+        <div className="grid items-end gap-10 lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <motion.div custom={0.24} initial="hidden" animate="visible" variants={reveal} className="mb-6 flex items-center gap-3">
+              <motion.div style={{ scale: parallax.logoScale }}>
+                <HongjianLogo className="size-6" compact />
+              </motion.div>
+              <span className="text-[10px] font-medium tracking-[0.2em] text-ink-500">
+                渐于木，进于学，成于思
               </span>
-              持续更新
-            </span>
-          </motion.div>
+            </motion.div>
 
-          {/* 统计 */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="mt-10 flex justify-center gap-8"
-          >
-            {[
-              { value: '7+', label: '主题分类' },
-              { value: '15', label: '精选文章' },
-              { value: '100%', label: '持续更新' }
-            ].map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="font-serif text-2xl font-bold text-vermilion">{s.value}</div>
-                <div className="mt-1 text-[10px] text-ink-500 dark:text-ink-600">{s.label}</div>
-              </div>
-            ))}
-          </motion.div>
+            <motion.div style={{ y: parallax.titleY }}>
+              <motion.h1
+                custom={0.32}
+                initial="hidden"
+                animate="visible"
+                variants={reveal}
+                className="hero-home-title max-w-4xl font-serif text-[clamp(3.2rem,7.5vw,8rem)] font-semibold leading-[0.84] tracking-[-0.065em] text-ink-900"
+              >
+                学问向前，<br />
+                思想<span className="text-[#e0444b]">生长</span>。
+              </motion.h1>
+            </motion.div>
+
+            <motion.div style={{ y: parallax.subtitleY }}>
+              <motion.p
+                custom={0.44}
+                initial="hidden"
+                animate="visible"
+                variants={reveal}
+                className="mt-8 max-w-sm text-sm leading-7 text-ink-500 sm:text-base"
+              >
+                AI 学习、创作与技术思考的长期空间。把每一次阅读，变成下一步的能力。
+              </motion.p>
+            </motion.div>
+
+            <motion.div style={{ y: parallax.ctaY }}>
+              <motion.div custom={0.56} initial="hidden" animate="visible" variants={reveal} className="mt-9 flex flex-wrap items-center gap-3">
+                <a href="/blog" className="hero-home-cta group">
+                  <BookOpen className="size-4" />
+                  进入阅读
+                  <ArrowDownRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
+                </a>
+                <a href="/explore" className="hero-home-cta-secondary">
+                  探索主题
+                </a>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
 
-      {/* 底部竹节分隔 */}
-      <div className="bamboo-divider mx-auto mt-12 max-w-4xl" />
+        <motion.div
+          custom={0.66}
+          initial="hidden"
+          animate="visible"
+          variants={reveal}
+          className="flex items-end justify-between border-t border-ink-900/15 pt-4 text-[10px] uppercase tracking-[0.16em] text-ink-500"
+        >
+          <span>鸿渐于陆，其羽可用为仪</span>
+          <span className="hidden sm:block">向下阅览</span>
+          <span className="text-[#c53d43]">↓</span>
+        </motion.div>
+      </div>
     </section>
   )
 }

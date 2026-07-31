@@ -144,7 +144,7 @@ export default function StatsPageContent() {
   }, {})
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div className="content-page mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <div className="mb-10 text-center">
         <span className="seal text-lg px-4 py-2 mb-4 inline-block">数据</span>
         <h1 className="font-serif text-3xl font-bold text-ink-900 dark:text-ink-100 mb-3">2026 AI 赛事统计</h1>

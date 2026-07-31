@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
 import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeStringify from 'rehype-stringify'
+import { extractTableOfContents } from './toc'
 
 const postsDirectory = path.join(process.cwd(), 'content/posts')
 
@@ -70,6 +71,7 @@ export function getPostById(id: string): Post | null {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
+  const headings = extractTableOfContents(markdown)
   const result = await remark()
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
@@ -80,7 +82,13 @@ export async function markdownToHtml(markdown: string): Promise<string> {
     })
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(markdown)
-  return result.toString()
+  let headingIndex = 0
+  return result.toString().replace(/<h([23])>/g, (tag, level) => {
+    const heading = headings[headingIndex]
+    if (!heading || heading.level !== Number(level)) return tag
+    headingIndex += 1
+    return `<h${level} id="${heading.id}">`
+  })
 }
 
 export function getAllCategories(): string[] {
