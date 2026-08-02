@@ -9,6 +9,7 @@ const mainNav = [
   { href: '/', label: '首页' },
   { href: '/explore', label: '探索' },
   { href: '/blog', label: '文章' },
+  { href: '/stats', label: '赛事统计' },
   { href: '/archives', label: '归档' },
   { href: '/tags', label: '标签' },
   { href: '/about', label: '关于' },
