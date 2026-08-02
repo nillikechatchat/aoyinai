@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-07-28'
+export const competitionDataVerifiedAt = '2026-08-02'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
