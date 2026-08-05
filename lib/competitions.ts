@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-08-02'
+export const competitionDataVerifiedAt = '2026-08-05'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -515,6 +515,85 @@ export const competitionRecords: CompetitionRecord[] = [
         date: '2026-09-15',
         label: 'Trace the Ace 入围队伍技术报告截止（UTC）',
         type: 'final',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'a-chao-transport-ai-2026',
+    name: '2026 “A超”交通创新大赛暨全国综合交通运输大模型智能体创新应用大赛国际赛道',
+    category: '交通AI',
+    prize: null,
+    prizeUnit: '奖金待主办方公布',
+    status: '报名中',
+    deadline: '2026-09-04',
+    deadlineLabel: '9月4日',
+    deadlineType: '报名截止',
+    sourceUrl: 'http://jtt.gxzf.gov.cn/zfxxgk/fdzdgk/tzgg/t27959432.shtml',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'a-chao-transport-ai-2026-deadline',
+        competitionId: 'a-chao-transport-ai-2026',
+        date: '2026-09-04',
+        label: 'A超交通创新大赛 征集报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'a-chao-transport-ai-2026-final',
+        competitionId: 'a-chao-transport-ai-2026',
+        date: '2026-09-20',
+        label: 'A超交通创新大赛 创新赛道决赛',
+        type: 'final',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'mediaaiac-2026',
+    name: '第五届广播电视和网络视听人工智能应用创新大赛（MediaAIAC）',
+    category: '视听AI',
+    prize: null,
+    prizeUnit: '奖项待主办方公布',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日 24:00',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://hunan.gov.cn/zqt/zcsd/202607/t20260722_34031486.html',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'mediaaiac-2026-deadline',
+        competitionId: 'mediaaiac-2026',
+        date: '2026-08-31',
+        label: 'MediaAIAC 项目申报截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'loreal-beauty-tech-hackathon-2026',
+    name: '欧莱雅第二届美妆科技黑客松',
+    category: 'AI黑客松',
+    prize: 20,
+    prizeUnit: '万元/赛题',
+    status: '报名中',
+    deadline: '2026-10-20',
+    deadlineLabel: '10月20日 23:59（UTC+8）',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532497',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'loreal-beauty-tech-hackathon-2026-deadline',
+        competitionId: 'loreal-beauty-tech-hackathon-2026',
+        date: '2026-10-20',
+        label: '欧莱雅美妆科技黑客松 报名与作品提交截止',
+        type: 'deadline',
       },
     ],
     changes: [],

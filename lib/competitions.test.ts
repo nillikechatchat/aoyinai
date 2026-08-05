@@ -4,6 +4,7 @@ import {
   getTimelineItems,
   getTotalPrize,
   competitionRecords,
+  competitionDataVerifiedAt,
   resolveCompetition,
   type CompetitionRecord,
 } from './competitions'
@@ -18,6 +19,21 @@ declare const expect: (actual: unknown) => {
 }
 
 describe('赛事数据派生', () => {
+  it('赛事数据使用本次核验日期', () => {
+    expect(competitionDataVerifiedAt).toBe('2026-08-05')
+    expect(competitionRecords.every((record) => record.verifiedAt === competitionDataVerifiedAt)).toBe(true)
+  })
+
+  it('纳入具备官方截止日期的国内 AI 赛事', () => {
+    for (const id of [
+      'a-chao-transport-ai-2026',
+      'mediaaiac-2026',
+      'loreal-beauty-tech-hackathon-2026',
+    ]) {
+      expect(competitionRecords.some((record) => record.id === id)).toBe(true)
+    }
+  })
+
   it('属性 1、2：生成的赛事标识唯一，更新日期满足核验日期边界', () => {
     for (let sample = 0; sample < 32; sample += 1) {
       const records = Array.from({ length: sample + 1 }, (_, index) =>

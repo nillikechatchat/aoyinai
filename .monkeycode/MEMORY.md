@@ -104,3 +104,10 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
 - Instructions:
   - 更新赛事统计时依次执行：调研官方来源、收集可核验信息、整理截止日期与状态、将赛事置入当前可报名或历史赛事、修改数据并验证后提交推送。
   - 截止日已过或明确标记结束的赛事归入历史赛事；仅在主办方或赛事平台官网可核验后列为当前可报名赛事。
+
+[Next.js 构建环境]
+- Date: 2026-08-05
+- Context: Agent 更新赛事数据并执行构建时发现
+- Category: 环境配置
+- Instructions:
+  - 工作区可能缺少本地 `node_modules`；使用全局依赖时，以 `NODE_PATH="/usr/local/lib/node_modules" /usr/local/bin/next build` 运行构建，以同样前缀执行 Vitest 专项测试。

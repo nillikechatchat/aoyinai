@@ -11,6 +11,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    allowedHosts: ['.monkeycode-ai.online'],
+  },
   webpack: (config) => {
     config.resolve.alias['@'] = path.resolve(__dirname)
     return config
