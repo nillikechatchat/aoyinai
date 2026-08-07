@@ -20,7 +20,7 @@ declare const expect: (actual: unknown) => {
 
 describe('赛事数据派生', () => {
   it('赛事数据使用本次核验日期', () => {
-    expect(competitionDataVerifiedAt).toBe('2026-08-05')
+    expect(competitionDataVerifiedAt).toBe('2026-08-07')
     expect(competitionRecords.every((record) => record.verifiedAt === competitionDataVerifiedAt)).toBe(true)
   })
 

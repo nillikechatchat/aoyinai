@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-08-05'
+export const competitionDataVerifiedAt = '2026-08-07'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -356,6 +356,52 @@ export const competitionRecords: CompetitionRecord[] = [
               competitionId: 'goai-global-open-source-ai-challenge-2026',
               date: '2026-09-22',
               label: 'GOAI 世界人工智能开源大赛 线下决赛',
+              type: 'final',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-award',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-23',
+              label: 'GOAI DAY 与颁奖典礼',
+              type: 'award',
+            },
+          ],
+        },
+      },
+      {
+        date: '2026-08-07',
+        summary: '官方赛道页复核：初赛作品于 8 月 16 日截止，复赛提交于 9 月 3 日截止。',
+        sourceUrl: 'https://goaihz.com/tracks?track=infra',
+        changes: {
+          deadline: '2026-08-16',
+          deadlineLabel: '8月16日（初赛作品提交）',
+          keyDates: [
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-16',
+              label: 'GOAI 三条赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-embodied-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-20',
+              label: 'GOAI 具身未来赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-semifinal',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-03',
+              label: 'GOAI Agent Infra 复赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-final',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-22',
+              label: 'GOAI 世界人工智能开源大赛线下决赛',
               type: 'final',
             },
             {
