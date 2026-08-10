@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-08-07'
+export const competitionDataVerifiedAt = '2026-08-10'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -639,6 +639,61 @@ export const competitionRecords: CompetitionRecord[] = [
         competitionId: 'loreal-beauty-tech-hackathon-2026',
         date: '2026-10-20',
         label: '欧莱雅美妆科技黑客松 报名与作品提交截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'cuhk-x-multimodal-challenge-2026',
+    name: 'CUHK-X 多模态人类活动挑战赛',
+    category: '多模态AI',
+    prize: null,
+    prizeUnit: '$20,000',
+    status: '报名中',
+    deadline: '2026-09-15',
+    deadlineLabel: '9月15日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://openaiotlab.github.io/CUHK-X-Challenge/',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'cuhk-x-multimodal-challenge-2026-deadline',
+        competitionId: 'cuhk-x-multimodal-challenge-2026',
+        date: '2026-09-15',
+        label: 'CUHK-X 多模态人类活动挑战赛截止',
+        type: 'deadline',
+      },
+      {
+        id: 'cuhk-x-multimodal-challenge-2026-final',
+        competitionId: 'cuhk-x-multimodal-challenge-2026',
+        date: '2026-10-11',
+        label: 'CUHK-X 多模态人类活动挑战赛决赛',
+        type: 'final',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'hack-for-humanity-summer-2026',
+    name: 'Hack for Humanity Summer 2026',
+    category: '健康AI',
+    prize: null,
+    prizeUnit: '13 项非现金奖',
+    status: '报名中',
+    deadline: '2026-09-04',
+    deadlineLabel: '9月4日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://hack-for-humanity-summer-26.devpost.com/',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'hack-for-humanity-summer-2026-deadline',
+        competitionId: 'hack-for-humanity-summer-2026',
+        date: '2026-09-04',
+        label: 'Hack for Humanity Summer 2026 提交截止',
         type: 'deadline',
       },
     ],
