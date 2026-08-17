@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-08-10'
+export const competitionDataVerifiedAt = '2026-08-17'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -194,7 +194,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'award',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-08-17',
+        summary: '8 月 17 日复核：初赛材料已于 8 月 13 日截止，进入评审阶段，决赛名单 8 月 21 日公布。',
+        sourceUrl: 'https://opc.aliyun.com/xiaoyoukewei?display_mode=3',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月13日（初赛材料已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'ai-new-talent-scout-2026',
@@ -383,6 +393,45 @@ export const competitionRecords: CompetitionRecord[] = [
               label: 'GOAI 三条赛道初赛作品提交截止',
               type: 'deadline',
             },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-embodied-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-20',
+              label: 'GOAI 具身未来赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-semifinal',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-03',
+              label: 'GOAI Agent Infra 复赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-final',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-22',
+              label: 'GOAI 世界人工智能开源大赛线下决赛',
+              type: 'final',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-award',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-23',
+              label: 'GOAI DAY 与颁奖典礼',
+              type: 'award',
+            },
+          ],
+        },
+      },
+      {
+        date: '2026-08-17',
+        summary: '8 月 17 日复核：三条赛道初赛作品提交已于 8 月 16 日截止，具身未来赛道 8 月 20 日截止，赛事仍在报名期。',
+        sourceUrl: 'https://goaihz.com',
+        changes: {
+          deadline: '2026-08-20',
+          deadlineLabel: '8月20日（具身赛道）',
+          keyDates: [
             {
               id: 'goai-global-open-source-ai-challenge-2026-embodied-deadline',
               competitionId: 'goai-global-open-source-ai-challenge-2026',

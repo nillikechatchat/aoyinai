@@ -175,19 +175,55 @@ export default function AboutPage() {
         </h2>
         <div className="grid gap-3">
           <a
-            href="https://atomgit.com/u012823422/windows-universal-skill"
+            href="https://github.com/nillikechatchat/DSH_HJui"
             target="_blank"
             rel="noopener noreferrer"
             className="card group p-5 transition-all hover:border-vermilion/40"
           >
             <div className="flex items-start gap-4">
               <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-jade/10 to-gold/10 text-jade group-hover:from-jade/20 group-hover:to-gold/20 transition-colors shrink-0">
-                <span className="font-serif text-lg font-bold">W</span>
+                <span className="font-serif text-lg font-bold">D</span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
-                    windows-universal-skill
+                    DSH_HJui
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
+                    开源
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">
+                    TypeScript
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  DSH 平台的 Web UI 插件，为 DSH 交互界面提供可扩展的定制能力。
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Web UI</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">TypeScript</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">插件</span>
+                </div>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
+                  github.com/nillikechatchat/DSH_HJui
+                </span>
+              </div>
+            </div>
+          </a>
+          <a
+            href="https://github.com/nillikechatchat/aoyinai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-vermilion/10 to-gold/10 text-vermilion group-hover:from-vermilion/20 group-hover:to-gold/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">a</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    aoyinai
                   </h3>
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
                     开源
@@ -197,50 +233,159 @@ export default function AboutPage() {
                   </span>
                 </div>
                 <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
-                  面向 AI Agent 的 Windows 操作脚本模板库。~80 种操作覆盖文件/应用/系统诊断，PowerShell + CMD 双版本输出，安全加固设计，所有写操作需人工审核。
+                  墨色风格的 AI 中文博客引擎，基于 Next.js 构建，支撑本博客全部内容与栏目体系。
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Windows</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">PowerShell</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent Skill</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">安全加固</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Next.js</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">博客</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">TypeScript</span>
                 </div>
                 <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
-                  atomgit.com/u012823422/windows-universal-skill
+                  github.com/nillikechatchat/aoyinai
                 </span>
               </div>
             </div>
           </a>
           <a
-            href="https://github.com/agentteams-group/agentteams-dashboard"
+            href="https://github.com/nillikechatchat/tm-divination"
             target="_blank"
             rel="noopener noreferrer"
             className="card group p-5 transition-all hover:border-vermilion/40"
           >
             <div className="flex items-start gap-4">
-              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-vermilion/10 to-gold/10 text-vermilion group-hover:from-vermilion/20 group-hover:to-gold/20 transition-colors shrink-0">
-                <span className="font-serif text-lg font-bold">A</span>
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-jade/10 to-vermilion/10 text-vermilion group-hover:from-jade/20 group-hover:to-vermilion/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">t</span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
-                    AgentTeams Dashboard
+                    tm-divination
                   </h3>
                   <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
                     开源
                   </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">
+                    MIT
+                  </span>
                 </div>
                 <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
-                  面向 AgentTeams 集群的轻量级管理控制台，统一管理 Worker、团队、人员、管理器与基础设施，并集成 Matrix 聊天、拓扑视图和权限审计能力。
+                  国学推演 Agent Skill，把传统易学推演流程沉淀为可复用的智能体技能。
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">AgentTeams</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Next.js</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Matrix</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">集群管理</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent Skill</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">国学</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">推演</span>
                 </div>
                 <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
-                  github.com/agentteams-group/agentteams-dashboard
+                  github.com/nillikechatchat/tm-divination
+                </span>
+              </div>
+            </div>
+          </a>
+          <a
+            href="https://github.com/nillikechatchat/DevFlow_Agent"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-gold/10 to-vermilion/10 text-gold group-hover:from-gold/20 group-hover:to-vermilion/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">D</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    DevFlow_Agent
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
+                    开源
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">
+                    TypeScript
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  Spec-First 研发管控系统，以规格文档驱动开发流程的 Agent 化实现。
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Spec-First</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">研发管控</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">TypeScript</span>
+                </div>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
+                  github.com/nillikechatchat/DevFlow_Agent
+                </span>
+              </div>
+            </div>
+          </a>
+          <a
+            href="https://github.com/nillikechatchat/autoagent-moonbit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-vermilion/10 to-jade/10 text-jade group-hover:from-vermilion/20 group-hover:to-jade/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">a</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    autoagent-moonbit
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
+                    开源
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">
+                    MoonBit
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  用 MoonBit 实现的轻量级 Agent 运行时，聚焦低资源场景下的自动智能体执行。
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">MoonBit</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent Runtime</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">轻量</span>
+                </div>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
+                  github.com/nillikechatchat/autoagent-moonbit
+                </span>
+              </div>
+            </div>
+          </a>
+          <a
+            href="https://github.com/nillikechatchat/feishu-agent-memory"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group p-5 transition-all hover:border-vermilion/40"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-gold/10 to-jade/10 text-gold group-hover:from-gold/20 group-hover:to-jade/20 transition-colors shrink-0">
+                <span className="font-serif text-lg font-bold">f</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-medium text-sm text-ink-800 dark:text-ink-200 group-hover:text-vermilion transition-colors">
+                    feishu-agent-memory
+                  </h3>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-jade/10 text-jade">
+                    开源
+                  </span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">
+                    Skill
+                  </span>
+                </div>
+                <p className="text-xs text-ink-500 dark:text-ink-600 mb-2">
+                  飞书知识库与 Agent 记忆同步的技能实现，让智能体长期记忆与飞书文档保持同步。
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">飞书</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">记忆同步</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded-full border border-ink-200/30 dark:border-ink-800/30 text-ink-400">Agent</span>
+                </div>
+                <span className="text-[10px] text-ink-400 dark:text-ink-700 mt-2 inline-block">
+                  github.com/nillikechatchat/feishu-agent-memory
                 </span>
               </div>
             </div>
