@@ -17,10 +17,10 @@ describe('赛事统计页', () => {
 
     expect(html).toContain('当前可报名赛事')
     expect(html).toContain('历史赛事（')
-    expect(html).toContain('https://www.bilibili.com/blackboard/era/Vf5kaXL0HnJyfqIG.html')
+    expect(html).toContain('https://tianchi.aliyun.com/competition/entrance/532497')
     expect(html).toContain('lg:hidden')
     expect(html).toContain('sticky top-24')
-    expect(html).toContain('#competition-bilibili-ai-creation-2026')
+    expect(html).toContain('#competition-loreal-beauty-tech-hackathon-2026')
   })
 
   it('为已修订赛事渲染可展开的变更历史', () => {

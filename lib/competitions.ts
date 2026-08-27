@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-08-17'
+export const competitionDataVerifiedAt = '2026-08-27'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -101,7 +101,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'result',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：作品投稿已于 8 月 20 日截止，赛事进入评审阶段，结果将于 9 月 5 日公布。',
+        sourceUrl: 'https://www.bilibili.com/blackboard/era/Vf5kaXL0HnJyfqIG.html',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月20日（投稿已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'intern-ai-science-challenge-2026',
@@ -463,6 +473,16 @@ export const competitionRecords: CompetitionRecord[] = [
           ],
         },
       },
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：具身未来赛道初赛作品已于 8 月 20 日截止，各赛道初赛阶段全部收官，赛事转入复赛评审，Agent Infra 复赛作品 9 月 3 日提交截止，线下决赛 9 月 22 日举行。',
+        sourceUrl: 'https://goaihz.com',
+        changes: {
+          status: '已结束',
+          deadline: '2026-09-03',
+          deadlineLabel: '9月3日（Agent Infra 复赛提交）',
+        },
+      },
     ],
   },
   {
@@ -502,7 +522,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'result',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：报名已于 8 月 25 日截止，已报名队伍进入作品冲刺阶段，作品提交 9 月 1 日截止。',
+        sourceUrl:
+          'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+        changes: {
+          deadlineLabel: '8月25日（报名已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'national-ai-creation-2026',
@@ -612,7 +642,16 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'final',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：模型提交于今日（UTC）截止，入围队伍技术报告 9 月 15 日截止。',
+        sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
+        changes: {
+          deadlineLabel: '8月27日（UTC，今日截止）',
+        },
+      },
+    ],
   },
   {
     id: 'a-chao-transport-ai-2026',
