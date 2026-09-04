@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-08-27'
+export const competitionDataVerifiedAt = '2026-09-04'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -238,7 +238,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'deadline',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：DataFountain 赛题页显示赛事已于 8 月 31 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1169',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'falcon-microwave-detection-2026',
@@ -262,7 +272,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'deadline',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：DataFountain 赛题页显示赛事已于 8 月 31 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1166',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'multimodal-customer-agent-2026',
@@ -286,7 +306,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'deadline',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：DataFountain 赛题页显示赛事已于 8 月 31 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1165',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'infrared-open-world-segmentation-2026',
@@ -310,7 +340,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'deadline',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：赛事已于 7 月 30 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1164',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '7月30日（已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'goai-global-open-source-ai-challenge-2026',
@@ -483,6 +523,14 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '9月3日（Agent Infra 复赛提交）',
         },
       },
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：官网发布复赛评审启动公告，初赛共收到 2999 份作品，线下决赛与 GOAI DAY 仍定于 9 月 22 日至 23 日在杭州举行。',
+        sourceUrl: 'https://goaihz.com',
+        changes: {
+          deadlineLabel: '9月3日（复赛提交已截止，评审进行中）',
+        },
+      },
     ],
   },
   {
@@ -532,6 +580,15 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '8月25日（报名已截止）',
         },
       },
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：作品提交已于 9 月 1 日截止，晋级决赛名单预计 9 月 30 日公布。',
+        sourceUrl:
+          'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+        changes: {
+          deadlineLabel: '8月25日（报名已截止，作品提交已于9月1日结束）',
+        },
+      },
     ],
   },
   {
@@ -563,7 +620,17 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'result',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：作品征集已于 8 月 31 日截止，结果公示窗口持续至 9 月 15 日。',
+        sourceUrl: 'https://zhjw.jnu.edu.cn/2026/0720/c7164a860655/page.htm',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（作品征集已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'ai-information-literacy-zhejiang-2026',
@@ -651,6 +718,15 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '8月27日（UTC，今日截止）',
         },
       },
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：模型提交已于 8 月 27 日（UTC）截止，入围队伍技术报告仍定于 9 月 15 日截止。',
+        sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月27日（UTC，模型提交已截止）',
+        },
+      },
     ],
   },
   {
@@ -706,7 +782,16 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'deadline',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：项目申报已于 8 月 31 日 24:00 截止。',
+        sourceUrl: 'https://hunan.gov.cn/zqt/zcsd/202607/t20260722_34031486.html',
+        changes: {
+          deadlineLabel: '8月31日 24:00（申报已截止）',
+        },
+      },
+    ],
   },
   {
     id: 'loreal-beauty-tech-hackathon-2026',
@@ -785,7 +870,16 @@ export const competitionRecords: CompetitionRecord[] = [
         type: 'deadline',
       },
     ],
-    changes: [],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：Devpost 页面显示提交截止为 9 月 4 日 23:45 EDT，当日仍可提交。',
+        sourceUrl: 'https://hack-for-humanity-summer-26.devpost.com/',
+        changes: {
+          deadlineLabel: '9月4日 23:45（EDT）',
+        },
+      },
+    ],
   },
 ]
 
