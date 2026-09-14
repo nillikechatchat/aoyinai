@@ -617,3 +617,40 @@ article:hover .card-arrow {
 .sound-bar:nth-child(2) { animation-delay: 0.15s; }
 .sound-bar:nth-child(3) { animation-delay: 0.3s; }
 .sound-bar:nth-child(4) { animation-delay: 0.45s; }
+
+/* ── 卡片「先生速览」换装（tldr 上卡片）──
+   grid 叠放两层：hover 时摘要渐隐、速览同位渐入；
+   朴素 .card-tldr:hover 语义类（group-hover 兜底教训：headless 下 :is(:where(.group):hover *) 求值异常） */
+.tldr-zone {
+  display: grid;
+}
+.tldr-zone > * {
+  grid-area: 1 / 1;
+}
+.tldr-view {
+  opacity: 0;
+  transform: translateY(6px) scale(0.99);
+  transition:
+    opacity 0.32s ease,
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.card-tldr:hover .tldr-view,
+.card-tldr:focus-visible .tldr-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.card-tldr:hover .tldr-brief,
+.card-tldr:focus-visible .tldr-brief {
+  opacity: 0;
+}
+.tldr-brief {
+  transition: opacity 0.32s ease;
+}
+/* 页脚「览」小印：hover 时随卡片点亮 */
+.tldr-foot {
+  transition: transform 0.3s ease;
+}
+.card-tldr:hover .tldr-foot {
+  transform: rotate(-6deg) scale(1.1);
+}

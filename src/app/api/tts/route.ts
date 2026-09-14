@@ -9,6 +9,31 @@ export const maxDuration = 60;
 /** TTS 磁盘缓存目录：同文本+音色+语速命中即秒开（首段合成 3~50s → 二次 <10ms） */
 const CACHE_DIR = path.join(process.cwd(), ".tts-cache");
 const CACHE_MAX_FILES = 80;
+const STATS_FILE = path.join(CACHE_DIR, "stats.json");
+
+/** 命中/未中计数（持久化于 .tts-cache/stats.json，供 /api/stats 展示） */
+function bumpTtsStat(kind: "hits" | "misses") {
+  try {
+    if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
+    let stats: { hits: number; misses: number } = { hits: 0, misses: 0 };
+    if (existsSync(STATS_FILE)) {
+      try {
+        const parsed = JSON.parse(readFileSync(STATS_FILE, "utf-8")) as Partial<{
+          hits: number;
+          misses: number;
+        }>;
+        stats.hits = Number(parsed.hits) || 0;
+        stats.misses = Number(parsed.misses) || 0;
+      } catch {
+        // 损坏则重置
+      }
+    }
+    stats[kind] += 1;
+    writeFileSync(STATS_FILE, JSON.stringify(stats), "utf-8");
+  } catch {
+    // 统计失败不影响诵读
+  }
+}
 
 function cacheKey(text: string, voice: string, speed: number): string {
   return createHash("sha256").update(`${voice}|${speed}|${text}`).digest("hex");
@@ -64,6 +89,7 @@ export async function POST(req: NextRequest) {
       try {
         const buf = readFileSync(cachedPath);
         if (buf.length > 100) {
+          bumpTtsStat("hits");
           return new NextResponse(buf, {
             status: 200,
             headers: {
@@ -105,6 +131,7 @@ export async function POST(req: NextRequest) {
     } catch {
       // ignore
     }
+    bumpTtsStat("misses");
 
     return new NextResponse(buffer, {
       status: 200,

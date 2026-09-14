@@ -3,6 +3,8 @@
  * 落盘于 .tts-cache/，听众首次点击「听文（摘要）」即秒开。
  * 用法：bun run scripts/preheat-tts.ts [topN]（默认 5，需 dev 服务器运行中）
  */
+export {};
+
 
 const API = process.env.PREHEAT_API ?? "http://localhost:3000";
 const TOP_N = Number(process.argv[2] ?? 5);

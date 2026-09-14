@@ -124,6 +124,8 @@ function ArticleBody({
   const [listenMode, setListenMode] = useState<"full" | "brief">("full");
   /** 分段诵读进度（全文多段时显示 i/n） */
   const [listenProgress, setListenProgress] = useState<{ i: number; n: number } | null>(null);
+  /** 当前段播放进度（0~100） */
+  const [listenPct, setListenPct] = useState(0);
   const { toast } = useToast();
 
   /* SEO：展卷时同步 document.title，合卷或换篇时复位；同时记入读书记忆 */
@@ -234,24 +236,30 @@ function ArticleBody({
       stopListening();
       setListenState("idle");
       setListenProgress(null);
+      setListenPct(0);
       return;
     }
     setListenState("loading");
     setListenProgress(null);
+    setListenPct(0);
     const chunks = listenMode === "brief" ? speechChunks.brief : speechChunks.full;
     const result = await listenToChunks(chunks, {
       onChunk: (i, n) => {
         setListenProgress({ i, n });
+        setListenPct(0);
         setListenState("playing");
       },
+      onProgress: (pct) => setListenPct(pct),
       onEnded: () => {
         setListenState("idle");
         setListenProgress(null);
+        setListenPct(0);
       },
     });
     if (result === "error") {
       setListenState("idle");
       setListenProgress(null);
+      setListenPct(0);
       toast({ title: "听文未成", description: "诵读暂时未成，请稍后再试。" });
       return;
     }
@@ -266,6 +274,7 @@ function ArticleBody({
       stopListening();
       setListenState("idle");
       setListenProgress(null);
+      setListenPct(0);
     }
   };
 
@@ -539,12 +548,24 @@ function ArticleBody({
                 aria-label={listenState === "playing" ? "停止诵读" : "听文（语音诵读此文）"}
                 title={listenState === "playing" ? "停止诵读" : "听文 · 敖胤先生为你诵读"}
                 className={cn(
-                  "inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
+                  "relative inline-flex h-10 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
                   listenState === "playing"
                     ? "border-gilt bg-gilt/15 text-gilt shadow-sm"
                     : "border-frame bg-paper-card text-ink-soft hover:border-gilt/60 hover:text-gilt disabled:opacity-60"
                 )}
               >
+                {/* 播放进度：按钮底缘鎏金细线随 timeupdate 前行 */}
+                {listenState === "playing" && listenPct > 0 && (
+                  <span
+                    className="absolute inset-x-0 bottom-0 h-[3px] bg-gilt/30"
+                    aria-hidden
+                  >
+                    <span
+                      className="block h-full bg-gilt transition-[width] duration-500 ease-linear"
+                      style={{ width: `${listenPct}%` }}
+                    />
+                  </span>
+                )}
                 {listenState === "loading" ? (
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
                 ) : listenState === "playing" ? (
@@ -563,6 +584,11 @@ function ArticleBody({
                     {listenProgress && listenProgress.n > 1 && (
                       <span className="listen-progress">
                         {listenProgress.i + 1}/{listenProgress.n}
+                      </span>
+                    )}
+                    {listenPct > 0 && (
+                      <span className="listen-progress tabular-nums">
+                        {Math.round(listenPct)}%
                       </span>
                     )}
                   </>

@@ -51,7 +51,7 @@ function extractJson(text: string): Record<string, string> | null {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const limit = Math.min(Number(searchParams.get("limit")) || 24, 60);
+    const limit = Math.min(Number(searchParams.get("limit")) || 24, 200);
     const sessionId = (searchParams.get("sessionId") || "").trim();
     const sinceRaw = (searchParams.get("since") || "").trim();
     const since = sinceRaw && !Number.isNaN(new Date(sinceRaw).getTime()) ? new Date(sinceRaw) : undefined;

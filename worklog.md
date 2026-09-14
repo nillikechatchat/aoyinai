@@ -551,3 +551,66 @@ Stage Summary:
 4. 评论治理升级：Comment 加 softDelete（留言主自删）、楼层链接锚点跳转
 5. OpenGraph 每篇文章动态题图（/api/og?title=&category= 已有基础，文章分享卡接 URL）
 6. e2e 清单 scripts/qa.md 增补 R9 专项（拓历/速览/TTS 缓存命中三条）
+
+---
+Task ID: R10（定时审查第 10 轮）
+Agent: main
+Task: QA 回归 + 五项新功能（卡片 hover 速览 / 速览批量预热 / 签历年览 / TTS 命中率统计 / 听文播放进度）+ 测试数据维护
+
+Work Log:
+- 状态评估：dev.log 无错误、lint 干净、路由全 200；agent-browser QA 回归（首页/文章列表/签筒/文章详情×3/关于）全绿
+- QA 疑云澄清：会话初期 console 见 figure/figcaption 嵌套 hydration 报错，复现排查后确认——① remark 管线全量校验 21 篇插图段落均含直接 image 子节点（p 解包器全部覆盖）；② 干净浏览器会话实测文章详情 0 报错；③ 结论为上一轮浏览器会话的 console 缓冲残留，非现存 bug（未改代码）
+- 测试语法教训补充：ArticleCard 根节点是 <article role="button">，querySelectorAll('button[aria-label^=阅读文章]') 匹配不到，须用 '[role="button"][aria-label^=...]'
+- 新功能 1「卡片 hover 速览」（tldr 上卡片）：
+  - Article 类型补 tldr?: string（API 早已返回，仅类型缺位）
+  - ArticleCard：有 tldr 时摘要区换装——grid 叠放两层（tldr-brief 摘要 / tldr-view 速览浮层），hover 时摘要渐隐、速览同位渐入（朱红左缘 + 鎏金底 + 「览」小印 + 楷体速览）；页脚日期行内加鎏金「览」小印作常驻可发现性提示（hover 时 rotate(-6deg) 点亮），带 title="悬停可见先生速览"
+  - globals.css 新增 .tldr-zone/.tldr-view/.tldr-brief/.tldr-foot + .card-tldr:hover 朴素语义类（规避 group-hover 沙盒求值异常的既知教训）；focus-visible 同步支持（键盘可达）
+  - 无 tldr 的文章回退原摘要，布局零跳动
+- 新功能 2「全部速览批量预热」：
+  - scripts/preheat-tldr.ts：拉全站文章逐篇 POST tldr（幂等），新撰/已有/失败三态打印 + 失败重试一次；bun run tldr:preheat [limit]
+  - 修复 tsc 报错：两个 preheat 脚本顶层变量冲突（无 import/export 被视为全局脚本），均加 export {} 模块化
+  - 实跑：21 篇全部就绪（新撰 18 · 已有 3 · 失败 0，LLM ~0.5-0.7s/篇），生成质量高（如「租卡如选马，微调七B用4090，全参训练需四卡A100」）
+- 新功能 3「签历年览」：
+  - /api/insight limit 上限 60→200，签筒拉取 200（年览需跨月窗口）
+  - QianCalendar 新增 month/year 双模式：月历副标题行加「年览」鎏金胶囊（CalendarRange）；年览=12 个迷你月卡（7 列点阵，朱点=问签之日、鎏金环=多签之日、金点=今日、素点=虚线网格），月卡有签时朱红描边+淡朱底+「N 签」，点击入该月月历；头部翻年 + 「共 N 签 · M 个朱印之日」统计 + 「月览」回退
+  - yearAgg useMemo 聚合（count/days/dayCount 三结构），页脚图注「点任一月，入月历回望 · 金点为今日 · 多签之日鎏金环」
+- 新功能 4「TTS 缓存命中率统计」：
+  - /api/tts：.tts-cache/stats.json 持久化 hits/misses 计数（bumpTtsStat，命中/新诵各 +1，损坏重置、失败不影响诵读）
+  - /api/stats 新增 tts 字段 {hits, misses, hitRate, files, bytes}
+  - 关于页墨迹统计区新增「听闻应声」行：诵读次数 + 缓存应声百分比 + 藏音 N 段（MB），朱/金双色比例条（role=img aria-label 完整）；0 诵读时优雅隐藏百分比
+  - 实测闭环：miss→hit→stats {hits:1, misses:1, hitRate:50, files:7}
+- 新功能 5「听文播放进度」：
+  - listen-insight.ts：playUrl 支持 onProgress（timeupdate → currentTime/duration 百分比，duration 不可用时静默）；listenToChunks 新增 onProgress(pct, i, n)（token 校验防串扰）
+  - article-dialog：listenPct 状态全链路复位（停止/换档/失败/换段）；播放中按钮显示「止 1/4 · 18%」+ 底缘鎏金细线进度条（absolute bottom h-[3px]，width 随 pct 前行，transition ease-linear）
+  - 实测：止 1/4 11% → 13% → 18% 递进，进度线同步
+- 测试数据维护：浏览器重开致 sessionId 更换，为新会话补 4+3 条测试签（跨 8/9 月，供年览/月历演示）
+
+验证结果（agent-browser + curl 实测）:
+- 卡片速览：9/9 卡 tldr 结构就绪；hover 换装 opacity 0→1/1→0 + 页脚「览」印旋转；截图 r10-card-tldr.png
+- 预热：21/21 篇就绪；列表页 9 卡全部有速览可显
+- 年览：12 迷你月渲染、8 月朱红卡+红点、9 月 3 签、统计行「共 4 签 · 2 个朱印之日」；年↔月往返正确；移动端 390px 单列自适应（r10-mobile-year.png）
+- TTS 统计：miss/hit 计数准确、hitRate 50%、关于页双主题渲染（r10-tts-echo.png）、移动端不溢出
+- 听文进度：「止 1/4 · N%」+ 金线随播放前行（r10-listen-progress.png）；止声/换档复位正常
+- 移动端 390px：文章动作行 6 按钮全部可见（flex-wrap 无溢出回归）；汉堡菜单→文章/关于导航正常
+- 兼容回归：文章详情抽查 3 篇 0 嵌套错误（修正选择器后复核）；console 0 错误；lint 干净；/ /rss.xml /api/stats /api/categories /api/articles /api/og 全 200；dev.log 无运行时错误
+- 截图存证：screenshots/r10-*.png（QA 回归、卡片速览 hover、年览桌面/移动、月历回跳、TTS 统计、听文进度、移动端 TTS 行）
+
+Stage Summary:
+- 本轮交付 5 项新功能 + 1 个 tsc 脚本冲突修复 + 1 条测试语法教训（role=button 选择器）
+- 速览矩阵成型：LLM 懒生成（详情速览卡）→ 批量预热（tldr:preheat 一条命令全站缓存）→ 列表卡片 hover 秒出，AI 能力从详情页走到列表页
+- 签历完成「月历—年历」双尺度：单月朱印之日 → 全年十二月至多签分布，问签数据可视化闭环
+- TTS 观测性补全：命中率/库存量进 /api/stats 并在关于页可视化，预热→缓存→命中→展示链路完整可度量
+- 关键教训：① worklog 里 QA「疑云」也要闭环归因（残留缓冲 vs 现存 bug），用干净环境+数据面校验双确认再动手；② aria/role 选择器在 eval 里要认 <article role="button"> 这类非常规标签；③ agent-browser 设视口是 `set viewport <w> <h>` 子命令，`open --viewport` 与裸 `viewport` 均无效；④ 后台 nohup 预热脚本会被沙盒会话回收，长任务一律前台同步跑
+
+## 当前状态评估
+- 功能集全量可用：司南问签（自动/定向/上下文连贯/签筒隔离/签历+年览/拓印+QR/拓历月历卡/听签）、文章（排序/加载更多/搜索/筛选/详情/进度/TOA spy/心许/速览+卡片 hover 速览/听文双档+播放进度/荐书签/读毕印/插图/首字下沉/笔谈复言+楼层+只看先生+敏感词+限流+有同感/上下篇）、今日签运、本周热门、墨迹统计（折线+环形图+热力格子+TTS 命中率）、栏目预览、RSS、夜读、回顶、SEO
+- 21 篇文章 tldr 全量就绪；AI 栈：LLM 问签/速览 + TTS 听签/听文（磁盘缓存+命中率观测）+ canvas 拓印
+- lint 干净；全部路由 200；双主题 + 移动端覆盖全部新 UI；console 无错误
+
+## 下一阶段建议（优先级从高到低）
+1. 评论治理升级：Comment softDelete（留言主自删）+ 楼层复制链接/会话内锚点跳转（R9 遗留）
+2. 签历年览拓印：年览模式下生成「年度 12 月总览」水墨分享图（复用 downloadCalendarCard 思路，720x1050 十二宫格）
+3. 听文进阶：分段进度换算为全文百分比（当前 pct 为段内进度，可按段时长加权合成总进度）；TTS 预合成进 content:rebuild 流水线
+4. 首页 hero 交互增强：司南 hover 预告签文格目（如「事业·学问·行止」浮出），或今日签运卡与签历年览联动（点朱印日直达月历）
+5. 文章卡片分级动效：速览浮层支持多段渐显（长 tldr 逐句浮现），或 hover 时封面轻移+速览双动画编排
+6. e2e 清单 scripts/qa.md 增补 R10 专项（卡片速览 hover/年览切换/TTS 统计闭环/听文进度四条）

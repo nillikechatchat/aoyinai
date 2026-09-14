@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarDays,
+  CalendarRange,
   ChevronLeft,
   ChevronRight,
   Compass,
@@ -72,7 +73,7 @@ export function QiantongView({ onAsk, refreshKey = 0 }: QiantongViewProps) {
       try {
         const sid = getSessionId();
         const res = await fetch(
-          `/api/insight?limit=60${sid ? `&sessionId=${encodeURIComponent(sid)}` : ""}`
+          `/api/insight?limit=200${sid ? `&sessionId=${encodeURIComponent(sid)}` : ""}`
         );
         const data = await res.json();
         if (!cancelled && data.ok) setRecords(data.records);
@@ -259,7 +260,7 @@ function CardsBoard({
   );
 }
 
-/** 签历：按月历视图回望问签的日子 */
+/** 签历：按月历视图回望问签的日子；可切「年览」纵览全年十二月的朱印分布 */
 function QianCalendar({
   records,
   onAsk,
@@ -272,6 +273,7 @@ function QianCalendar({
   const [month, setMonth] = useState(now.getMonth()); // 0 起
   const [selected, setSelected] = useState<string | null>(null);
   const [stampingCal, setStampingCal] = useState(false);
+  const [calMode, setCalMode] = useState<"month" | "year">("month");
 
   // 按日聚合（同日按时间倒序）
   const byDay = useMemo(() => {
@@ -299,6 +301,39 @@ function QianCalendar({
     setYear(y);
     setMonth(m);
   };
+
+  const shiftYear = (delta: number) => {
+    setSelected(null);
+    setYear((y) => y + delta);
+  };
+
+  /* 年度聚合：Map<月(0 起), { 签数, 朱印之日集合, 各日签数 }> */
+  const yearAgg = useMemo(() => {
+    const months = new Map<
+      number,
+      { count: number; days: Set<number>; dayCount: Map<number, number> }
+    >();
+    for (const r of records) {
+      const d = new Date(r.createdAt);
+      if (d.getFullYear() !== year) continue;
+      const m = d.getMonth();
+      if (!months.has(m))
+        months.set(m, { count: 0, days: new Set(), dayCount: new Map() });
+      const e = months.get(m)!;
+      e.count += 1;
+      e.days.add(d.getDate());
+      e.dayCount.set(d.getDate(), (e.dayCount.get(d.getDate()) ?? 0) + 1);
+    }
+    return months;
+  }, [records, year]);
+  const yearTotal = useMemo(
+    () => [...yearAgg.values()].reduce((s, e) => s + e.count, 0),
+    [yearAgg]
+  );
+  const yearDays = useMemo(
+    () => [...yearAgg.values()].reduce((s, e) => s + e.days.size, 0),
+    [yearAgg]
+  );
 
   const firstDay = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -349,6 +384,116 @@ function QianCalendar({
     return y === year && m - 1 === month;
   }).length;
 
+  /* ── 年览：十二月迷你历 ── */
+  if (calMode === "year") {
+    return (
+      <div className="paper-frame mt-8 rounded-md p-5 sm:p-6">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => shiftYear(-1)}
+            aria-label="上一年"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-frame/70 text-ink-faint transition-colors hover:border-vermillion/50 hover:text-vermillion"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden />
+          </button>
+          <div className="text-center">
+            <p className="font-kai text-lg font-bold tracking-[0.25em] text-ink">{year} 年 · 全年</p>
+            <p className="mt-0.5 flex items-center justify-center gap-2 font-song text-[0.68rem] tracking-[0.2em] text-ink-faint">
+              <span>
+                共 {yearTotal} 签 · {yearDays} 个朱印之日
+              </span>
+              <button
+                onClick={() => setCalMode("month")}
+                aria-label="切回月历"
+                title="切回月历"
+                className="inline-flex items-center gap-1 rounded-full border border-gilt/50 px-2 py-0.5 text-gilt transition-colors hover:border-gilt hover:bg-gilt/10 hover:text-vermillion"
+              >
+                <CalendarDays className="h-3 w-3" aria-hidden />
+                月览
+              </button>
+            </p>
+          </div>
+          <button
+            onClick={() => shiftYear(1)}
+            aria-label="下一年"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-frame/70 text-ink-faint transition-colors hover:border-vermillion/50 hover:text-vermillion"
+          >
+            <ChevronRight className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 12 }).map((_, m) => {
+            const agg = yearAgg.get(m);
+            const miniDays = new Date(year, m + 1, 0).getDate();
+            const miniBlanks = new Date(year, m, 1).getDay();
+            return (
+              <button
+                key={m}
+                onClick={() => {
+                  setMonth(m);
+                  setSelected(null);
+                  setCalMode("month");
+                }}
+                aria-label={`${year}年${m + 1}月，${agg?.count ?? 0} 支签，点击查看月历`}
+                className={cn(
+                  "group-mini rounded-md border p-3 text-left transition-all hover:shadow-md",
+                  agg
+                    ? "border-vermillion/30 bg-vermillion/[0.04] hover:border-vermillion/60"
+                    : "border-frame/60 hover:border-gilt/40"
+                )}
+              >
+                <span className="flex items-baseline justify-between">
+                  <span
+                    className={cn(
+                      "font-kai text-sm font-bold tracking-[0.2em]",
+                      agg ? "text-vermillion" : "text-ink-soft"
+                    )}
+                  >
+                    {m + 1} 月
+                  </span>
+                  <span className="font-song text-[0.6rem] tracking-[0.15em] text-ink-faint">
+                    {agg ? `${agg.count} 签` : "—"}
+                  </span>
+                </span>
+                <span className="mt-2.5 grid h-[57px] grid-cols-7 content-start gap-x-[3px] gap-y-[4px]" aria-hidden>
+                  {Array.from({ length: miniBlanks }).map((_, i) => (
+                    <span key={`b-${i}`} />
+                  ))}
+                  {Array.from({ length: miniDays }).map((_, i) => {
+                    const day = i + 1;
+                    const cnt = agg?.dayCount.get(day) ?? 0;
+                    const isMiniToday =
+                      year === now.getFullYear() && m === now.getMonth() && day === now.getDate();
+                    return (
+                      <span
+                        key={day}
+                        className={cn(
+                          "h-[5px] w-[5px] justify-self-center rounded-full",
+                          cnt > 0
+                            ? cnt > 1
+                              ? "bg-vermillion ring-1 ring-gilt/70"
+                              : "bg-vermillion/85"
+                            : isMiniToday
+                              ? "bg-gilt/80"
+                              : "bg-frame/50"
+                        )}
+                      />
+                    );
+                  })}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="mt-5 border-t border-frame/60 pt-3 text-center font-song text-[0.7rem] tracking-[0.2em] text-ink-faint">
+          点任一月，入月历回望 · 金点为今日 · 多签之日鎏金环
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
       {/* 月历 */}
@@ -382,6 +527,15 @@ function QianCalendar({
                   <Stamp className="h-3 w-3" aria-hidden />
                 )}
                 拓历
+              </button>
+              <button
+                onClick={() => setCalMode("year")}
+                aria-label="切换年度总览（十二月分布）"
+                title="年览 · 纵览全年十二月的朱印分布"
+                className="inline-flex items-center gap-1 rounded-full border border-gilt/50 px-2 py-0.5 text-gilt transition-colors hover:border-gilt hover:bg-gilt/10 hover:text-vermillion"
+              >
+                <CalendarRange className="h-3 w-3" aria-hidden />
+                年览
               </button>
             </p>
           </div>

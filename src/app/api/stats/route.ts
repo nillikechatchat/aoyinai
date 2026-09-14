@@ -1,9 +1,56 @@
 import { NextResponse } from "next/server";
+import { existsSync, readFileSync, readdirSync, statSync } from "fs";
+import path from "path";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/stats —— 全站墨迹统计（关于页看板用）：总量 + 近 30 日趋势 + 栏目分布
+/** TTS 缓存概况：命中率计数（.tts-cache/stats.json）+ 缓存文件数与体积 */
+function ttsCacheStats() {
+  try {
+    const dir = path.join(process.cwd(), ".tts-cache");
+    let hits = 0;
+    let misses = 0;
+    const statsFile = path.join(dir, "stats.json");
+    if (existsSync(statsFile)) {
+      try {
+        const parsed = JSON.parse(readFileSync(statsFile, "utf-8")) as Partial<{
+          hits: number;
+          misses: number;
+        }>;
+        hits = Number(parsed.hits) || 0;
+        misses = Number(parsed.misses) || 0;
+      } catch {
+        // ignore
+      }
+    }
+    let files = 0;
+    let bytes = 0;
+    if (existsSync(dir)) {
+      for (const f of readdirSync(dir)) {
+        if (!f.endsWith(".wav")) continue;
+        try {
+          bytes += statSync(path.join(dir, f)).size;
+          files += 1;
+        } catch {
+          // ignore
+        }
+      }
+    }
+    const total = hits + misses;
+    return {
+      hits,
+      misses,
+      hitRate: total > 0 ? Math.round((hits / total) * 100) : null,
+      files,
+      bytes,
+    };
+  } catch {
+    return { hits: 0, misses: 0, hitRate: null, files: 0, bytes: 0 };
+  }
+}
+
+// GET /api/stats —— 全站墨迹统计（关于页看板用）：总量 + 近 30 日趋势 + 栏目分布 + TTS 缓存
 export async function GET() {
   try {
     const since30 = new Date(Date.now() - 30 * 24 * 3600 * 1000);
@@ -78,6 +125,8 @@ export async function GET() {
       views: c._sum.views ?? 0,
     }));
 
+    const tts = ttsCacheStats();
+
     return NextResponse.json({
       ok: true,
       stats: {
@@ -90,6 +139,7 @@ export async function GET() {
         latestArticle: recentArticles[0] ?? null,
         daily: days,
         categoryDist,
+        tts,
       },
     });
   } catch (e) {

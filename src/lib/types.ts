@@ -10,6 +10,8 @@ export interface Article {
   readMinutes: number;
   views: number;
   likes: number;
+  /** AI 一句话速览（先生撰，懒生成 + 入库；卡片 hover 可展示） */
+  tldr?: string;
   published: boolean;
   publishedAt: string;
   createdAt: string;

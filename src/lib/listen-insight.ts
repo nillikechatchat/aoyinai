@@ -48,8 +48,8 @@ async function fetchAudioUrl(text: string): Promise<string | null> {
   }
 }
 
-/** 播放一段 blob，自然结束时 resolve；出错 reject */
-function playUrl(url: string): Promise<void> {
+/** 播放一段 blob，自然结束时 resolve；出错 reject；可选回传播放进度百分比 */
+function playUrl(url: string, onProgress?: (pct: number) => void): Promise<void> {
   return new Promise((resolve, reject) => {
     const player = new Audio(url);
     audio = player;
@@ -61,6 +61,14 @@ function playUrl(url: string): Promise<void> {
       if (audio === player) audio = null;
       reject(new Error("audio_error"));
     };
+    if (onProgress) {
+      player.ontimeupdate = () => {
+        const d = player.duration;
+        if (Number.isFinite(d) && d > 0) {
+          onProgress(Math.min(100, Math.max(0, (player.currentTime / d) * 100)));
+        }
+      };
+    }
     player.play().catch((e) => {
       if (audio === player) audio = null;
       reject(e);
@@ -93,6 +101,8 @@ export async function listenToText(
 export interface ChunkListenOptions {
   /** 每段开始播放时回调（i 从 0 起） */
   onChunk?: (i: number, total: number) => void;
+  /** 当前段播放进度（0~100，随 timeupdate 更新） */
+  onProgress?: (pct: number, i: number, total: number) => void;
   /** 整个队列自然播完时回调 */
   onEnded?: () => void;
 }
@@ -126,7 +136,9 @@ export async function listenToChunks(
       const next = list[i + 1];
       if (next && !cache.has(next)) void fetchAudioUrl(next);
       try {
-        await playUrl(url);
+        await playUrl(url, (pct) => {
+          if (token === queueToken) opts?.onProgress?.(pct, i, list.length);
+        });
       } catch {
         return; // 被停止或播放出错
       }
