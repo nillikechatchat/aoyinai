@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Clock, Eye, Heart, ListTree } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import {
@@ -38,6 +38,7 @@ function extractToc(content: string): string[] {
 }
 
 const LIKED_KEY = "aoyin_liked_slugs";
+const BASE_TITLE = "敖胤AI · 观智能之潮，守问学之心";
 
 function getLikedSlugs(): string[] {
   try {
@@ -99,6 +100,14 @@ function ArticleBody({
   const [activeToc, setActiveToc] = useState(-1);
   const [liked, setLiked] = useState(() => getLikedSlugs().includes(article.slug));
   const [likeCount, setLikeCount] = useState(article.likes);
+
+  /* SEO：展卷时同步 document.title，合卷或换篇时复位 */
+  useEffect(() => {
+    document.title = `${article.title} · 敖胤AI`;
+    return () => {
+      document.title = BASE_TITLE;
+    };
+  }, [article.title, article.slug]);
 
   const meta = CATEGORY_META[article.category];
   const toc = useMemo(() => extractToc(article.content), [article]);

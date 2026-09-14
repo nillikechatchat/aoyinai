@@ -193,7 +193,12 @@ export default function Home() {
       <main className="flex-1">
         {view === "home" && (
           <>
-            <Hero asking={asking} onOpenDialog={openInsightDialog} />
+            <Hero
+              asking={asking}
+              onOpenDialog={openInsightDialog}
+              onOpenQiantong={() => navigate("qiantong")}
+              insightCount={insightCount}
+            />
 
             {/* 推荐 + 今日一读 */}
             <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-16">

@@ -3,13 +3,18 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Pointer } from "lucide-react";
+import { TodayInsightCard } from "./today-insight-card";
 
 interface HeroProps {
   asking: boolean;
   onOpenDialog: () => void;
+  /** 前往签筒视图（今日签运卡跳转） */
+  onOpenQiantong: () => void;
+  /** 问签次数（今日签运卡联动刷新） */
+  insightCount: number;
 }
 
-export function Hero({ asking, onOpenDialog }: HeroProps) {
+export function Hero({ asking, onOpenDialog, onOpenQiantong, insightCount }: HeroProps) {
   const [pressed, setPressed] = useState(false);
 
   const handleClick = () => {
@@ -149,6 +154,13 @@ export function Hero({ asking, onOpenDialog }: HeroProps) {
             {asking ? "司南旋转，天机推演中…" : "点击司南开始"}
           </span>
         </div>
+
+        {/* 今日签运小卡 */}
+        <TodayInsightCard
+          onAsk={onOpenDialog}
+          onOpenQiantong={onOpenQiantong}
+          refreshKey={insightCount}
+        />
       </div>
 
       {/* 左侧竖排 */}

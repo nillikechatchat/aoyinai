@@ -161,8 +161,14 @@ async function makeQrDataUrl(url: string): Promise<string | null> {
   }
 }
 
-/** 生成签文分享卡并触发下载 */
-export async function downloadInsightCard(data: ShareCardData): Promise<void> {
+/** 拓印结果：shared=系统分享已递出 / downloaded=已存入下载 / aborted=用户取消 */
+export type StampResult = "shared" | "downloaded" | "aborted";
+
+/**
+ * 生成签文分享卡并导出。
+ * 移动端优先尝试系统分享（Web Share API Level 2），失败或无能力则回退下载。
+ */
+export async function downloadInsightCard(data: ShareCardData): Promise<StampResult> {
   const W = 750;
   const H = 1050;
   const canvas = document.createElement("canvas");
@@ -327,14 +333,34 @@ export async function downloadInsightCard(data: ShareCardData): Promise<void> {
   ctx.fillText("敖胤AI · 观智能之潮", 252, H - 106);
   drawSeal(ctx, "胤", W - 110, H - 108, 34, 16);
 
-  // 导出
+  // 导出：优先系统分享，回退下载
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+
+  const fileName = `敖胤AI-签文-${data.name}.png`;
+  if (blob && typeof navigator !== "undefined" && typeof navigator.share === "function") {
+    try {
+      const file = new File([blob], fileName, { type: "image/png" });
+      if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `敖胤AI · ${data.name}`,
+          text: `「${data.oracle}」—— 敖胤先生赐签`,
+        });
+        return "shared";
+      }
+    } catch (e) {
+      // 用户取消分享不算失败；其他错误回退下载
+      if ((e as Error)?.name === "AbortError") return "aborted";
+    }
+  }
+
   const url = blob ? URL.createObjectURL(blob) : canvas.toDataURL("image/png");
   const a = document.createElement("a");
   a.href = url;
-  a.download = `敖胤AI-签文-${data.name}.png`;
+  a.download = fileName;
   document.body.appendChild(a);
   a.click();
   a.remove();
   if (blob) URL.revokeObjectURL(url);
+  return "downloaded";
 }

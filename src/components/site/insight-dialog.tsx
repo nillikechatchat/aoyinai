@@ -45,7 +45,7 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
     if (!insight || stamping) return;
     setStamping(true);
     try {
-      await downloadInsightCard({
+      const result = await downloadInsightCard({
         name: insight.name,
         oracle: insight.oracle,
         interpret: insight.interpret,
@@ -53,7 +53,12 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
         question: question || undefined,
         createdAt: new Date().toISOString(),
       });
-      toast({ title: "签卡已拓印", description: "水墨签卡已存入下载，可留可赠。" });
+      if (result === "shared") {
+        toast({ title: "签卡已递出", description: "感君传阅，与友共签。" });
+      } else if (result === "downloaded") {
+        toast({ title: "签卡已拓印", description: "水墨签卡已存入下载，可留可赠。" });
+      }
+      // aborted：用户取消分享，不打扰
     } catch {
       toast({ title: "拓印失败", description: "当前环境暂不支持生成图片。" });
     } finally {

@@ -9,9 +9,11 @@ import { coverFilter } from "@/lib/utils";
 interface ArticleCardProps {
   article: Article;
   onOpen: (article: Article) => void;
+  /** 页内序号：用于错开入场动画（可选） */
+  index?: number;
 }
 
-export function ArticleCard({ article, onOpen }: ArticleCardProps) {
+export function ArticleCard({ article, onOpen, index = 0 }: ArticleCardProps) {
   const meta = CATEGORY_META[article.category];
   return (
     <article
@@ -22,6 +24,9 @@ export function ArticleCard({ article, onOpen }: ArticleCardProps) {
       tabIndex={0}
       role="button"
       aria-label={`阅读文章：${article.title}`}
+      style={{
+        animation: `fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) ${Math.min(index * 0.06, 0.42)}s both`,
+      }}
       className="hover-lift group cursor-pointer overflow-hidden rounded-md border border-frame/80 bg-paper-card shadow-[0_2px_10px_-6px_rgba(80,60,20,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermillion/50"
     >
       <div className="relative aspect-[16/10] overflow-hidden">

@@ -22,7 +22,7 @@ export async function GET(
   }
 }
 
-// POST /api/articles/[slug]/comments —— 落笔留言（匿名）
+// POST /api/articles/[slug]/comments —— 落笔留言（匿名，可复他人之言）
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -32,6 +32,7 @@ export async function POST(
     const payload = await req.json().catch(() => ({}));
     const text = String(payload?.body ?? "").trim();
     let author = String(payload?.author ?? "").trim();
+    const parentId = String(payload?.parentId ?? "").trim();
 
     if (!text) {
       return NextResponse.json({ ok: false, error: "留言不可为空" }, { status: 400 });
@@ -41,6 +42,19 @@ export async function POST(
     }
     if (!author) author = "无名氏";
     if (author.length > 12) author = author.slice(0, 12);
+
+    // 回复校验：父留言须存在且同属此文
+    let parent: { id: string; author: string } | null = null;
+    if (parentId) {
+      const found = await db.comment.findUnique({
+        where: { id: parentId },
+        select: { id: true, author: true, articleSlug: true },
+      });
+      if (!found || found.articleSlug !== slug) {
+        return NextResponse.json({ ok: false, error: "所复之言已不在纸上" }, { status: 400 });
+      }
+      parent = { id: found.id, author: found.author };
+    }
 
     // 简易防刷：同一文章同作者同内容 60 秒内只收一条
     const recent = await db.comment.findFirst({
@@ -57,7 +71,13 @@ export async function POST(
     }
 
     const comment = await db.comment.create({
-      data: { articleSlug: slug, author, body: text },
+      data: {
+        articleSlug: slug,
+        author,
+        body: text,
+        parentId: parent?.id ?? null,
+        replyToAuthor: parent?.author ?? null,
+      },
     });
     return NextResponse.json({ ok: true, comment });
   } catch (e) {

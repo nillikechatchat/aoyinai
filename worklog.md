@@ -235,3 +235,62 @@ Stage Summary:
 4. 评论治理：敏感词/频率限制升级、评论点赞或回复（Comment 加 parentId）
 5. 管理看板 /api/stats（views/likes/comments/签数聚合）+ 关于页可视化
 6. SEO：每篇文章 meta 动态生成（现单路由限制下可用 document.title 更新 + JSON-LD）
+
+---
+Task ID: R4（定时审查第 4 轮）
+Agent: main
+Task: QA 回归 + 四组新功能（列表排序与加载更多 / 笔谈复言 / 今日签运+墨迹统计 / SEO+Web Share）+ 样式细节
+
+Work Log:
+- QA 回归（agent-browser）：首页/问签/签筒/文章/弹窗/夜读/移动端全流程无阻塞 bug；发现 4 项改进点：document.title 不随文章变化、封面差异化过弱、列表无排序无分页、评论无回复
+- 新功能 1「文章列表 最新/最热 + 加载更多」：
+  - /api/articles 新增 offset 参数（skip 仅对非 random 生效）；ArticlesView 新增 签条式排序切换（最新 Sparkles/最热 Flame，vermillion 激活态，ml-auto 贴右侧）
+  - 分页 PAGE_SIZE=9，「再展一卷（余 N 篇）」鎏金描边按钮 + ChevronDown hover 位移；尽览后显示「共 N 篇 · 尽览于此」横线落款；客户端 id 去重防竞态
+  - ArticleCard 新增可选 index prop：fadeUp 错开入场（0.06s 步进，上限 0.42s）
+- 新功能 2「笔谈复言（评论回复）」：
+  - Prisma Comment 新增 parentId/replyToAuthor（可空列 + [parentId] 索引；注意 @default(null) 语法不被 SQLite 接受，可空列默认即为 null）；db:push + 重启 dev
+  - API POST 校验 parentId：父留言须存在且同属此文（400「所复之言已不在纸上」）；replyToAuthor 冗余落库便于展示
+  - article-comments 重写：buildThreads 两层会话树（复言一律归顶端祖先，孤儿复言自动升顶；顶端倒序/复言正序）；每条留言「复」按钮（MessageCircle）→ 表单顶部鎏金「复 X：」指示条（可取消）+ 提交按钮变「复言」；复言缩进 border-l 连接线 + 「↳ 复 X」金标 + compact 印章；计数改用 totalCount（含复言）；列表 max-h-64→max-h-80
+  - seed.ts 留言 5→8 条：观澜/青崖/苏合/无名氏/临江仙 + 敖胤先生两条回复（alias/replyTo 映射机制，先父后子插入）
+- 新功能 3「今日签运 + 墨迹统计」：
+  - /api/insight GET 新增 since 参数；新组件 today-insight-card：首页 Hero 底部小卡（paper-frame + 四角鎏金饰角），当日已问→末字印章+卦名+卦辞+「翻看签筒」，未问→「今日未问·一念起可问一事」+「去问一卦」，问签后经 refreshKey 自动刷新；since 取访客本地零点 ISO
+  - 新路由 /api/stats：aggregate+groupBy+count 并行聚合（articles/views/likes/comments/insights/topCategory/latestArticle）
+  - AboutView 新增「墨迹统计」paper-frame 看板：5 枚数据瓦片（文/阅/许/谈/签 印章角标 + 千分位 tabular-nums + fadeUp 错开 + hover 变朱红）+ 注脚（最热栏目/最近刊行）；加载骨架屏
+- 新功能 4「SEO + Web Share」：
+  - ArticleBody useEffect 同步 document.title（「文章标题 · 敖胤AI」，合卷/换篇复位 BASE_TITLE）
+  - layout.tsx 注入 JSON-LD（schema.org @graph：WebSite/Person/Blog）
+  - share-card.ts 导出升级：StampResult（shared/downloaded/aborted），navigator.share+canShare files 优先（AbortError 静默），回退 a.download；InsightDialog toast 按结果分支（「签卡已递出」/「签卡已拓印」/取消不打扰）
+- 样式细节：coverFilter 色相 ±12°→±24°、饱和 0.94~1.14、亮度 0.96~1.04（同栏目封面肉眼可辨）；实测 学习路径/RAG/价格战 三卡滤镜值各不相同
+
+验证结果（agent-browser 实测）:
+- 排序：最热激活后首位为 API 价格战（views 最高）；加载更多 9→18→21 后转「尽览于此」
+- 复言：点「复」→鎏金指示条→提交→计数 3→4、松间照复言缩进挂于青崖下（↳ 复 青崖）+ toast「复言已录」
+- 今日签运：未问态→问签（流云卦）→合卷后卡片自动变「流云卦+翻看签筒」
+- 墨迹统计：21 文/11,466 阅读/1,021 心许/9 笔谈/1 问签（实时联动）
+- SEO：开文章后 document.title=「T-agent 设计笔记（一）…· 敖胤AI」；JSON-LD WebSite,Person,Blog 在 DOM
+- 拓印：blob 生成+下载触发（headless 无 navigator.share 走下载回退，符合设计）
+- 双主题（新 UI 全部适配）、移动端 390px（排序签条/今日签运卡）✓
+- lint 通过；/、/rss.xml、/api/categories、/api/stats、/api/insight 全 200；dev.log 无错误
+
+Bug 修复（本轮过程中发现并当场解决）:
+1. articles-view 重写后遗留 list 引用未替换 → 点击文章卡整页崩溃（ReferenceError: list is not defined）→ 改为 threads.length；教训：删除 useMemo 变量时须全文检索其所有引用
+2. /api/articles sort=top 时 skip 被错误跳过 → 加载更多返回同一页被去重吃掉 → skip 仅对 random 跳过
+3. Prisma 可空列 @default(null) 在 SQLite 报错 → 去掉默认值即可
+4. seed 复言引用顺序：replyTo 指向的 alias 必须先于回复插入（数组顺序修正）
+
+Stage Summary:
+- 本轮交付 4 组新功能 + 2 处样式细节 + 4 个过程中 bug 修复；内容量 21 篇不变，留言 5→8
+- 功能集新增：列表排序/加载更多、笔谈复言（两层会话树）、今日签运卡、墨迹统计看板、动态标题、JSON-LD、系统分享
+- 截图存证：screenshots/r4-*.png（QA 回归、新功能明暗/移动端全记录）
+
+## 当前状态评估
+- 功能集：司南问签（自动/定向/签筒隔离/拓印+二维码+系统分享）、文章（列表排序/加载更多/搜索/筛选/详情/进度条/TOA spy/心许/笔谈复言/上下篇）、今日签运、本周热门、墨迹统计、栏目、关于、RSS、夜读模式、回顶、SEO 基础
+- lint 干净，全部路由 200，双主题覆盖所有新 UI
+
+## 下一阶段建议（优先级从高到低）
+1. 文章敏感词过滤 + 复言楼层号（#1 #2）与「只看楼主」式筛选
+2. 墨迹统计进阶：7 日问签/留言趋势迷你折线（sparkline，纯 SVG）
+3. 首页栏目区 hover 预览该栏目最新一篇（浮层）
+4. 文章「荐而后读」：将文章生成水墨荐书签（复用 share-card 思路）
+5. 列表虚拟化或游标分页（50+ 篇后）
+6. OpenGraph 图片动态生成（/api/og 用 ImageResponse 生成文章题图）

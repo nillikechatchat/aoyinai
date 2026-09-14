@@ -1,11 +1,12 @@
 "use client";
 
-import { Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Search, X, ChevronDown, Flame, Sparkles } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArticleCard } from "./article-card";
 import type { Article, Category } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface ArticlesViewProps {
   categories: Category[];
@@ -14,6 +15,15 @@ interface ArticlesViewProps {
   onOpen: (article: Article) => void;
 }
 
+const PAGE_SIZE = 9;
+
+type SortKey = "new" | "top";
+
+const SORTS: Array<{ key: SortKey; label: string; hint: string }> = [
+  { key: "new", label: "最新", hint: "按刊行时序" },
+  { key: "top", label: "最热", hint: "按读者火候" },
+];
+
 export function ArticlesView({
   categories,
   activeCategory,
@@ -21,19 +31,23 @@ export function ArticlesView({
   onOpen,
 }: ArticlesViewProps) {
   const [keyword, setKeyword] = useState("");
+  const [sort, setSort] = useState<SortKey>("new");
   const [articles, setArticles] = useState<Article[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  /* 首屏 / 筛选 / 搜索 / 排序变化 → 重载第一页 */
   useEffect(() => {
     let cancelled = false;
-    const load = async (search: string) => {
+    const load = async (search: string, sortKey: SortKey) => {
       setLoading(true);
       try {
-        const params = new URLSearchParams({ limit: "60" });
+        const params = new URLSearchParams({ limit: String(PAGE_SIZE), offset: "0" });
         if (activeCategory !== "all") params.set("category", activeCategory);
         if (search.trim()) params.set("search", search.trim());
+        if (sortKey === "top") params.set("sort", "top");
         const res = await fetch(`/api/articles?${params.toString()}`);
         const data = await res.json();
         if (!cancelled && data.ok) {
@@ -49,19 +63,51 @@ export function ArticlesView({
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (keyword) {
-      debounceRef.current = setTimeout(() => load(keyword), 350);
+      debounceRef.current = setTimeout(() => load(keyword, sort), 350);
     } else {
-      load("");
+      load("", sort);
     }
     return () => {
       cancelled = true;
     };
-  }, [activeCategory, keyword]);
+  }, [activeCategory, keyword, sort]);
+
+  /* 加载更多：追加下一页 */
+  const loadMore = useCallback(async () => {
+    if (loadingMore || articles.length >= total) return;
+    setLoadingMore(true);
+    try {
+      const params = new URLSearchParams({
+        limit: String(PAGE_SIZE),
+        offset: String(articles.length),
+      });
+      if (activeCategory !== "all") params.set("category", activeCategory);
+      if (keyword.trim()) params.set("search", keyword.trim());
+      if (sort === "top") params.set("sort", "top");
+      const res = await fetch(`/api/articles?${params.toString()}`);
+      const data = await res.json();
+      if (data.ok) {
+        // 简单去重（防并发竞态）
+        setArticles((prev) => {
+          const seen = new Set(prev.map((a) => a.id));
+          return [...prev, ...data.articles.filter((a: Article) => !seen.has(a.id))];
+        });
+        setTotal(data.total);
+      }
+    } catch {
+      // 静默失败
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [activeCategory, articles.length, keyword, loadingMore, sort, total]);
 
   const activeName =
     activeCategory === "all"
       ? "全部"
       : categories.find((c) => c.key === activeCategory)?.name ?? "全部";
+
+  const remaining = Math.max(total - articles.length, 0);
+  const hasMore = articles.length < total;
 
   return (
     <section className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6" aria-label="文章列表">
@@ -97,8 +143,8 @@ export function ArticlesView({
         </div>
       </div>
 
-      {/* 分类筛选 */}
-      <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="栏目筛选">
+      {/* 分类筛选 + 排序签条 */}
+      <div className="mt-6 flex flex-wrap items-center gap-2" role="tablist" aria-label="栏目筛选">
         <Button
           variant={activeCategory === "all" ? "default" : "outline"}
           onClick={() => onCategoryChange("all")}
@@ -125,6 +171,38 @@ export function ArticlesView({
             {c.name}
           </Button>
         ))}
+
+        {/* 排序签条（最新/最热） */}
+        <div
+          className="ml-auto flex items-center gap-0.5 rounded-full border border-frame bg-paper-deep/60 p-0.5"
+          role="group"
+          aria-label="排序方式"
+        >
+          {SORTS.map((s) => {
+            const active = sort === s.key;
+            return (
+              <button
+                key={s.key}
+                onClick={() => setSort(s.key)}
+                aria-pressed={active}
+                title={s.hint}
+                className={cn(
+                  "inline-flex h-8 items-center gap-1.5 rounded-full px-3.5 font-kai text-[0.8rem] tracking-[0.2em] transition-all duration-300",
+                  active
+                    ? "bg-vermillion text-[#f8f3e7] shadow-sm"
+                    : "text-ink-soft hover:text-vermillion"
+                )}
+              >
+                {s.key === "top" ? (
+                  <Flame className={cn("h-3.5 w-3.5", active && "text-[#f8f3e7]")} aria-hidden />
+                ) : (
+                  <Sparkles className={cn("h-3.5 w-3.5", active && "text-[#f8f3e7]")} aria-hidden />
+                )}
+                {s.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="ink-divider mt-6" />
@@ -154,13 +232,43 @@ export function ArticlesView({
       ) : (
         <>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {articles.map((a) => (
-              <ArticleCard key={a.id} article={a} onOpen={onOpen} />
+            {articles.map((a, i) => (
+              <ArticleCard key={a.id} article={a} onOpen={onOpen} index={i % PAGE_SIZE} />
             ))}
           </div>
-          <p className="mt-8 text-center font-song text-xs tracking-[0.25em] text-ink-faint">
-            共 {total} 篇 · 尽览于此
-          </p>
+
+          {/* 加载更多 / 尽览 */}
+          <div className="mt-10 flex flex-col items-center gap-3">
+            {hasMore ? (
+              <Button
+                onClick={loadMore}
+                disabled={loadingMore}
+                variant="outline"
+                className="group h-11 gap-2.5 rounded-full border-gilt/60 bg-paper-card px-7 font-kai text-sm tracking-[0.25em] text-ink shadow-sm transition-all hover:border-gilt hover:bg-paper-deep hover:shadow-md disabled:opacity-60"
+              >
+                {loadingMore ? (
+                  <>
+                    <span className="seal-stamp h-5 w-5 animate-pulse text-[0.6rem]">展</span>
+                    展卷中…
+                  </>
+                ) : (
+                  <>
+                    再展一卷
+                    <span className="font-song text-xs tracking-normal text-ink-faint">
+                      （余 {remaining} 篇）
+                    </span>
+                    <ChevronDown className="h-4 w-4 text-gilt transition-transform group-hover:translate-y-0.5" aria-hidden />
+                  </>
+                )}
+              </Button>
+            ) : (
+              <p className="flex items-center gap-3 font-song text-xs tracking-[0.25em] text-ink-faint">
+                <span className="h-px w-8 bg-frame" aria-hidden />
+                共 {total} 篇 · 尽览于此
+                <span className="h-px w-8 bg-frame" aria-hidden />
+              </p>
+            )}
+          </div>
         </>
       )}
     </section>

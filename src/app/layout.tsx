@@ -28,9 +28,41 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 结构化数据：利于搜索引擎理解站点与作者
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: "敖胤AI",
+        alternateName: "AoYin AI",
+        description: "聚焦人工智能的中文博客：AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent。",
+        inLanguage: "zh-CN",
+      },
+      {
+        "@type": "Person",
+        name: "敖胤先生",
+        description: "观智能之潮，守问学之心。以不驯服的好奇心提问，以可承续的认真作答。",
+      },
+      {
+        "@type": "Blog",
+        name: "敖胤AI",
+        blogPost: {
+          "@type": "BlogPosting",
+          headline: "T-agent 设计笔记（一）：为什么是多智能体",
+          inLanguage: "zh-CN",
+        },
+      },
+    ],
+  };
+
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="antialiased text-foreground min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           {children}
           <Toaster />

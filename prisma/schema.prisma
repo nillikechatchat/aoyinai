@@ -54,13 +54,16 @@ model Category {
   order       Int    @default(0)
 }
 
-// 文章评论（匿名留言板）
+// 文章评论（匿名留言板，支持以文会友式的回复）
 model Comment {
-  id          String   @id @default(cuid())
-  articleSlug String // 所属文章 slug
-  author      String   @default("无名氏") // 昵称
-  body        String // 留言内容
-  createdAt   DateTime @default(now())
+  id            String   @id @default(cuid())
+  articleSlug   String // 所属文章 slug
+  parentId      String? // 父评论 id（为空则为顶端留言）
+  replyToAuthor String? // 被复者落款（冗余存储，便于展示）
+  author        String   @default("无名氏") // 昵称
+  body          String // 留言内容
+  createdAt     DateTime @default(now())
 
   @@index([articleSlug])
+  @@index([parentId])
 }

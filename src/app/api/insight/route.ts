@@ -47,14 +47,20 @@ function extractJson(text: string): Record<string, string> | null {
   }
 }
 
-// GET /api/insight?limit=&sessionId= —— 最近问签记录（签筒；带 sessionId 时仅返回本人记录）
+// GET /api/insight?limit=&sessionId=&since= —— 最近问签记录（签筒；带 sessionId 时仅返回本人记录；since 为 ISO 时间下限）
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const limit = Math.min(Number(searchParams.get("limit")) || 24, 60);
     const sessionId = (searchParams.get("sessionId") || "").trim();
+    const sinceRaw = (searchParams.get("since") || "").trim();
+    const since = sinceRaw && !Number.isNaN(new Date(sinceRaw).getTime()) ? new Date(sinceRaw) : undefined;
+
     const records = await db.insightRecord.findMany({
-      where: sessionId ? { sessionId } : undefined,
+      where: {
+        ...(sessionId ? { sessionId } : {}),
+        ...(since ? { createdAt: { gte: since } } : {}),
+      },
       orderBy: { createdAt: "desc" },
       take: limit,
       select: {

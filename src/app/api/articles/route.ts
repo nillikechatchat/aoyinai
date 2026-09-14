@@ -3,15 +3,17 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/articles?category=&search=&limit=&random=&exclude=&sort=top
+// GET /api/articles?category=&search=&limit=&offset=&random=&exclude=&sort=new|top
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category") || undefined;
     const search = searchParams.get("search") || undefined;
     const limit = Math.min(Number(searchParams.get("limit")) || 50, 100);
+    const offset = Math.max(Number(searchParams.get("offset")) || 0, 0);
     const random = searchParams.get("random") === "1";
-    const sortTop = searchParams.get("sort") === "top";
+    const sortParam = searchParams.get("sort"); // "top" | "new"
+    const sortTop = sortParam === "top";
     const exclude = searchParams.get("exclude") || undefined;
 
     const where: Record<string, unknown> = { published: true };
@@ -36,6 +38,7 @@ export async function GET(req: NextRequest) {
           ? undefined
           : { publishedAt: "desc" },
       take: limit,
+      skip: random ? undefined : offset, // 随机取样无需分页偏移
     });
 
     if (random) {

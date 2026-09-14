@@ -568,13 +568,28 @@ C 校（财经类）的 AI 辅修毕业生，进入金融科技岗的比例反�
   },
 ];
 
-// 笔谈种子留言（挂在指定 slug 的文章下）
-const seedComments: Array<{ articleSlug: string; author: string; body: string; daysAgo: number }> = [
+// 笔谈种子留言（挂在指定 slug 的文章下；replyTo 指向 alias，构成回复关系）
+const seedComments: Array<{
+  alias?: string;
+  replyTo?: string;
+  articleSlug: string;
+  author: string;
+  body: string;
+  daysAgo: number;
+}> = [
   {
+    alias: "guanlan-1",
     articleSlug: "t-agent-design-notes-01",
     author: "观澜",
     body: "「汇报才收敛」这条深有同感。上周把两个 Agent 改成一个写一个审，token 立省三成。",
     daysAgo: 2,
+  },
+  {
+    articleSlug: "t-agent-design-notes-01",
+    author: "敖胤先生",
+    body: "三成已是可观。下一篇正要写「评审者」如何提问，方能问出真问题。",
+    daysAgo: 1.8,
+    replyTo: "guanlan-1",
   },
   {
     articleSlug: "t-agent-design-notes-01",
@@ -593,6 +608,20 @@ const seedComments: Array<{ articleSlug: string; author: string; body: string; d
     author: "无名氏",
     body: "请问第十三次迭代会考虑 graph RAG 吗？",
     daysAgo: 1,
+  },
+  {
+    alias: "wuming-graph",
+    articleSlug: "rag-practice-guide",
+    author: "无名氏",
+    body: "多跳问答是不是 query 改写就够，不必上图数据库？",
+    daysAgo: 0.9,
+  },
+  {
+    articleSlug: "rag-practice-guide",
+    author: "敖胤先生",
+    body: "已在试。多跳问题收益明显，单跳场景反受其累，待数据齐全便成文。",
+    daysAgo: 0.6,
+    replyTo: "wuming-graph",
   },
   {
     articleSlug: "llm-intro-roadmap",
@@ -629,16 +658,25 @@ async function main() {
   }
   console.log(`已创建 ${articles.length} 篇文章`);
 
+  // 先建父留言，再建回复（回复引用 alias）
+  const aliasToId = new Map<string, string>();
   for (const c of seedComments) {
-    const { daysAgo, ...rest } = c;
-    await db.comment.create({
+    const { daysAgo, alias, replyTo, ...rest } = c;
+    const parentId = replyTo ? (aliasToId.get(replyTo) ?? null) : null;
+    const parentAuthor = replyTo
+      ? (seedComments.find((s) => s.alias === replyTo)?.author ?? null)
+      : null;
+    const created = await db.comment.create({
       data: {
         ...rest,
+        parentId,
+        replyToAuthor: parentAuthor,
         createdAt: new Date(now - daysAgo * 24 * 3600 * 1000),
       },
     });
+    if (alias) aliasToId.set(alias, created.id);
   }
-  console.log(`已创建 ${seedComments.length} 条笔谈留言`);
+  console.log(`已创建 ${seedComments.length} 条笔谈留言（含回复）`);
   console.log("种子数据完成 ✅");
 }
 

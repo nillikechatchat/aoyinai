@@ -1,11 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { Compass, Github, Mail, ScrollText } from "lucide-react";
+import { Compass, Github, Mail, ScrollText, TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
 import { CATEGORY_META } from "@/lib/types";
 
 interface AboutViewProps {
   onAsk: () => void;
+}
+
+interface SiteStats {
+  articles: number;
+  views: number;
+  likes: number;
+  comments: number;
+  insights: number;
+  topCategory: string | null;
+  latestArticle: { title: string; publishedAt: string } | null;
 }
 
 const PRINCIPLES = [
@@ -26,7 +37,29 @@ const PRINCIPLES = [
   },
 ];
 
+/** 千分位 */
+function fmt(n: number): string {
+  return n.toLocaleString("zh-CN");
+}
+
 export function AboutView({ onAsk }: AboutViewProps) {
+  const [stats, setStats] = useState<SiteStats | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/stats");
+        const data = await res.json();
+        if (!cancelled && data.ok) setStats(data.stats as SiteStats);
+      } catch {
+        // 静默：看板加载失败不影响关于页
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   return (
     <section className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-6" aria-label="关于本站">
       {/* 题头 */}
@@ -85,6 +118,78 @@ export function AboutView({ onAsk }: AboutViewProps) {
             <p className="mt-2 font-song text-[0.82rem] leading-7 text-ink-soft">{p.text}</p>
           </div>
         ))}
+      </div>
+
+      {/* 墨迹统计（全站数据看板） */}
+      <div className="paper-frame mt-8 rounded-md p-6">
+        <h3 className="flex items-center gap-2 font-kai text-lg font-bold tracking-[0.2em] text-ink">
+          <TrendingUp className="h-4.5 w-4.5 text-gilt" aria-hidden />
+          墨迹统计
+          <span className="ml-1 font-song text-[0.66rem] font-normal tracking-[0.25em] text-ink-faint">
+            此站经营，笔笔有账
+          </span>
+        </h3>
+
+        {!stats ? (
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="rounded-sm border border-frame/60 bg-paper-deep/50 px-3 py-4">
+                <div className="mx-auto h-6 w-12 animate-pulse rounded bg-paper-deep" />
+                <div className="mx-auto mt-2 h-3 w-8 animate-pulse rounded bg-paper-deep/70" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
+              {(
+                [
+                  { seal: "文", label: "刊行文章", value: stats.articles },
+                  { seal: "阅", label: "累计阅读", value: stats.views },
+                  { seal: "许", label: "读者心许", value: stats.likes },
+                  { seal: "谈", label: "笔谈留痕", value: stats.comments },
+                  { seal: "签", label: "司南问签", value: stats.insights },
+                ] as const
+              ).map((s, i) => (
+                <div
+                  key={s.seal}
+                  className="group rounded-sm border border-frame/60 bg-paper-deep/50 px-3 py-4 text-center transition-colors hover:border-gilt/50"
+                  style={{
+                    animation: `fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) ${i * 0.07}s both`,
+                  }}
+                >
+                  <p className="font-kai text-xl font-bold tabular-nums tracking-wide text-ink transition-colors group-hover:text-vermillion">
+                    {fmt(s.value)}
+                  </p>
+                  <p className="mt-1.5 flex items-center justify-center gap-1.5">
+                    <span className="seal-outline h-4 w-4 text-[0.5rem] leading-none">{s.seal}</span>
+                    <span className="font-song text-[0.66rem] tracking-[0.2em] text-ink-faint">
+                      {s.label}
+                    </span>
+                  </p>
+                </div>
+              ))}
+            </div>
+            {/* 注脚：最热栏目 / 最近刊行 */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-frame/60 pt-3">
+              <p className="flex items-center gap-2 font-song text-[0.7rem] tracking-[0.12em] text-ink-faint">
+                <span className="seal-stamp h-4 w-4 text-[0.5rem]">热</span>
+                最热栏目：
+                <span className="text-ink-soft">
+                  {stats.topCategory
+                    ? CATEGORY_META[stats.topCategory]?.name ?? stats.topCategory
+                    : "——"}
+                </span>
+              </p>
+              {stats.latestArticle && (
+                <p className="flex min-w-0 items-center gap-2 font-song text-[0.7rem] tracking-[0.12em] text-ink-faint">
+                  <span className="shrink-0">最近刊行：</span>
+                  <span className="truncate text-ink-soft">{stats.latestArticle.title}</span>
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* 栏目一览 */}
