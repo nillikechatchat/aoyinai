@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 七大栏目文章
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  category    String // tutorials | market | majors | events | hackathons | cloud-deals | t-agent
+  tags        String   @default("") // 逗号分隔
+  cover       String   @default("/images/cover-tutorials.png")
+  readMinutes Int      @default(5)
+  views       Int      @default(0)
+  published   Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([publishedAt])
+}
+
+// AI 问签记录（司南问一事）
+model InsightRecord {
+  id        String   @id @default(cuid())
+  question  String   @default("")
+  name      String // 卦名，如「青云卦」
+  oracle    String // 卦辞（文言）
+  interpret String // 解曰（白话，联系 AI 行业）
+  advice    String // 建议（行动指南）
+  createdAt DateTime @default(now())
+}
+
+// 栏目定义
+model Category {
+  id          String @id @default(cuid())
+  key         String @unique // tutorials | market ...
+  name        String // AI 教程
+  en          String // Tutorials
+  description String
+  seal        String // 栏目印章单字，如「教」
+  order       Int    @default(0)
+}
