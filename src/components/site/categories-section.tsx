@@ -1,7 +1,18 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { CN_NUM, type Category } from "@/lib/types";
+
+const gridVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+};
 
 interface CategoriesSectionProps {
   categories: Category[];
@@ -26,10 +37,12 @@ export function CategoriesSection({ categories, onPick, totalArticles }: Categor
         </p>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <motion.div variants={gridVariants} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {categories.map((c, i) => (
-          <button
+          <motion.button
             key={c.key}
+            variants={cardVariants}
+            whileHover={{ y: -3 }}
             onClick={() => onPick(c.key)}
             className="hover-lift group relative overflow-hidden rounded-md border border-frame/80 bg-paper-card p-5 text-left shadow-[0_2px_10px_-6px_rgba(80,60,20,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vermillion/50"
             aria-label={`进入栏目：${c.name}`}
@@ -71,18 +84,21 @@ export function CategoriesSection({ categories, onPick, totalArticles }: Categor
                 />
               </div>
             </div>
-          </button>
+          </motion.button>
         ))}
 
         {/* 第八格：站训 */}
-        <div className="paper-frame flex flex-col items-center justify-center rounded-md p-5 text-center">
+        <motion.div
+          variants={cardVariants}
+          className="paper-frame flex flex-col items-center justify-center rounded-md p-5 text-center"
+        >
           <p className="font-kai text-lg tracking-[0.3em] text-vermillion">知止不殆</p>
           <p className="mt-2 font-song text-xs leading-6 tracking-[0.15em] text-ink-soft">
             智能有常 · 人文有时
           </p>
           <span className="seal-outline mt-3 h-7 w-7 text-[0.62rem]">守</span>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

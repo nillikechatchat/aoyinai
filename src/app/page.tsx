@@ -7,6 +7,7 @@ import { RecommendSection } from "@/components/site/recommend-section";
 import { TodayReadCard } from "@/components/site/today-read-card";
 import { CategoriesSection } from "@/components/site/categories-section";
 import { ArticlesView } from "@/components/site/articles-view";
+import { QiantongView } from "@/components/site/qiantong-view";
 import { AboutView } from "@/components/site/about-view";
 import { ArticleDialog } from "@/components/site/article-dialog";
 import { InsightDialog } from "@/components/site/insight-dialog";
@@ -29,6 +30,7 @@ export default function Home() {
   const [insightOpen, setInsightOpen] = useState(false);
   const [asking, setAsking] = useState(false);
   const [insight, setInsight] = useState<Insight | null>(null);
+  const [insightCount, setInsightCount] = useState(0);
 
   const mainRef = useRef<HTMLDivElement>(null);
   const todaySlugRef = useRef<string>("");
@@ -117,6 +119,7 @@ export default function Home() {
       const data = await res.json();
       if (data.ok) {
         setInsight(data.insight);
+        setInsightCount((c) => c + 1); // 通知签筒刷新
         return data.insight as Insight;
       }
       return null;
@@ -130,7 +133,9 @@ export default function Home() {
   const openInsightDialog = useCallback(() => {
     setInsight(null); // 重置签文，展示推演动画
     setInsightOpen(true);
-  }, []);
+    // 打开即自动起卦（从头部按钮/签筒/关于页进入均可直接得签）
+    void askInsight("");
+  }, [askInsight]);
 
   const goArticles = useCallback(() => navigate("articles", "all"), [navigate]);
 
@@ -146,7 +151,7 @@ export default function Home() {
       <main className="flex-1">
         {view === "home" && (
           <>
-            <Hero onAsk={askInsight} asking={asking} onOpenDialog={openInsightDialog} />
+            <Hero asking={asking} onOpenDialog={openInsightDialog} />
 
             {/* 推荐 + 今日一读 */}
             <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-16">
@@ -183,6 +188,15 @@ export default function Home() {
           />
         )}
 
+        {view === "qiantong" && (
+          <QiantongView
+            refreshKey={insightCount}
+            onAsk={() => {
+              openInsightDialog();
+            }}
+          />
+        )}
+
         {view === "about" && <AboutView onAsk={openInsightDialog} />}
       </main>
 
@@ -202,6 +216,10 @@ export default function Home() {
         loading={asking}
         insight={insight}
         onAsk={askInsight}
+        onOpenQiantong={() => {
+          setInsightOpen(false);
+          navigate("qiantong");
+        }}
       />
     </div>
   );

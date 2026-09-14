@@ -47,6 +47,31 @@ function extractJson(text: string): Record<string, string> | null {
   }
 }
 
+// GET /api/insight?limit= —— 最近问签记录（签筒）
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const limit = Math.min(Number(searchParams.get("limit")) || 24, 60);
+    const records = await db.insightRecord.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: {
+        id: true,
+        question: true,
+        name: true,
+        oracle: true,
+        interpret: true,
+        advice: true,
+        createdAt: true,
+      },
+    });
+    return NextResponse.json({ ok: true, records, total: records.length });
+  } catch (e) {
+    console.error("[GET /api/insight]", e);
+    return NextResponse.json({ ok: false, error: "获取签筒失败" }, { status: 500 });
+  }
+}
+
 // POST /api/insight  —— 司南问签：AI 生成签文
 export async function POST(req: NextRequest) {
   try {

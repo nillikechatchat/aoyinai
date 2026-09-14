@@ -3,22 +3,19 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Pointer } from "lucide-react";
-import type { Insight } from "@/lib/types";
 
 interface HeroProps {
-  onAsk: (question: string) => Promise<Insight | null>;
   asking: boolean;
   onOpenDialog: () => void;
 }
 
-export function Hero({ onAsk, asking, onOpenDialog }: HeroProps) {
+export function Hero({ asking, onOpenDialog }: HeroProps) {
   const [pressed, setPressed] = useState(false);
 
-  const handleClick = async () => {
+  const handleClick = () => {
     if (asking) return;
     setPressed(true);
     onOpenDialog();
-    await onAsk("");
     setTimeout(() => setPressed(false), 600);
   };
 

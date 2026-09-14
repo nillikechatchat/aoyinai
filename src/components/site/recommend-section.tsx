@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { ArticleCard } from "./article-card";
 import type { Article } from "@/lib/types";
 
@@ -10,6 +11,16 @@ interface RecommendSectionProps {
   onOpen: (article: Article) => void;
   onMore: () => void;
 }
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const } },
+};
 
 export function RecommendSection({ articles, loading, onOpen, onMore }: RecommendSectionProps) {
   return (
@@ -51,11 +62,18 @@ export function RecommendSection({ articles, loading, onOpen, onMore }: Recommen
           文卷整理中，稍后再来。
         </p>
       ) : (
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
+        >
           {articles.map((a) => (
-            <ArticleCard key={a.id} article={a} onOpen={onOpen} />
+            <motion.div key={a.id} variants={item}>
+              <ArticleCard article={a} onOpen={onOpen} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </section>
   );

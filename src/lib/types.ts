@@ -9,6 +9,7 @@ export interface Article {
   cover: string;
   readMinutes: number;
   views: number;
+  likes: number;
   published: boolean;
   publishedAt: string;
   createdAt: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Mail } from "lucide-react";
+import { Github, Mail, Rss } from "lucide-react";
 
 export function SiteFooter() {
   return (
@@ -26,6 +26,13 @@ export function SiteFooter() {
             © {new Date().getFullYear()} 敖胤AI · 观智能之潮，守问学之心
           </p>
           <div className="flex items-center gap-5">
+            <a
+              href="/rss.xml"
+              className="inline-flex items-center gap-1.5 font-song text-xs tracking-[0.15em] text-ink-soft transition-colors hover:text-vermillion"
+            >
+              <Rss className="h-3.5 w-3.5" aria-hidden />
+              RSS 订阅
+            </a>
             <a
               href="https://github.com/nillikechatchat/aoyinai"
               target="_blank"

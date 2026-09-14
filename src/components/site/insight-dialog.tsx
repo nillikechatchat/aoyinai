@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Copy, Loader2, PenLine, RefreshCw } from "lucide-react";
+import { Copy, Loader2, PenLine, RefreshCw, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -21,9 +21,10 @@ interface InsightDialogProps {
   loading: boolean;
   insight: Insight | null;
   onAsk: (question: string) => Promise<Insight | null>;
+  onOpenQiantong?: () => void;
 }
 
-export function InsightDialog({ open, onOpenChange, loading, insight, onAsk }: InsightDialogProps) {
+export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onOpenQiantong }: InsightDialogProps) {
   const [question, setQuestion] = useState("");
   const { toast } = useToast();
 
@@ -41,6 +42,9 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk }: I
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="paper-frame max-h-[88vh] overflow-y-auto border-none p-0 sm:max-w-md custom-scrollbar">
+        {/* a11y：加载态也提供标题 */}
+        <DialogTitle className="sr-only">{loading ? "司南推演中" : insight?.name ?? "签文"}</DialogTitle>
+
         {loading && (
           <div className="flex flex-col items-center gap-5 px-6 py-14 text-center">
             <div className="relative grid place-items-center">
@@ -123,6 +127,18 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk }: I
                 抄录
               </Button>
             </div>
+
+            {/* 签筒入口 */}
+            {onOpenQiantong && (
+              <button
+                onClick={onOpenQiantong}
+                className="group mt-3 flex w-full items-center justify-center gap-1.5 font-song text-xs tracking-[0.2em] text-ink-faint transition-colors hover:text-vermillion"
+              >
+                <ScrollText className="h-3.5 w-3.5" aria-hidden />
+                翻看签筒 · 回望旧签
+                <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+              </button>
+            )}
 
             {/* 定向叩问 */}
             <div className="mt-5">

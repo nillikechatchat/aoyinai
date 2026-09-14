@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Compass, Menu, BookOpen, Home, Info, LayoutGrid } from "lucide-react";
+import { Compass, Menu, BookOpen, Home, Info, LayoutGrid, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import type { Category } from "@/lib/types";
 import { CATEGORY_META } from "@/lib/types";
 
-export type ViewKey = "home" | "articles" | "about";
+export type ViewKey = "home" | "articles" | "qiantong" | "about";
 
 interface SiteHeaderProps {
   view: ViewKey;
@@ -30,6 +30,7 @@ export function SiteHeader({ view, onNavigate, categories, onTodayRead }: SiteHe
   const navItems: Array<{ key: ViewKey; label: string; icon: React.ReactNode }> = [
     { key: "home", label: "首页", icon: <Home className="h-4 w-4" /> },
     { key: "articles", label: "文章", icon: <BookOpen className="h-4 w-4" /> },
+    { key: "qiantong", label: "签筒", icon: <ScrollText className="h-4 w-4" /> },
     { key: "about", label: "关于", icon: <Info className="h-4 w-4" /> },
   ];
 
@@ -61,7 +62,7 @@ export function SiteHeader({ view, onNavigate, categories, onTodayRead }: SiteHe
         {/* 桌面导航 */}
         <nav className="hidden items-center gap-1 md:flex" aria-label="主导航">
           {navItems.map((item) => {
-            const active = view === item.key && !(item.key === "articles" && false);
+            const active = view === item.key;
             return (
               <button
                 key={item.key}
@@ -81,8 +82,8 @@ export function SiteHeader({ view, onNavigate, categories, onTodayRead }: SiteHe
           {/* 栏目下拉 */}
           <DropdownMenu>
             <DropdownMenuTrigger
-              className={`relative ml-1 px-4 py-2 font-kai text-[0.95rem] tracking-[0.2em] transition-colors focus-visible:outline-none ${
-                view === "articles" ? "text-vermillion" : "text-ink-soft hover:text-ink"
+              className={`ml-1 px-4 py-2 font-kai text-[0.95rem] tracking-[0.2em] transition-colors focus-visible:outline-none ${
+                false ? "text-vermillion" : "text-ink-soft hover:text-ink"
               }`}
             >
               <span className="inline-flex items-center gap-1.5">

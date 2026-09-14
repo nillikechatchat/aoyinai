@@ -19,6 +19,7 @@ model Article {
   cover       String   @default("/images/cover-tutorials.png")
   readMinutes Int      @default(5)
   views       Int      @default(0)
+  likes       Int      @default(0)
   published   Boolean  @default(true)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
