@@ -111,38 +111,59 @@
   --sidebar-ring: var(--ring);
 }
 
+/* 夜读模式：墨蓝夜纸 · 月白字 · 暖朱砂 · 鎏金灯下 */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --paper: #161c25;
+  --paper-deep: #10151d;
+  --paper-card: #1c2430;
+  --ink: #d9d3c3;
+  --ink-soft: #a39b89;
+  --ink-faint: #6f6b60;
+  --vermillion: #d2694f;
+  --vermillion-deep: #b95740;
+  --pine: #5f7d5c;
+  --pine-deep: #4c664a;
+  --gilt: #c9a45c;
+  --frame: #333d4a;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper-card);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-card);
+  --popover-foreground: var(--ink);
+  --primary: var(--vermillion);
+  --primary-foreground: #f6efdd;
+  --secondary: var(--paper-deep);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-deep);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--paper-deep);
+  --accent-foreground: var(--ink);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --border: var(--frame);
+  --input: var(--frame);
+  --ring: color-mix(in srgb, var(--vermillion) 55%, transparent);
+  --chart-1: var(--vermillion);
+  --chart-2: var(--pine);
+  --chart-3: var(--gilt);
+  --chart-4: #7d8f70;
+  --chart-5: #8a6f56;
+  --sidebar: var(--paper-card);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--vermillion);
+  --sidebar-primary-foreground: #f6efdd;
+  --sidebar-accent: var(--paper-deep);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--frame);
+  --sidebar-ring: var(--ring);
+
+  /* 竖排文字光晕（日：纸色晕 / 夜：墨晕） */
+  --vtext-shadow: 0 1px 3px rgba(246, 241, 229, 0.95), 0 0 10px rgba(246, 241, 229, 0.85);
+}
+
+.dark {
+  --vtext-shadow: 0 1px 3px rgba(9, 13, 19, 0.9), 0 0 12px rgba(9, 13, 19, 0.8);
 }
 
 @layer base {
@@ -301,6 +322,81 @@
       linear-gradient(180deg, transparent 0, transparent 100%),
       repeating-linear-gradient(180deg, transparent 0 31px, color-mix(in srgb, var(--frame) 45%, transparent) 31px 32px);
   }
+
+  /* 竖排文字光晕 */
+  .vtext-glow {
+    text-shadow: var(--vtext-shadow);
+  }
+
+  /* 夜读下压暗水墨山水，融入夜纸 */
+  .dark .hero-art {
+    filter: brightness(0.5) saturate(0.45) contrast(1.06);
+  }
+  .dark .hero-tint {
+    background:
+      linear-gradient(180deg, rgba(16, 21, 29, 0.15) 0%, rgba(16, 21, 29, 0.5) 78%, rgba(16, 21, 29, 0.72) 100%);
+  }
+
+  /* 夜读下卡片阴影改为深色投影 */
+  .dark .hover-lift:hover {
+    box-shadow: 0 18px 36px -16px rgb(0 0 0 / 0.55);
+  }
+  .dark .paper-frame {
+    box-shadow:
+      inset 0 0 0 1px var(--paper-card),
+      inset 0 0 0 4px color-mix(in srgb, var(--frame) 55%, transparent),
+      inset 0 0 0 5px var(--paper-card),
+      0 10px 30px -18px rgb(0 0 0 / 0.6);
+  }
+
+  /* 夜读下微光呼吸更明显 */
+  .dark .glow-ring {
+    background: radial-gradient(circle, rgba(201, 164, 92, 0.5), rgba(201, 164, 92, 0.1) 55%, transparent 70%);
+  }
+
+  /* 主题切换过渡 */
+  html.theme-switching,
+  html.theme-switching * {
+    transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease !important;
+  }
+
+  /* 云纹漂移（往返） */
+  .cloud-drift {
+    animation: cloudDrift 20s ease-in-out infinite alternate;
+  }
+  @keyframes cloudDrift {
+    from { transform: translateX(-7%); }
+    to { transform: translateX(7%); }
+  }
+
+  /* 飞鸟掠过（单向循环） */
+  .birds-fly {
+    animation: birdsFly 52s linear infinite;
+  }
+  .birds-fly-slow {
+    animation: birdsFly 74s linear infinite;
+    animation-delay: -30s;
+  }
+  @keyframes birdsFly {
+    from { transform: translate3d(-18vw, 0, 0); }
+    to { transform: translate3d(118vw, -4vh, 0); }
+  }
+
+  /* 飞鸟振翅 */
+  .bird-flap {
+    transform-origin: center;
+    animation: birdFlap 1.6s ease-in-out infinite;
+  }
+  .bird-flap-b {
+    animation-delay: 0.5s;
+  }
+  .bird-flap-c {
+    animation-delay: 0.9s;
+  }
+  @keyframes birdFlap {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.55); }
+  }
 }
 
 /* Markdown 正文排版 */
@@ -380,3 +476,7 @@
   background: var(--frame);
   margin: 1.6em 0;
 }
+
+/* r2 dark theme tweak */
+
+/* r2 hero motion */

@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Copy, Loader2, PenLine, RefreshCw, ScrollText } from "lucide-react";
+import { Copy, Loader2, PenLine, RefreshCw, ScrollText, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { downloadInsightCard } from "@/lib/share-card";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +27,7 @@ interface InsightDialogProps {
 
 export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onOpenQiantong }: InsightDialogProps) {
   const [question, setQuestion] = useState("");
+  const [stamping, setStamping] = useState(false);
   const { toast } = useToast();
 
   const copyInsight = async () => {
@@ -36,6 +38,26 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
       toast({ title: "签文已抄录", description: "可粘贴至任意处留作今日之记。" });
     } catch {
       toast({ title: "抄录失败", description: "浏览器暂不支持剪贴板。" });
+    }
+  };
+
+  const stampInsight = async () => {
+    if (!insight || stamping) return;
+    setStamping(true);
+    try {
+      await downloadInsightCard({
+        name: insight.name,
+        oracle: insight.oracle,
+        interpret: insight.interpret,
+        advice: insight.advice,
+        question: question || undefined,
+        createdAt: new Date().toISOString(),
+      });
+      toast({ title: "签卡已拓印", description: "水墨签卡已存入下载，可留可赠。" });
+    } catch {
+      toast({ title: "拓印失败", description: "当前环境暂不支持生成图片。" });
+    } finally {
+      setStamping(false);
     }
   };
 
@@ -125,6 +147,17 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
               >
                 <Copy className="h-4 w-4" />
                 抄录
+              </Button>
+              <Button
+                variant="outline"
+                onClick={stampInsight}
+                disabled={stamping}
+                aria-label="拓印签卡为图片"
+                title="拓印签卡（生成水墨分享图）"
+                className="h-11 gap-2 rounded-full border-frame bg-paper-card px-4 font-kai tracking-[0.2em] text-gilt hover:border-gilt/60 hover:bg-gilt/10 hover:text-gilt"
+              >
+                {stamping ? <Loader2 className="h-4 w-4 animate-spin" /> : <Stamp className="h-4 w-4" />}
+                拓印
               </Button>
             </div>
 

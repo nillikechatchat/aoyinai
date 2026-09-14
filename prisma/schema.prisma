@@ -50,3 +50,14 @@ model Category {
   seal        String // 栏目印章单字，如「教」
   order       Int    @default(0)
 }
+
+// 文章评论（匿名留言板）
+model Comment {
+  id          String   @id @default(cuid())
+  articleSlug String // 所属文章 slug
+  author      String   @default("无名氏") // 昵称
+  body        String // 留言内容
+  createdAt   DateTime @default(now())
+
+  @@index([articleSlug])
+}

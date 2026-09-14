@@ -568,9 +568,44 @@ C 校（财经类）的 AI 辅修毕业生，进入金融科技岗的比例反�
   },
 ];
 
+// 笔谈种子留言（挂在指定 slug 的文章下）
+const seedComments: Array<{ articleSlug: string; author: string; body: string; daysAgo: number }> = [
+  {
+    articleSlug: "t-agent-design-notes-01",
+    author: "观澜",
+    body: "「汇报才收敛」这条深有同感。上周把两个 Agent 改成一个写一个审，token 立省三成。",
+    daysAgo: 2,
+  },
+  {
+    articleSlug: "t-agent-design-notes-01",
+    author: "青崖",
+    body: "蹲一个（二），想看任务分解算法的细节。",
+    daysAgo: 1,
+  },
+  {
+    articleSlug: "rag-practice-guide",
+    author: "苏合",
+    body: "从 61% 到 92%，每次迭代都有明确的假设与验证，这份工程纪律比数字更值钱。",
+    daysAgo: 3,
+  },
+  {
+    articleSlug: "rag-practice-guide",
+    author: "无名氏",
+    body: "请问第十三次迭代会考虑 graph RAG 吗？",
+    daysAgo: 1,
+  },
+  {
+    articleSlug: "llm-intro-roadmap",
+    author: "临江仙",
+    body: "「在喧嚣中依然保有内心的秩序」，这一句值得抄在扉页。",
+    daysAgo: 4,
+  },
+];
+
 async function main() {
   console.log("开始灌入种子数据…");
   await db.insightRecord.deleteMany();
+  await db.comment.deleteMany();
   await db.article.deleteMany();
   await db.category.deleteMany();
 
@@ -593,6 +628,17 @@ async function main() {
     });
   }
   console.log(`已创建 ${articles.length} 篇文章`);
+
+  for (const c of seedComments) {
+    const { daysAgo, ...rest } = c;
+    await db.comment.create({
+      data: {
+        ...rest,
+        createdAt: new Date(now - daysAgo * 24 * 3600 * 1000),
+      },
+    });
+  }
+  console.log(`已创建 ${seedComments.length} 条笔谈留言`);
   console.log("种子数据完成 ✅");
 }
 

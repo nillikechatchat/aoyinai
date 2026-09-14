@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/site/theme-toggle";
 import type { Category } from "@/lib/types";
 import { CATEGORY_META } from "@/lib/types";
 
@@ -111,8 +112,10 @@ export function SiteHeader({ view, onNavigate, categories, onTodayRead }: SiteHe
           </DropdownMenu>
         </nav>
 
-        {/* 右侧：今日一读 + 移动端菜单 */}
+        {/* 右侧：夜读切换 + 今日一读 + 移动端菜单 */}
         <div className="flex items-center gap-2">
+          <ThemeToggle className="hidden sm:inline-flex" />
+
           <Button
             onClick={onTodayRead}
             className="hidden h-10 gap-2 rounded-full bg-pine px-5 font-kai text-[0.9rem] tracking-[0.18em] text-[#f3efdf] shadow-md transition-colors hover:bg-pine-deep sm:inline-flex"
@@ -160,16 +163,19 @@ export function SiteHeader({ view, onNavigate, categories, onTodayRead }: SiteHe
                     <span className="ml-auto font-song text-xs text-ink-faint">{c.count ?? ""}篇</span>
                   </button>
                 ))}
-                <Button
-                  onClick={() => {
-                    setMobileOpen(false);
-                    onTodayRead();
-                  }}
-                  className="mt-3 h-11 gap-2 rounded-full bg-pine font-kai tracking-[0.18em] text-[#f3efdf] hover:bg-pine-deep"
-                >
-                  <Compass className="h-4 w-4" />
-                  今日一读
-                </Button>
+                <div className="mt-3 flex items-center gap-2">
+                  <ThemeToggle showLabel className="flex-1" />
+                  <Button
+                    onClick={() => {
+                      setMobileOpen(false);
+                      onTodayRead();
+                    }}
+                    className="h-10 flex-1 gap-2 rounded-full bg-pine font-kai tracking-[0.18em] text-[#f3efdf] hover:bg-pine-deep"
+                  >
+                    <Compass className="h-4 w-4" />
+                    今日一读
+                  </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

@@ -130,3 +130,56 @@ Stage Summary:
 4. 首页 Hero 加云纹/飞鸟 SVG 动画细节；今日一读卡片加古卷装饰
 5. 分页或无限滚动（文章 21+ 后）
 6. InsightRecord 数据治理：签筒只展示本人（localStorage session id 过滤）
+
+---
+Task ID: R2（定时审查第 2 轮）
+Agent: main
+Task: QA 回归 + 三大新功能（夜读模式 / 签筒分享卡 / 文章笔谈）+ Hero 动效细节
+
+Work Log:
+- QA 回归（agent-browser）：首页/问签/文章详情/签筒/关于全流程无回归，无 console 错误，无阻塞性 bug
+- 新功能 1「夜读模式」：
+  - globals.css 重写 .dark 为墨蓝夜纸色板（paper #161c25 / 月白字 / 暖朱砂 / 鎏金），shadcn 变量全部映射国风 token
+  - 新增 --vtext-shadow 变量（日：纸色晕 / 夜：墨晕）+ .vtext-glow 工具类，hero 竖排文字与主标题改用
+  - hero-art 暗色滤镜（brightness/saturate）+ hero-tint 夜色渐变叠加层；paper-frame/hover-lift/glow-ring 暗色专属阴影
+  - theme-provider.tsx（next-themes，attribute=class，默认 light）；theme-toggle.tsx（useSyncExternalStore 水合安全挂载标记 + theme-switching 平滑过渡类）
+  - 桌面头部右侧 + 移动抽屉底部（与今日一读并排）均有切换按钮；刷新后主题持久（实测 dark 保持）
+  - 夜读实测截图：r2-dark-home2 / r2-dark-insight（明镜卦墨蓝签纸）/ r2-dark-article
+- 新功能 2「签筒分享卡」：
+  - lib/share-card.ts：750x1050 canvas——洒金宣纸底（90 金点随机）、朱砂双线框+四角方印、楷体卦名+末字印章、卦辞引文框、解曰自动换行（上限 6 行）、宜字松绿条、所问、日期、品牌落款；toBlob 下载
+  - 入口 1：InsightDialog「拓印」鎏金按钮（stamping 加载态 + toast）；入口 2：签筒每张签卡右下角拓印 icon 按钮（逐卡 loading）
+  - 实测 agent-browser download 捕获产物 download/qianka-share.png，构图与配色达预期
+- 新功能 3「文章笔谈（匿名留言板）」：
+  - Prisma 新增 Comment 模型（articleSlug/author/body/createdAt + 索引），db:push 推送
+  - API：GET/POST /api/articles/[slug]/comments——空文/500 字限/12 字落款校验、60 秒同文同作者同内容防重（429「此言方才已录，无须重笔」）
+  - article-comments.tsx：笔谈列表（作者首字印章 + 落款 + 日期 + 正文，fadeUp 错开入场，max-h-64 滚动）、空态「笔谈尚无留痕」、落笔表单（落款记忆 localStorage / 500 字计数 / toast 确认 / 插入列表顶部）
+  - ArticleBody 正文后接入；seed.ts 新增 5 条种子留言（观澜/青崖/苏合/无名氏/临江仙），种子文章 slug 已核对
+  - 实测：API GET/POST/防重 3 项通过；UI 落笔→计数 3→4→5、松间照留言即时置顶、toast 显示
+- 样式细节：Hero 新增两组云纹 SVG（cloudDrift 往返漂移）+ 两阵飞鸟 SVG（birdsFly 掠过 + birdFlap 振翅，错拍），currentColor 适配双主题；签筒卡片无所问时以「解曰」摘要一行补位（修复留白不均）
+- 修复 lint：theme-toggle 的 setState-in-effect 改为 useSyncExternalStore；bun run lint 通过
+- 运维教训补充：dev 服务器若被杀，用 `(setsid bun run dev >/dev/null 2>&1 &)` 可跨工具调用存活（nohup 会被沙盒会话回收）；新增 CSS 规则若浏览器未生效，往 globals.css 追加任意内容触发重编译即可；新 Prisma 模型需重启 dev（已重启）
+
+验证结果（agent-browser 实测）:
+- 夜读/日间切换、持久化、全部视图暗色适配 ✓
+- 拓印下载产物构图完整 ✓
+- 笔谈 GET/POST/防重 + UI 落笔全链路 ✓
+- 云纹漂移/飞鸟掠过动画计算样式生效 ✓
+- 移动端 390px：抽屉含夜读切换、Hero 飞鸟可见 ✓
+- lint 通过；/、/rss.xml、/api/insight 均 200；dev.log 无运行时错误
+
+Stage Summary:
+- 本轮交付 3 个新功能（夜读模式 / 签文分享卡 / 匿名笔谈）+ 2 处样式细节（云纹飞鸟动效、签筒卡片留白修复）+ 1 个 lint 修复
+- 内容与数据：Comment 表 + 5 条种子留言；分享卡样例存于 download/qianka-share.png
+- 截图存证：screenshots/r2-*.png（QA、夜读、分享卡、笔谈、移动端）
+
+## 当前状态评估
+- 功能集：司南问签（自动/定向/签筒/拓印分享）、文章（列表/搜索/筛选/详情/进度条/TOC/心许/笔谈）、栏目、关于、RSS、夜读模式
+- 双主题全部视图适配完成；lint 干净；所有 API 稳定
+
+## 下一阶段建议（优先级从高到低）
+1. 首页「本周热门」区（按 views 排序取 3 篇，与随机推荐互补）
+2. 签筒分享卡加入「扫码访问」二维码（前端生成 QR 至 canvas）
+3. 文章页上一篇/下一篇导航（同栏目内跳转）
+4. 分页或无限滚动（文章 21 篇，全部视图一次加载尚可，30+ 后需分页）
+5. InsightRecord/Comment 数据治理：session id 过滤「我的签筒」、评论敏感词过滤
+6. 管理侧：浏览/点赞/评论数据小看板（/api/stats）

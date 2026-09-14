@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Compass, Loader2, ScrollText } from "lucide-react";
+import { Compass, Loader2, ScrollText, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { downloadInsightCard } from "@/lib/share-card";
 import { formatDate } from "@/lib/types";
 
 interface InsightRecordItem {
@@ -24,6 +25,25 @@ interface QiantongViewProps {
 export function QiantongView({ onAsk, refreshKey = 0 }: QiantongViewProps) {
   const [records, setRecords] = useState<InsightRecordItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stampingId, setStampingId] = useState<string | null>(null);
+
+  const stampOne = async (r: InsightRecordItem) => {
+    if (stampingId) return;
+    setStampingId(r.id);
+    try {
+      await downloadInsightCard({
+        name: r.name,
+        oracle: r.oracle,
+        interpret: r.interpret,
+        question: r.question || undefined,
+        createdAt: r.createdAt,
+      });
+    } catch {
+      // 静默：拓印失败不影响浏览
+    } finally {
+      setStampingId(null);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -111,10 +131,15 @@ export function QiantongView({ onAsk, refreshKey = 0 }: QiantongViewProps) {
                   </p>
                 </div>
 
-                {r.question && (
+                {r.question ? (
                   <p className="mt-3 flex items-start gap-1.5 font-song text-xs leading-6 text-ink-faint">
                     <ScrollText className="mt-1 h-3 w-3 shrink-0 text-gilt" aria-hidden />
                     <span className="line-clamp-1">所问：{r.question}</span>
+                  </p>
+                ) : (
+                  <p className="mt-3 flex items-start gap-1.5 font-song text-xs leading-6 text-ink-faint">
+                    <ScrollText className="mt-1 h-3 w-3 shrink-0 text-gilt" aria-hidden />
+                    <span className="line-clamp-1">解曰：{r.interpret}</span>
                   </p>
                 )}
 
@@ -122,7 +147,22 @@ export function QiantongView({ onAsk, refreshKey = 0 }: QiantongViewProps) {
                   <span className="font-song text-[0.7rem] tracking-[0.15em] text-ink-faint">
                     {formatDate(r.createdAt)}
                   </span>
-                  <span className="font-kai text-[0.7rem] tracking-[0.3em] text-gilt">敖胤 赐</span>
+                  <span className="flex items-center gap-2">
+                    <button
+                      onClick={() => stampOne(r)}
+                      disabled={stampingId === r.id}
+                      aria-label={`拓印「${r.name}」签卡为图片`}
+                      title="拓印签卡（生成水墨分享图）"
+                      className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gilt transition-colors hover:bg-gilt/10 hover:text-vermillion disabled:opacity-50"
+                    >
+                      {stampingId === r.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                      ) : (
+                        <Stamp className="h-3.5 w-3.5" aria-hidden />
+                      )}
+                    </button>
+                    <span className="font-kai text-[0.7rem] tracking-[0.3em] text-gilt">敖胤 赐</span>
+                  </span>
                 </div>
               </article>
             ))}

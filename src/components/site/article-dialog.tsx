@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Article } from "@/lib/types";
 import { CATEGORY_META, formatDate } from "@/lib/types";
+import { ArticleComments } from "@/components/site/article-comments";
 
 interface ArticleDialogProps {
   article: Article | null;
@@ -245,6 +246,11 @@ function ArticleBody({ article }: { article: Article }) {
                     <span className="font-song text-xs opacity-80">{likeCount}</span>
                   </button>
                 </div>
+
+                <div className="ink-divider mt-8" />
+
+                {/* 笔谈（匿名留言板） */}
+                <ArticleComments slug={article.slug} />
 
                 <div className="ink-divider mt-8" />
                 <p className="mt-4 flex items-center justify-between font-song text-xs tracking-[0.25em] text-ink-faint">
