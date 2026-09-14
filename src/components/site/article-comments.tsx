@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CornerDownRight, Loader2, MessageCircle, PenLine, ScrollText, X } from "lucide-react";
+import { CornerDownRight, Feather, Loader2, MessageCircle, PenLine, ScrollText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,6 +26,7 @@ interface CommentThread {
 }
 
 const AUTHOR_KEY = "aoyin_comment_author";
+const MASTER_AUTHOR = "敖胤先生"; // 站主落款，可「只看先生之言」
 
 /** 将扁平留言整理为两层会话树（复言一律归入顶端祖先之下，孤儿复言自动升为顶端） */
 function buildThreads(flat: CommentItem[]): CommentThread[] {
@@ -90,10 +91,14 @@ export function ArticleComments({ slug }: { slug: string }) {
   const [author, setAuthor] = useState("");
   const [body, setBody] = useState("");
   const [replyTo, setReplyTo] = useState<{ id: string; author: string } | null>(null);
+  const [onlyMaster, setOnlyMaster] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+
+  /** 楼层号：全篇按时间正序编楼（#1 起），存 id → 楼层 */
+  const [floorMap, setFloorMap] = useState<Map<string, number>>(new Map());
 
   useEffect(() => {
     let cancelled = false;
@@ -112,6 +117,10 @@ export function ArticleComments({ slug }: { slug: string }) {
           const flat: CommentItem[] = data.comments;
           setThreads(buildThreads(flat));
           setTotalCount(flat.length);
+          const chronological = [...flat].sort(
+            (a, b) => +new Date(a.createdAt) - +new Date(b.createdAt)
+          );
+          setFloorMap(new Map(chronological.map((c, i) => [c.id, i + 1])));
         }
       } catch {
         // 静默：笔谈加载失败不影响阅读
@@ -155,6 +164,11 @@ export function ArticleComments({ slug }: { slug: string }) {
         return [{ comment: created, replies: [] }, ...prev];
       });
       setTotalCount((n) => n + 1);
+      setFloorMap((prev) => {
+        const next = new Map(prev);
+        next.set(created.id, next.size + 1); // 追加楼层（时序近似）
+        return next;
+      });
       setBody("");
       const wasReply = !!replyTo;
       setReplyTo(null);
@@ -183,6 +197,15 @@ export function ArticleComments({ slug }: { slug: string }) {
     bodyRef.current?.focus();
   };
 
+  /** 「只看先生之言」筛选：保留含先生留言的会话（上下文完整） */
+  const visibleThreads = onlyMaster
+    ? threads.filter(
+        (t) =>
+          t.comment.author === MASTER_AUTHOR ||
+          t.replies.some((r) => r.author === MASTER_AUTHOR)
+      )
+    : threads;
+
   return (
     <section className="mt-9" aria-label="笔谈留言板">
       <div className="flex items-center justify-between">
@@ -195,9 +218,21 @@ export function ArticleComments({ slug }: { slug: string }) {
             </span>
           )}
         </h3>
-        <span className="font-song text-[0.68rem] tracking-[0.2em] text-ink-faint">
-          读后有所感，且留数行
-        </span>
+        {/* 只看先生之言 */}
+        <button
+          onClick={() => setOnlyMaster((v) => !v)}
+          aria-pressed={onlyMaster}
+          title={onlyMaster ? "正在只看敖胤先生的留言" : "只看敖胤先生的留言"}
+          className={cn(
+            "inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 font-kai text-[0.68rem] tracking-[0.15em] transition-colors",
+            onlyMaster
+              ? "border-gilt bg-gilt/15 text-gilt"
+              : "border-frame bg-paper-card text-ink-faint hover:border-gilt/50 hover:text-gilt"
+          )}
+        >
+          <Feather className="h-3 w-3" aria-hidden />
+          只看先生
+        </button>
       </div>
 
       <div className="ink-divider mt-3" />
@@ -212,14 +247,18 @@ export function ArticleComments({ slug }: { slug: string }) {
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             <span className="font-song text-xs tracking-[0.2em]">翻阅笔谈中…</span>
           </div>
-        ) : threads.length === 0 ? (
+        ) : visibleThreads.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-8 text-center">
             <span className="seal-outline h-9 w-9 text-[0.72rem]">谈</span>
-            <p className="font-kai text-sm tracking-[0.25em] text-ink-soft">笔谈尚无留痕</p>
-            <p className="font-song text-xs text-ink-faint">读罢此文，若有会心处，欢迎落笔一二</p>
+            <p className="font-kai text-sm tracking-[0.25em] text-ink-soft">
+              {onlyMaster ? "先生尚未于此留言" : "笔谈尚无留痕"}
+            </p>
+            <p className="font-song text-xs text-ink-faint">
+              {onlyMaster ? "他日机缘至时，自有批注" : "读罢此文，若有会心处，欢迎落笔一二"}
+            </p>
           </div>
         ) : (
-          threads.map((t, i) => (
+          visibleThreads.map((t, i) => (
             <div
               key={t.comment.id}
               style={{
@@ -229,6 +268,7 @@ export function ArticleComments({ slug }: { slug: string }) {
               {/* 顶端留言 */}
               <CommentRow
                 c={t.comment}
+                floor={floorMap.get(t.comment.id)}
                 onReply={beginReply}
                 replying={replyTo?.id === t.comment.id && replyTo?.author === t.comment.author}
               />
@@ -239,6 +279,7 @@ export function ArticleComments({ slug }: { slug: string }) {
                     <CommentRow
                       key={r.id}
                       c={r}
+                      floor={floorMap.get(r.id)}
                       onReply={beginReply}
                       replying={replyTo?.id === (r.parentId ?? r.id) && replyTo?.author === r.author}
                       compact
@@ -316,17 +357,24 @@ function CommentRow({
   onReply,
   replying,
   compact,
+  floor,
 }: {
   c: CommentItem;
   onReply: (c: CommentItem) => void;
   replying?: boolean;
   compact?: boolean;
+  floor?: number;
 }) {
+  const isMaster = c.author === MASTER_AUTHOR;
   return (
     <article
       className={cn(
         "flex items-start gap-3 rounded-sm border bg-paper-deep/40 px-3.5 py-3 transition-colors",
-        replying ? "border-gilt/60 bg-gilt/5" : "border-frame/60",
+        replying
+          ? "border-gilt/60 bg-gilt/5"
+          : isMaster
+            ? "border-gilt/40 bg-gilt/[0.06]"
+            : "border-frame/60",
         compact && "py-2.5"
       )}
     >
@@ -341,7 +389,19 @@ function CommentRow({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3">
           <span className="inline-flex items-baseline gap-2">
-            <span className="font-kai text-[0.82rem] tracking-[0.1em] text-ink">{c.author}</span>
+            <span
+              className={cn(
+                "font-kai text-[0.82rem] tracking-[0.1em] text-ink",
+                isMaster && "text-gilt"
+              )}
+            >
+              {c.author}
+            </span>
+            {isMaster && (
+              <span className="rounded-sm border border-gilt/50 px-1 py-px font-song text-[0.55rem] leading-none tracking-[0.2em] text-gilt">
+                站主
+              </span>
+            )}
             {c.replyToAuthor && (
               <span className="inline-flex items-center gap-0.5 font-song text-[0.64rem] text-gilt">
                 <CornerDownRight className="h-3 w-3" aria-hidden />
@@ -349,7 +409,15 @@ function CommentRow({
               </span>
             )}
           </span>
-          <span className="font-song text-[0.66rem] tracking-wider text-ink-faint">
+          <span className="inline-flex items-baseline gap-2 font-song text-[0.66rem] tracking-wider text-ink-faint">
+            {typeof floor === "number" && (
+              <span
+                className="tabular-nums text-ink-faint/80"
+                title={`第 ${floor} 楼`}
+              >
+                #{floor}
+              </span>
+            )}
             {formatDate(c.createdAt)}
           </span>
         </div>

@@ -3,6 +3,26 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+// 简易敏感词表：命中即以「※」掩去（保持留言可用，又不失雅观）
+const SENSITIVE_WORDS = [
+  "赌博", "博彩", "诈骗", "色情", "裸聊", "代开发票", "办证",
+  "加微信赚钱", "刷单", "兼职日结", "网贷", "高利贷", "反动",
+  "法轮", "枪支", "毒品", "代考", "外挂", "私服",
+];
+
+/** 将留言中的敏感词掩为「※」，返回（净化后文本, 命中数） */
+function maskSensitive(text: string): [string, number] {
+  let hits = 0;
+  let out = text;
+  for (const w of SENSITIVE_WORDS) {
+    while (out.includes(w)) {
+      out = out.replace(w, "※".repeat(w.length));
+      hits += 1;
+    }
+  }
+  return [out, hits];
+}
+
 // GET /api/articles/[slug]/comments —— 笔谈列表（最新在前）
 export async function GET(
   _req: NextRequest,
@@ -43,6 +63,16 @@ export async function POST(
     if (!author) author = "无名氏";
     if (author.length > 12) author = author.slice(0, 12);
 
+    // 敏感词净化：命中掩为「※」；命中过多（≥3 处）婉拒
+    const [masked, hits] = maskSensitive(text);
+    if (hits >= 3) {
+      return NextResponse.json(
+        { ok: false, error: "笔谈清雅之地，还望另择言辞" },
+        { status: 422 }
+      );
+    }
+    const finalText = masked;
+
     // 回复校验：父留言须存在且同属此文
     let parent: { id: string; author: string } | null = null;
     if (parentId) {
@@ -61,7 +91,7 @@ export async function POST(
       where: {
         articleSlug: slug,
         author,
-        body: text,
+        body: finalText,
         createdAt: { gte: new Date(Date.now() - 60_000) },
       },
       select: { id: true },
@@ -74,7 +104,7 @@ export async function POST(
       data: {
         articleSlug: slug,
         author,
-        body: text,
+        body: finalText,
         parentId: parent?.id ?? null,
         replyToAuthor: parent?.author ?? null,
       },

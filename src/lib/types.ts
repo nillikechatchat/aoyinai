@@ -25,6 +25,13 @@ export interface Category {
   seal: string;
   order: number;
   count?: number;
+  /** 该栏目最近一文（栏目卡 hover 预览用） */
+  latest?: {
+    slug: string;
+    title: string;
+    excerpt: string;
+    publishedAt: string;
+  } | null;
 }
 
 export interface Insight {

@@ -294,3 +294,63 @@ Stage Summary:
 4. 文章「荐而后读」：将文章生成水墨荐书签（复用 share-card 思路）
 5. 列表虚拟化或游标分页（50+ 篇后）
 6. OpenGraph 图片动态生成（/api/og 用 ImageResponse 生成文章题图）
+
+---
+Task ID: R5（定时审查第 5 轮）
+Agent: main
+Task: QA 回归 + 五项新功能（笔谈楼层号/只看先生/敏感词、墨迹七日折线、栏目卡 hover 预览、荐书签、读毕印记）+ group-hover 失效根因排查
+
+Work Log:
+- QA 回归（agent-browser）：首页/签筒/文章/复言/夜读/移动端全流程正常，无阻塞 bug；确认 R4 全部功能存活
+- 新功能 1「笔谈楼层号 + 只看先生 + 敏感词」：
+  - 楼层号：客户端按 createdAt 正序编楼（id→#n Map），留言行 meta 区显示 #n（tabular-nums）；新留言追加为最大楼层
+  - 「只看先生」鎏金筛选 chip（Feather 图标，aria-pressed）：仅保留含敖胤先生留言的会话（上下文完整）；空态文案「先生尚未于此留言/他日机缘至时，自有批注」
+  - 敏感词：comments POST 端 20 词表，命中以「※」掩去；≥3 处命中 422「笔谈清雅之地，还望另择言辞」（实测 1 处掩码成功、3 处婉拒）
+  - CommentRow 增强：站主留言鎏金描边 + 「站主」金徽 + 落款鎏金色
+- 新功能 2「墨迹七日」：
+  - /api/stats 新增 daily（近 7 天问签/笔谈逐日计数，服务器日期聚合）
+  - AboutView 新增 InkSparkline 纯 SVG 双折线（问签 vermillion 实线 / 笔谈 gilt），数据点+数值标注+日期轴+图例；颜色走 var(--color-vermillion/--color-gilt) 自动适配夜读
+- 新功能 3「栏目卡 hover 预览」：
+  - /api/categories 每栏目附带 latest（slug/title/excerpt/publishedAt）；Category 类型扩展
+  - 卡片 hover 时简介淡出、浮层（鎏金框+毛玻璃）显示「最新 · 日期 + 标题 + 摘要」；纯 CSS 语义类（见下）
+- 新功能 4「荐书签」：
+  - share-card.ts 新增 downloadArticleCard：750x1050 水墨荐书卡（栏目大印 + 「据（栏目）一卷」+ 大楷题名 ≤3 行 + 鎏金短线 + 摘要引文框 ≤5 行 + 阅读时长 ◈ 行 + QR「扫码·展卷共读」+ 刊于日期 + 落款胤印）；Web Share 优先/下载回退，返回 StampResult
+  - ArticleBody 标签行新增「荐」Gift 鎏金按钮（绘签中 loading + toast 分支：「荐书已递出/荐书签已备/荐书未成」）
+- 新功能 5「读毕印记」：
+  - lib/read-history.ts：localStorage 读书记忆 + 模块级订阅（监听器广播）；markRead 落盘+广播
+  - ArticleCard 用 useSyncExternalStore(subscribeReads, isRead, ()=>false)（服务端快照 false 防水合不一致）；已读文章封面右上角斜盖「读毕」outline 印；ArticleBody 展卷即 markRead
+- 重大发现与修复「group-hover 全站失效根因」：
+  - 现象：栏目卡 hover 预览、卡片标题变色等 group-hover 全部不生效，但 framer whileHover 正常
+  - 排查：CSSOM 递归遍历确认规则存在且同层（utilities）；:hover 激活、matches(':where(.group):hover *')=true，但样式不应用；注入探针对照——朴素 `.group:hover h3` 生效（rgb(254,0,0)），`.group:is(:where(.group):hover *) h3` 不匹配
+  - 结论：沙盒 headless Chromium 对 Tailwind 4 的 :is(:where(.group):hover *) 求值异常（matches 通过但样式表匹配失败）
+  - 修复：globals.css 追加朴素 :hover 语义类兜底（cat-card/cat-preview/cat-desc/cat-title/cat-seal/cat-watermark/cat-arrow、cover-reveal(-inner)、card-title/card-arrow），关键交互组件改挂语义类；真实浏览器中 group-hover 与兜底同效果无冲突
+  - 附带发现并修复：入场 stagger 动画未完成时鼠标压卡（whileHover 对象态）会使卡片冻结于 opacity 0 → whileHover 改为命名变体 "hover"（含 opacity:1 强制可见）
+- lint 过程修复：ArticleCard 初版 useEffect+setState 触发 react-hooks/set-state-in-effect → 改 useSyncExternalStore 订阅模式（读书记忆模块化、响应式）
+
+验证结果（agent-browser 实测）:
+- 楼层号：#1~#4 按时序正确显示（顶端+复言）
+- 只看先生：过滤后仅剩观澜+敖胤先生会话，青崖会话隐藏；关闭恢复
+- 敏感词：1 处→※※ 掩码入库；3 处→422 婉拒（测试数据已清理）
+- 荐书签：blob 生成 + 下载触发 + toast「荐书签已备」
+- 读毕印记：读文后返回列表，T-agent（一）卡右上角「读毕」斜印出现
+- 栏目预览：hover 市场分析卡 → 简介淡出、浮层显「最新·9月9日 API 价格战」；入场中 hover 全卡可见（opacity 1,1,1,1,1,1,1）
+- 墨迹七日：双折线渲染、数值 1,1,2,3,2（笔谈）/1（问签 9/14）、日期轴 9/8-9/14
+- 双主题（统计看板/栏目区/热门区）、移动端 390px 栏目单列 ✓
+- lint 通过；/、/rss.xml、/api/stats、/api/categories 全 200；dev.log 无错误
+- 截图存证：screenshots/r5-*.png（楼层号、只看先生、荐书签、读毕印、栏目预览、七日折线、夜读、移动端）
+
+Stage Summary:
+- 本轮交付 5 项新功能 + 2 个环境级 bug 根因修复（group-hover 失效、入场悬停冻结）+ 1 个 lint 规范修复
+- 关键教训沉淀：① 沙盒 headless Chromium 下 Tailwind 4 group-hover 变体（:is+:where 嵌套）不生效，关键 hover 显隐一律用朴素 :hover 语义类；② framer whileHover 用对象态会在 stagger 中冻结元素，命名变体须带 opacity 兜底；③ React 19 lint 禁止 effect 内同步 setState，localStorage 类状态用 useSyncExternalStore + 模块订阅
+
+## 当前状态评估
+- 功能集全量可用：司南问签（自动/定向/签筒/拓印+QR+系统分享）、文章（排序/加载更多/搜索/筛选/详情/进度/TOA/心许/荐书签/读毕印/笔谈复言+楼层+只看先生/上下篇）、今日签运、本周热门、墨迹统计+七日折线、栏目预览、RSS、夜读、回顶、SEO
+- lint 干净，路由 200，双主题+移动端覆盖全部新 UI
+
+## 下一阶段建议（优先级从高到低）
+1. OpenGraph 动态题图（/api/og ImageResponse），补齐外链分享卡片
+2. 文章内图片支持（正文 markdown 图片：生成插图或懒加载占位水墨框）
+3. 评论点赞/回应（Comment 加 reactions 列，「有同感」一键）
+4. 签筒年历视图（按月分布的签文日历）
+5. 游标分页/虚拟化（50+ 篇时）
+6. e2e 关键路径脚本化（存 scripts/qa.md 步骤清单，减少回归成本）

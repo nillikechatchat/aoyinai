@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { ArrowRight, BookOpen, Clock } from "lucide-react";
+import { useSyncExternalStore } from "react";
 import type { Article } from "@/lib/types";
 import { CATEGORY_META, formatDate } from "@/lib/types";
 import { coverFilter } from "@/lib/utils";
+import { isRead, subscribeReads } from "@/lib/read-history";
 
 interface ArticleCardProps {
   article: Article;
@@ -15,6 +17,13 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article, onOpen, index = 0 }: ArticleCardProps) {
   const meta = CATEGORY_META[article.category];
+  // 「读毕」印记：订阅读书记忆，服务端快照恒为未读（避免水合不一致）
+  const read = useSyncExternalStore(
+    subscribeReads,
+    () => isRead(article.slug),
+    () => false
+  );
+
   return (
     <article
       onClick={() => onOpen(article)}
@@ -40,12 +49,21 @@ export function ArticleCard({ article, onOpen, index = 0 }: ArticleCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-ink/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         {/* 展卷阅读提示 */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-500 group-hover:opacity-100">
-          <span className="flex translate-y-2 items-center gap-2 rounded-full bg-paper/92 px-4 py-2 font-kai text-sm tracking-[0.25em] text-vermillion shadow-lg backdrop-blur-sm transition-transform duration-500 group-hover:translate-y-0">
+        <div className="cover-reveal pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <span className="cover-reveal-inner flex translate-y-2 items-center gap-2 rounded-full bg-paper/92 px-4 py-2 font-kai text-sm tracking-[0.25em] text-vermillion shadow-lg backdrop-blur-sm transition-transform duration-500 group-hover:translate-y-0">
             <BookOpen className="h-4 w-4" aria-hidden />
             展卷阅读
           </span>
         </div>
+        {/* 读毕印记（曾开卷者，右上角斜盖小印） */}
+        {read && (
+          <span
+            className="seal-outline pointer-events-none absolute right-2.5 top-2.5 -rotate-6 bg-paper/85 text-[0.6rem] tracking-[0.15em] text-vermillion shadow-sm backdrop-blur-sm"
+            aria-label="已读过此篇"
+          >
+            读毕
+          </span>
+        )}
         {meta && (
           <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-sm bg-paper/90 px-2 py-1 font-kai text-[0.7rem] tracking-[0.15em] text-ink shadow-sm backdrop-blur-sm">
             <span className="seal-stamp h-4 w-4 text-[0.55rem]">{meta.seal}</span>
@@ -55,7 +73,7 @@ export function ArticleCard({ article, onOpen, index = 0 }: ArticleCardProps) {
       </div>
 
       <div className="p-4 sm:p-5">
-        <h3 className="line-clamp-2 font-kai text-[1.1rem] font-bold leading-snug tracking-wide text-ink transition-colors group-hover:text-vermillion">
+        <h3 className="card-title line-clamp-2 font-kai text-[1.1rem] font-bold leading-snug tracking-wide text-ink transition-colors group-hover:text-vermillion">
           {article.title}
         </h3>
         <p className="mt-2 line-clamp-2 font-song text-[0.85rem] leading-relaxed text-ink-soft">
@@ -69,7 +87,7 @@ export function ArticleCard({ article, onOpen, index = 0 }: ArticleCardProps) {
             {article.readMinutes} 分钟
           </span>
           <ArrowRight
-            className="h-4 w-4 text-ink-faint transition-all duration-300 group-hover:translate-x-1 group-hover:text-vermillion"
+            className="card-arrow h-4 w-4 text-ink-faint transition-all duration-300 group-hover:translate-x-1 group-hover:text-vermillion"
             aria-hidden
           />
         </div>

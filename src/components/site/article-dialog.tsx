@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Clock, Eye, Heart, ListTree } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock, Eye, Gift, Heart, ListTree } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import {
   Dialog,
@@ -15,6 +15,9 @@ import { cn } from "@/lib/utils";
 import type { Article } from "@/lib/types";
 import { CATEGORY_META, formatDate } from "@/lib/types";
 import { ArticleComments } from "@/components/site/article-comments";
+import { markRead } from "@/lib/read-history";
+import { downloadArticleCard } from "@/lib/share-card";
+import { useToast } from "@/hooks/use-toast";
 
 interface ArticleDialogProps {
   article: Article | null;
@@ -100,10 +103,13 @@ function ArticleBody({
   const [activeToc, setActiveToc] = useState(-1);
   const [liked, setLiked] = useState(() => getLikedSlugs().includes(article.slug));
   const [likeCount, setLikeCount] = useState(article.likes);
+  const [recommending, setRecommending] = useState(false);
+  const { toast } = useToast();
 
-  /* SEO：展卷时同步 document.title，合卷或换篇时复位 */
+  /* SEO：展卷时同步 document.title，合卷或换篇时复位；同时记入读书记忆 */
   useEffect(() => {
     document.title = `${article.title} · 敖胤AI`;
+    markRead(article.slug);
     return () => {
       document.title = BASE_TITLE;
     };
@@ -171,6 +177,31 @@ function ArticleBody({
   const scrollToHeading = (index: number) => {
     const el = scrollRef.current?.querySelector(`[data-h2="${index}"]`);
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  /* 荐书签：将此文绘成水墨荐书卡 */
+  const handleRecommend = async () => {
+    if (recommending) return;
+    setRecommending(true);
+    try {
+      const result = await downloadArticleCard({
+        seal: meta?.seal ?? "文",
+        categoryName: meta?.name ?? "文集",
+        title: article.title,
+        excerpt: article.excerpt,
+        readMinutes: article.readMinutes,
+        publishedAt: article.publishedAt,
+      });
+      if (result === "shared") {
+        toast({ title: "荐书已递出", description: "感君荐卷，与友共读。" });
+      } else if (result === "downloaded") {
+        toast({ title: "荐书签已备", description: "水墨荐书卡已存入下载，可赠同好。" });
+      }
+    } catch {
+      toast({ title: "荐书未成", description: "当前环境暂不支持生成图片。" });
+    } finally {
+      setRecommending(false);
+    }
   };
 
   return (
@@ -304,24 +335,41 @@ function ArticleBody({
                 ))}
             </div>
 
-            <button
-              onClick={handleLike}
-              disabled={liked}
-              aria-pressed={liked}
-              className={cn(
-                "group inline-flex h-10 items-center gap-2 rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
-                liked
-                  ? "border-vermillion bg-vermillion text-[#f8f3e7] shadow-md"
-                  : "border-frame bg-paper-card text-ink-soft hover:border-vermillion/60 hover:text-vermillion"
-              )}
-            >
-              <Heart
-                className={cn("h-4 w-4 transition-transform", liked && "fill-current scale-110")}
-                aria-hidden
-              />
-              {liked ? "已心许" : "心许"}
-              <span className="font-song text-xs opacity-80">{likeCount}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              {/* 荐书签 */}
+              <button
+                onClick={handleRecommend}
+                disabled={recommending}
+                aria-label="生成荐书签图片"
+                title="荐此文（生成水墨荐书签）"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-gilt/60 bg-paper-card px-4 font-kai text-sm tracking-[0.15em] text-ink-soft shadow-sm transition-all hover:border-gilt hover:text-gilt disabled:opacity-60"
+              >
+                <Gift
+                  className={cn("h-4 w-4 text-gilt", recommending && "animate-pulse")}
+                  aria-hidden
+                />
+                {recommending ? "绘签中…" : "荐"}
+              </button>
+
+              <button
+                onClick={handleLike}
+                disabled={liked}
+                aria-pressed={liked}
+                className={cn(
+                  "group inline-flex h-10 items-center gap-2 rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
+                  liked
+                    ? "border-vermillion bg-vermillion text-[#f8f3e7] shadow-md"
+                    : "border-frame bg-paper-card text-ink-soft hover:border-vermillion/60 hover:text-vermillion"
+                )}
+              >
+                <Heart
+                  className={cn("h-4 w-4 transition-transform", liked && "fill-current scale-110")}
+                  aria-hidden
+                />
+                {liked ? "已心许" : "心许"}
+                <span className="font-song text-xs opacity-80">{likeCount}</span>
+              </button>
+            </div>
           </div>
 
           <div className="ink-divider mt-8" />

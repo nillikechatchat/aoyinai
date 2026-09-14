@@ -364,3 +364,171 @@ export async function downloadInsightCard(data: ShareCardData): Promise<StampRes
   if (blob) URL.revokeObjectURL(url);
   return "downloaded";
 }
+
+export interface ArticleCardData {
+  seal: string; // 栏目印章单字，如「教」
+  categoryName: string; // 栏目名，如「AI 教程」
+  title: string;
+  excerpt: string;
+  readMinutes: number;
+  publishedAt?: string; // ISO 日期
+}
+
+/**
+ * 生成「荐书签」：将一篇文章绘制成水墨荐书卡并导出（分享优先，回退下载）
+ */
+export async function downloadArticleCard(data: ArticleCardData): Promise<StampResult> {
+  const W = 750;
+  const H = 1050;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas unsupported");
+
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const qrDataUrl = siteUrl ? await makeQrDataUrl(siteUrl) : null;
+
+  drawPaper(ctx, W, H);
+  drawFrame(ctx, W, H);
+
+  const contentW = W - 160;
+
+  // ---- 顶部小字 ----
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = C.inkFaint;
+  ctx.font = `24px ${FONT_SONG}`;
+  ctx.fillText("敖 胤 先 生 · 荐", W / 2, 118);
+
+  ctx.strokeStyle = C.frame;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(W / 2 - 70, 140);
+  ctx.lineTo(W / 2 + 70, 140);
+  ctx.stroke();
+
+  // ---- 栏目印 + 栏目名 ----
+  drawSeal(ctx, data.seal || "文", W / 2, 212, 64, 28);
+  ctx.fillStyle = C.inkSoft;
+  ctx.font = `24px ${FONT_SONG}`;
+  ctx.fillText(`据（${data.categoryName}）一卷`, W / 2, 282);
+
+  // ---- 题名（大楷，最多三行） ----
+  ctx.fillStyle = C.ink;
+  ctx.font = `bold 52px ${FONT_KAI}`;
+  const titleLines = wrapText(ctx, data.title, contentW).slice(0, 3);
+  titleLines.forEach((ln, i) => {
+    ctx.fillText(ln, W / 2, 372 + i * 72);
+  });
+
+  // 题名下的鎏金短线
+  const lineY = 372 + titleLines.length * 72 - 30;
+  ctx.strokeStyle = C.gilt;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(W / 2 - 54, lineY);
+  ctx.lineTo(W / 2 + 54, lineY);
+  ctx.stroke();
+
+  // ---- 摘要（引文框，最多五行） ----
+  const excerptY = lineY + 56;
+  ctx.font = `26px ${FONT_SONG}`;
+  const exLines = wrapText(ctx, data.excerpt, contentW - 56).slice(0, 5);
+  const exBoxH = exLines.length * 44 + 40;
+  ctx.fillStyle = "rgba(255,255,255,0.45)";
+  roundRect(ctx, 80, excerptY, W - 160, exBoxH, 6);
+  ctx.fill();
+  ctx.strokeStyle = C.frame;
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, 80, excerptY, W - 160, exBoxH, 6);
+  ctx.stroke();
+  ctx.fillStyle = C.inkSoft;
+  ctx.textAlign = "left";
+  exLines.forEach((ln, i) => {
+    ctx.fillText(ln, 108, excerptY + 44 + i * 44);
+  });
+  if (wrapText(ctx, data.excerpt, contentW - 56).length > 5) {
+    ctx.fillStyle = C.inkFaint;
+    ctx.fillText("……", 108, excerptY + 44 + 5 * 44);
+  }
+
+  // ---- 阅读时长 ----
+  const metaY = excerptY + exBoxH + 64;
+  ctx.fillStyle = C.gilt;
+  ctx.font = `26px ${FONT_KAI}`;
+  ctx.textAlign = "center";
+  ctx.fillText(`◈ 展卷约 ${data.readMinutes} 分钟 ◈`, W / 2, metaY);
+
+  // ---- 底部：二维码（左） + 日期与品牌（右） ----
+  if (qrDataUrl) {
+    const qrImg = new Image();
+    await new Promise<void>((resolve) => {
+      qrImg.onload = () => resolve();
+      qrImg.onerror = () => resolve();
+      qrImg.src = qrDataUrl;
+    });
+    const qrSize = 100;
+    const qrX = 92;
+    const qrY = H - 176;
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    roundRect(ctx, qrX - 7, qrY - 7, qrSize + 14, qrSize + 14, 4);
+    ctx.fill();
+    ctx.strokeStyle = C.frame;
+    ctx.lineWidth = 1;
+    roundRect(ctx, qrX - 7, qrY - 7, qrSize + 14, qrSize + 14, 4);
+    ctx.stroke();
+    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    ctx.fillStyle = C.inkFaint;
+    ctx.font = `17px ${FONT_SONG}`;
+    ctx.textAlign = "center";
+    ctx.fillText("扫码 · 展卷共读", qrX + qrSize / 2, qrY + qrSize + 18);
+  }
+
+  const dateStr = data.publishedAt
+    ? new Date(data.publishedAt).toLocaleDateString("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
+  ctx.textAlign = "left";
+  ctx.fillStyle = C.inkFaint;
+  ctx.font = `22px ${FONT_SONG}`;
+  if (dateStr) ctx.fillText(`刊于 ${dateStr}`, 252, H - 150);
+
+  ctx.fillStyle = C.inkSoft;
+  ctx.font = `26px ${FONT_KAI}`;
+  ctx.fillText("敖胤AI · 观智能之潮", 252, H - 106);
+  drawSeal(ctx, "胤", W - 110, H - 108, 34, 16);
+
+  // 导出：优先系统分享，回退下载
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+  const fileName = `敖胤AI-荐书签-${data.title.slice(0, 12)}.png`;
+
+  if (blob && typeof navigator !== "undefined" && typeof navigator.share === "function") {
+    try {
+      const file = new File([blob], fileName, { type: "image/png" });
+      if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `荐一文 · ${data.title}`,
+          text: data.excerpt.slice(0, 80),
+        });
+        return "shared";
+      }
+    } catch (e) {
+      if ((e as Error)?.name === "AbortError") return "aborted";
+    }
+  }
+
+  const url = blob ? URL.createObjectURL(blob) : canvas.toDataURL("image/png");
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  if (blob) URL.revokeObjectURL(url);
+  return "downloaded";
+}

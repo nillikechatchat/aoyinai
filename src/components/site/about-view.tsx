@@ -17,6 +17,7 @@ interface SiteStats {
   insights: number;
   topCategory: string | null;
   latestArticle: { title: string; publishedAt: string } | null;
+  daily: Array<{ date: string; insights: number; comments: number }>;
 }
 
 const PRINCIPLES = [
@@ -40,6 +41,91 @@ const PRINCIPLES = [
 /** 千分位 */
 function fmt(n: number): string {
   return n.toLocaleString("zh-CN");
+}
+
+/** 墨迹七日：纯 SVG 迷你折线（问签 / 笔谈 双线，随双主题变色） */
+function InkSparkline({ daily }: { daily: Array<{ date: string; insights: number; comments: number }> }) {
+  const W = 560;
+  const H = 118;
+  const padX = 34;
+  const topY = 22;
+  const baseY = 84;
+  const maxVal = Math.max(1, ...daily.map((d) => Math.max(d.insights, d.comments)));
+
+  const xAt = (i: number) =>
+    padX + (i * (W - padX * 2)) / Math.max(daily.length - 1, 1);
+  const yAt = (v: number) => baseY - (v / maxVal) * (baseY - topY);
+
+  const toPoints = (key: "insights" | "comments") =>
+    daily.map((d, i) => `${xAt(i)},${yAt(d[key])}`).join(" ");
+
+  return (
+    <div className="mt-5 rounded-sm border border-frame/60 bg-paper-deep/40 px-4 pb-2 pt-3">
+      <div className="flex items-center justify-between">
+        <p className="font-song text-[0.66rem] tracking-[0.25em] text-ink-faint">
+          近七日 · 落墨之痕
+        </p>
+        <p className="flex items-center gap-4 font-song text-[0.62rem] tracking-[0.1em] text-ink-faint">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block h-px w-4 bg-vermillion" aria-hidden />
+            问签
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="inline-block h-px w-4 bg-gilt" aria-hidden />
+            笔谈
+          </span>
+        </p>
+      </div>
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label="近七日问签与笔谈数量折线图"
+        className="mt-1 h-auto w-full"
+      >
+        {/* 基线 */}
+        <line x1={padX} y1={baseY} x2={W - padX} y2={baseY} stroke="currentColor" strokeOpacity="0.18" strokeDasharray="3 4" className="text-ink" />
+        {/* 问签折线 */}
+        <polyline
+          points={toPoints("insights")}
+          fill="none"
+          stroke="var(--color-vermillion, #a63c2a)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {/* 笔谈折线 */}
+        <polyline
+          points={toPoints("comments")}
+          fill="none"
+          stroke="var(--color-gilt, #b28a3c)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          strokeDasharray="1 0"
+        />
+        {/* 数据点 + 数值 + 日期 */}
+        {daily.map((d, i) => (
+          <g key={d.date}>
+            {d.insights > 0 && (
+              <>
+                <circle cx={xAt(i)} cy={yAt(d.insights)} r="3.2" fill="var(--color-vermillion, #a63c2a)" />
+                <text x={xAt(i)} y={yAt(d.insights) - 7} textAnchor="middle" fontSize="11" fill="var(--color-vermillion, #a63c2a)">{d.insights}</text>
+              </>
+            )}
+            {d.comments > 0 && (
+              <>
+                <circle cx={xAt(i)} cy={yAt(d.comments)} r="3.2" fill="var(--color-gilt, #b28a3c)" />
+                <text x={xAt(i)} y={yAt(d.comments) - 7} textAnchor="middle" fontSize="11" fill="var(--color-gilt, #b28a3c)">{d.comments}</text>
+              </>
+            )}
+            <text x={xAt(i)} y={H - 6} textAnchor="middle" fontSize="11" fill="currentColor" fillOpacity="0.45" className="text-ink">
+              {d.date}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
 }
 
 export function AboutView({ onAsk }: AboutViewProps) {
@@ -170,6 +256,9 @@ export function AboutView({ onAsk }: AboutViewProps) {
                 </div>
               ))}
             </div>
+            {/* 七日趋势迷你折线 */}
+            <InkSparkline daily={stats.daily ?? []} />
+
             {/* 注脚：最热栏目 / 最近刊行 */}
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-frame/60 pt-3">
               <p className="flex items-center gap-2 font-song text-[0.7rem] tracking-[0.12em] text-ink-faint">

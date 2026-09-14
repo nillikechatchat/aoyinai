@@ -480,3 +480,48 @@
 /* r2 dark theme tweak */
 
 /* r2 hero motion */
+/* recompile touch */
+/* 兜底：部分 Chromium（含 headless 预览）对 :is(:where(.group):hover *) 求值异常，
+   关键 hover 显隐改用朴素 :hover 语义类实现（不影响真实浏览器的 group-hover） */
+.cat-card:hover .cat-preview {
+  opacity: 1;
+}
+.cat-card:hover .cat-desc {
+  opacity: 0;
+}
+.cover-reveal {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.cover-reveal-inner {
+  transform: translateY(8px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+article:hover .cover-reveal,
+.cover-reveal-host:hover .cover-reveal {
+  opacity: 1;
+}
+article:hover .cover-reveal-inner,
+.cover-reveal-host:hover .cover-reveal-inner {
+  transform: translateY(0);
+}
+.cat-card:hover .cat-watermark {
+  color: color-mix(in srgb, var(--vermillion) 15%, transparent);
+}
+.cat-card:hover .cat-title {
+  color: var(--vermillion);
+}
+.cat-card:hover .cat-seal {
+  transform: rotate(-6deg);
+}
+.cat-card:hover .cat-arrow {
+  transform: translate(2px, -2px);
+  color: var(--vermillion);
+}
+article:hover .card-title {
+  color: var(--vermillion);
+}
+article:hover .card-arrow {
+  transform: translateX(4px);
+  color: var(--vermillion);
+}
