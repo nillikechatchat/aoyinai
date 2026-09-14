@@ -27,7 +27,7 @@ import { CATEGORY_META, formatDate } from "@/lib/types";
 import { ArticleComments } from "@/components/site/article-comments";
 import { markRead } from "@/lib/read-history";
 import { downloadArticleCard } from "@/lib/share-card";
-import { listenToText, stopListening } from "@/lib/listen-insight";
+import { listenToChunks, stopListening } from "@/lib/listen-insight";
 import { useToast } from "@/hooks/use-toast";
 
 interface ArticleDialogProps {
@@ -116,6 +116,10 @@ function ArticleBody({
   const [likeCount, setLikeCount] = useState(article.likes);
   const [recommending, setRecommending] = useState(false);
   const [listenState, setListenState] = useState<"idle" | "loading" | "playing">("idle");
+  /** 诵读范围：全文 / 仅摘要 */
+  const [listenMode, setListenMode] = useState<"full" | "brief">("full");
+  /** 分段诵读进度（全文多段时显示 i/n） */
+  const [listenProgress, setListenProgress] = useState<{ i: number; n: number } | null>(null);
   const { toast } = useToast();
 
   /* SEO：展卷时同步 document.title，合卷或换篇时复位；同时记入读书记忆 */
@@ -137,13 +141,29 @@ function ArticleBody({
     [article]
   );
 
-  /* 诵读文本：标题 + 摘要 + 正文去 markdown 结构符号（限制在 TTS 上限内） */
-  const speechText = useMemo(() => {
+  /* 诵读文本：摘要档=标题+导语；全文档=去 markdown 与插图后按句切分为 ≤900 字分段（TTS 上限 1024） */
+  const speechChunks = useMemo(() => {
+    const brief = `${article.title}。敖胤AI。${article.excerpt}`;
     const stripped = article.content
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, "") // 去插图
       .replace(/---[\s\S]*$/, "")
       .replace(/[#*`>_[\]()\\-]/g, " ")
-      .replace(/\s+/g, " ");
-    return `${article.title}。敖胤AI。${article.excerpt} ${stripped}`.slice(0, 1000);
+      .replace(/\s+/g, " ")
+      .trim();
+    const full = `${article.title}。敖胤AI。${article.excerpt} ${stripped}`;
+    const sentences = full.split(/(?<=[。！？；])/g);
+    const chunks: string[] = [];
+    let cur = "";
+    for (const s of sentences) {
+      if (cur && (cur + s).length > 900) {
+        chunks.push(cur);
+        cur = s;
+      } else {
+        cur += s;
+      }
+    }
+    if (cur.trim()) chunks.push(cur);
+    return { brief: [brief], full: chunks };
   }, [article]);
 
   /* 同栏目上一篇/下一篇（首尾循环） */
@@ -203,22 +223,46 @@ function ArticleBody({
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  /* 听文：敖胤先生诵读此文 */
+  /* 听文：敖胤先生诵读此文（全文分段续播 / 仅读摘要） */
   const toggleListen = async () => {
     if (listenState === "loading") return;
     if (listenState === "playing") {
       stopListening();
       setListenState("idle");
+      setListenProgress(null);
       return;
     }
     setListenState("loading");
-    const result = await listenToText(speechText, () => setListenState("idle"));
+    setListenProgress(null);
+    const chunks = listenMode === "brief" ? speechChunks.brief : speechChunks.full;
+    const result = await listenToChunks(chunks, {
+      onChunk: (i, n) => {
+        setListenProgress({ i, n });
+        setListenState("playing");
+      },
+      onEnded: () => {
+        setListenState("idle");
+        setListenProgress(null);
+      },
+    });
     if (result === "error") {
       setListenState("idle");
+      setListenProgress(null);
       toast({ title: "听文未成", description: "诵读暂时未成，请稍后再试。" });
       return;
     }
     setListenState("playing");
+  };
+
+  /* 切换诵读档位：若正在诵读则先止声 */
+  const switchListenMode = (m: "full" | "brief") => {
+    if (m === listenMode) return;
+    setListenMode(m);
+    if (listenState !== "idle") {
+      stopListening();
+      setListenState("idle");
+      setListenProgress(null);
+    }
   };
 
   /* 荐书签：将此文绘成水墨荐书卡 */
@@ -355,6 +399,40 @@ function ArticleBody({
                     </h2>
                   );
                 },
+                /* 段落内含插图时解包 <p>（<figure> 不可嵌于 <p>，避免 hydration 报错）
+                   注意 react-markdown 传 mdast 节点：图片为 type='image'；hast 则为 tagName='img' */
+                p: ({ node, children, ...props }) => {
+                  const kids = Array.isArray(node?.children)
+                    ? (node.children as Array<{ type?: string; tagName?: string }>)
+                    : [];
+                  const hasImg = kids.some((c) => c?.type === "image" || c?.tagName === "img");
+                  if (hasImg) return <>{children}</>;
+                  return <p {...props}>{children}</p>;
+                },
+                /* 正文插图：水墨框 + 图注 + 懒加载 */
+                img: ({ src, alt }) => {
+                  const s = typeof src === "string" ? src : "";
+                  if (!s) return null;
+                  return (
+                    <figure className="ink-figure my-6">
+                      <span className="ink-figure-corner tl" aria-hidden />
+                      <span className="ink-figure-corner tr" aria-hidden />
+                      <span className="ink-figure-corner bl" aria-hidden />
+                      <span className="ink-figure-corner br" aria-hidden />
+                      <span className="relative block aspect-[7/4] overflow-hidden">
+                        <Image
+                          src={s}
+                          alt={alt || "文章插图"}
+                          fill
+                          loading="lazy"
+                          className="object-cover"
+                          sizes="(max-width: 640px) 100vw, 600px"
+                        />
+                      </span>
+                      {alt && <figcaption>{alt}</figcaption>}
+                    </figure>
+                  );
+                },
               }}
             >
               {article.content}
@@ -378,6 +456,29 @@ function ArticleBody({
             </div>
 
             <div className="flex items-center gap-2">
+              {/* 诵读档位：全文 / 摘要 */}
+              <div
+                className="inline-flex h-10 overflow-hidden rounded-full border border-frame"
+                role="group"
+                aria-label="诵读范围"
+              >
+                {(["full", "brief"] as const).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => switchListenMode(m)}
+                    aria-pressed={listenMode === m}
+                    className={cn(
+                      "flex h-full items-center px-3 font-kai text-xs tracking-[0.12em] transition-colors",
+                      listenMode === m
+                        ? "bg-paper-deep text-vermillion"
+                        : "bg-paper-card text-ink-faint hover:text-ink-soft"
+                    )}
+                  >
+                    {m === "full" ? "全文" : "摘要"}
+                  </button>
+                ))}
+              </div>
+
               {/* 听文（TTS 诵读） */}
               <button
                 onClick={toggleListen}
@@ -403,7 +504,20 @@ function ArticleBody({
                 ) : (
                   <Volume2 className="h-4 w-4" aria-hidden />
                 )}
-                {listenState === "playing" ? "止" : listenState === "loading" ? "诵读中" : "听文"}
+                {listenState === "playing" ? (
+                  <>
+                    止
+                    {listenProgress && listenProgress.n > 1 && (
+                      <span className="listen-progress">
+                        {listenProgress.i + 1}/{listenProgress.n}
+                      </span>
+                    )}
+                  </>
+                ) : listenState === "loading" ? (
+                  "诵读中"
+                ) : (
+                  "听文"
+                )}
               </button>
 
               {/* 荐书签 */}

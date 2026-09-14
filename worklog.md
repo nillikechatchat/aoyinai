@@ -452,3 +452,52 @@ Stage Summary:
 4. 签历导出：月历视图生成水墨月历分享图
 5. 评论回复通知（同楼层被复提示角标，Comment 加 notified 列）
 6. e2e 脚本化：scripts/qa.md 步骤清单沉淀（本轮再次验证手动回归约 15 分钟，值得沉淀）
+
+---
+Task ID: R8（定时审查第 8 轮）
+Agent: main
+Task: QA 回归 + 内容大扩充（21 篇 LLM 扩写至平均 2750 字 + 7 张 AI 插图）+ 正文图片渲染（水墨框/图注/懒加载）+ 听文双档分段队列 + 首字下沉 + e2e 清单沉淀
+
+Work Log:
+- QA 回归（agent-browser）：首页/问签（观微卦）/签筒（session 隔离）/文章列表（排序+加载更多）/关于（墨迹统计）全流程无阻塞 bug，console 无错误；「去问一卦失灵」疑云确认为测试语法误用（find ref X click 会按名称误匹配同名标题，正确写法是 click @ref），非应用 bug，已记入 qa.md 备忘
+- 新功能 1「正文 markdown 图片支持」：
+  - article-dialog ReactMarkdown 新增 img 组件：水墨框 figure（外框+内线 inset 双线+四角鎏金饰角）+ 图注（figcaption 楷体鎏金短线夹注）+ next/image fill aspect-[7/4] 懒加载 + sizes 响应式
+  - 关键修复：独立成段的 ![图](…) 默认被包在 <p> 内，<figure> 嵌 <p> 触发 React 嵌套校验错误 → 新增 p 渲染器解包；注意 react-markdown v9 传 mdast 节点（type:'image'）而非 hast（tagName:'img'），判断条件要两者兼容
+  - globals.css 新增 .ink-figure 全套样式 + 夜读下插图 brightness(0.82) saturate(0.85) 暗化滤镜
+- 新功能 2「文章正文扩充」：
+  - 7 张栏目水墨插图（gen-illus.sh 串行+重试防 429，1344x768，illu-{category}.png）
+  - expand-articles.ts：LLM 逐篇扩写 1300~1800 字（上限 2200），约束保留原 h2 锚点（校验容差忽略空白与全半角标点）；超长改为 smartTruncate 小节边界截断并补回 --- 落款；插图插于首小节末尾，图注按栏目三选一轮换
+  - audit-fix-articles.ts：剥 LLM 输出的 h1 标题回显/「摘要：」回显段（围栏状态机逐行/逐段判断，避免误杀代码注释）、补丢失插图、重算 readMinutes；幂等可重复运行
+  - rag-practice-guide 因 LLM 屡改「三、结语」标题改人工定稿（fix-rag-article.ts，1112 字）
+  - audit-check.ts 终态审计：21 篇全部干净（图 1/h2≥2/无回显/≥1000 字）；终态篇均 2750 字（范围 1112~3171），阅读时长 250 字/分钟重算
+- 新功能 3「听文双档 + 分段队列」：
+  - lib/listen-insight.ts 重构：listenToChunks 多段顺序播放（queueToken 失效机制 + 播当前段预取下一段 + blob 缓存上限 24）；listenToText 保持单段兼容
+  - article-dialog：全文/摘要 档位 chips（切换即止声）；全文档去图去 markdown 按句切分 ≤900 字分段；播放中按钮显示「止 i/n」分段进度；listen-progress 小字样式
+- 样式细节：首字下沉（prose-guofeng 首段 ::first-letter 朱砂大楷 3.1em）
+- 沉淀 scripts/qa.md：e2e 手工回归清单（核心 10 步 + 专项 + 历史专项）+ agent-browser 语法/环境特性备忘表 + 数据维护流程（seed → expand → fix-rag 顺序）
+
+验证结果（agent-browser + 脚本实测）:
+- 插图：租卡指南首小节末水墨框插图（双线+饰角+图注「桥上市易，锱铢必较」）、imgLoaded、夜读滤镜 brightness(0.82) 生效、390px 下 316/358 宽自适应
+- hydration 嵌套错误清零（开关弹窗对比 console 计数）
+- 首字下沉 47.12px 朱砂大楷
+- 听文：全文档 4 段（2900 字）分段合成顺序播放，按钮「止 1/4」；播第一段时第二段已预取完成（50s 首段 + 2.9s 预取）；切摘要档即止声；摘要档合成→播放→自然结束回 idle（外部 TTS 服务延迟波动 3~50s，机制正确）
+- 目录：目录（5）+ scroll-spy（65% 处「省钱三板斧」朱红高亮）
+- lint 通过；tsc src 无错误；/、/rss.xml、/api/stats、/api/categories、/api/insight、/api/articles 全 200；dev.log 无运行时错误
+- 截图存证：screenshots/r8-*.png（QA 首页/问签/移动端、插图+首字下沉、夜读插图、移动端夜读插图）
+
+Stage Summary:
+- 本轮交付 3 组新功能（正文图片渲染 / 全站内容扩充+插图 / 听文双档分段队列）+ 2 处样式细节（水墨图框、首字下沉）+ 2 个渲染层 bug 修复（figure-p 嵌套、mdast 判断）+ e2e 清单沉淀
+- 内容体量：21 篇 × 平均 2750 字（此前 177~468 字），阅读时长 1~2 分钟 → 4~13 分钟，全部配栏目水墨插图
+- 关键教训：① LLM 扩写的输出常带 h1 标题回显与「摘要：」回显段，且会擅自改小节标题——校验须容差比对 + 幂等修复脚本兜底；② react-markdown v9 组件收到的是 mdast 节点，块级图片须解包 <p>；③ bash 内联脚本含 ``` 反引号会被命令替换，含反引号的代码一律写成脚本文件执行；④ agent-browser 点击按 ref 用 click @eN，find ref 是另一种语义
+
+## 当前状态评估
+- 功能集全量可用：司南问签（自动/定向/上下文连贯/签筒隔离/签历/拓印+QR/听签）、文章（排序/加载更多/搜索/筛选/详情/进度/TOA spy/心许/听文双档/荐书签/读毕印/插图/首字下沉/笔谈复言+楼层+只看先生+敏感词+限流+有同感/上下篇）、今日签运、本周热门、墨迹统计（折线+环形图+热力格子）、栏目预览、RSS、夜读、回顶、SEO
+- 内容达「正经博客」体量；lint 干净；全部路由 200；双主题+移动端覆盖全部新 UI
+
+## 下一阶段建议（优先级从高到低）
+1. TTS 体验优化：分段预取已有，但首段合成 30~50s 偏慢——考虑预合成热门文章缓存到磁盘，或先播「标题+摘要」再无缝续播正文
+2. 文章配图个性化：现插图栏目级复用（每栏目 3 篇共用一张），可为每篇生成独立插图（注意 429 限流，串行+重试脚本已备）
+3. 签历导出：月历视图生成水墨月历分享图（复用 share-card canvas 思路）
+4. 评论回复通知（同楼层被复提示角标，Comment 加 notified 列）
+5. seed.ts 与扩写流水线整合：seed 后自动串 expand+fix+audit（一条命令重建全站内容）
+6. 文章字数/时长缓存列（现 wordCount 前端实时算，list 页 readMinutes 已入库，一致性 OK，量级再涨时考虑）

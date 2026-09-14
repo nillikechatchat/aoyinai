@@ -477,6 +477,75 @@
   margin: 1.6em 0;
 }
 
+/* 正文插图：水墨框（双线 + 四角饰角 + 图注） */
+.ink-figure {
+  margin: 1.5em 0;
+  padding: 0.4rem;
+  border: 1px solid var(--frame);
+  background: color-mix(in srgb, var(--paper-deep) 55%, transparent);
+  position: relative;
+}
+.ink-figure::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid color-mix(in srgb, var(--frame) 65%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+.ink-figure .ink-figure-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: color-mix(in srgb, var(--gilt) 75%, transparent);
+  border-style: solid;
+  z-index: 2;
+}
+.ink-figure .ink-figure-corner.tl { top: -2px; left: -2px; border-width: 2px 0 0 2px; }
+.ink-figure .ink-figure-corner.tr { top: -2px; right: -2px; border-width: 2px 2px 0 0; }
+.ink-figure .ink-figure-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 2px 2px; }
+.ink-figure .ink-figure-corner.br { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; }
+.ink-figure figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.45em 0.5em 0.2em;
+  font-family: var(--font-kai);
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: var(--ink-faint);
+}
+.ink-figure figcaption::before,
+.ink-figure figcaption::after {
+  content: "";
+  width: 2.2em;
+  height: 1px;
+  background: color-mix(in srgb, var(--gilt) 55%, transparent);
+}
+.dark .ink-figure img {
+  filter: brightness(0.82) saturate(0.85);
+}
+
+/* 首字下沉：文章开篇第一段的第一个字作朱砂大字 */
+.prose-guofeng > p:first-of-type::first-letter {
+  font-family: var(--font-kai);
+  float: left;
+  font-size: 3.1em;
+  line-height: 1;
+  padding: 0.06em 0.14em 0 0;
+  color: var(--vermillion);
+  font-weight: 700;
+}
+
+/* 听文分段进度小字 */
+.listen-progress {
+  font-family: var(--font-song);
+  font-size: 0.62rem;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
 /* r2 dark theme tweak */
 
 /* r2 hero motion */
