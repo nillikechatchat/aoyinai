@@ -13,7 +13,7 @@ import {
   Stamp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { downloadInsightCard } from "@/lib/share-card";
+import { downloadCalendarCard, downloadInsightCard } from "@/lib/share-card";
 import { getSessionId } from "@/lib/session";
 import { formatDate } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -271,6 +271,7 @@ function QianCalendar({
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth()); // 0 起
   const [selected, setSelected] = useState<string | null>(null);
+  const [stampingCal, setStampingCal] = useState(false);
 
   // 按日聚合（同日按时间倒序）
   const byDay = useMemo(() => {
@@ -312,6 +313,36 @@ function QianCalendar({
     });
   }, [records, year, month]);
 
+  /* 拓历：将本月签历绘成水墨月历卡 */
+  const stampCalendar = async () => {
+    if (stampingCal) return;
+    setStampingCal(true);
+    try {
+      const days = [...byDay.entries()]
+        .map(([key, list]) => {
+          const [y, m, d] = key.split("-").map(Number);
+          return { y, m, d, list };
+        })
+        .filter((e) => e.y === year && e.m - 1 === month)
+        .map((e) => ({
+          day: e.d,
+          seal: e.list[0].name.replace("卦", "").slice(-1) || "签",
+          count: e.list.length,
+        }));
+      await downloadCalendarCard({
+        year,
+        month: month + 1,
+        days,
+        total: monthRecords.length,
+        dayCount: days.length,
+      });
+    } catch {
+      // 静默：拓历失败不影响浏览
+    } finally {
+      setStampingCal(false);
+    }
+  };
+
   const selectedRecords = selected ? byDay.get(selected) ?? [] : [];
   const daysWithRecords = [...byDay.keys()].filter((k) => {
     const [y, m] = k.split("-").map(Number);
@@ -334,8 +365,24 @@ function QianCalendar({
             <p className="font-kai text-lg font-bold tracking-[0.25em] text-ink">
               {year} 年 {month + 1} 月
             </p>
-            <p className="mt-0.5 font-song text-[0.68rem] tracking-[0.2em] text-ink-faint">
-              本月 {monthRecords.length} 签{isCurrentMonth ? " · 今月之迹" : ""}
+            <p className="mt-0.5 flex items-center justify-center gap-2 font-song text-[0.68rem] tracking-[0.2em] text-ink-faint">
+              <span>
+                本月 {monthRecords.length} 签{isCurrentMonth ? " · 今月之迹" : ""}
+              </span>
+              <button
+                onClick={stampCalendar}
+                disabled={stampingCal}
+                aria-label="拓历（生成本月水墨月历分享图）"
+                title="拓历 · 将本月签历绘成分享图"
+                className="inline-flex items-center gap-1 rounded-full border border-gilt/50 px-2 py-0.5 text-gilt transition-colors hover:border-gilt hover:bg-gilt/10 hover:text-vermillion disabled:opacity-50"
+              >
+                {stampingCal ? (
+                  <Loader2 className="h-3 w-3 animate-spin" aria-hidden />
+                ) : (
+                  <Stamp className="h-3 w-3" aria-hidden />
+                )}
+                拓历
+              </button>
             </p>
           </div>
           <button

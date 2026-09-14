@@ -20,6 +20,7 @@ model Article {
   readMinutes Int      @default(5)
   views       Int      @default(0)
   likes       Int      @default(0)
+  tldr        String   @default("") // AI 一句话速览（懒生成后缓存）
   published   Boolean  @default(true)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())

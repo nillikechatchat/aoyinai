@@ -501,3 +501,53 @@ Stage Summary:
 4. 评论回复通知（同楼层被复提示角标，Comment 加 notified 列）
 5. seed.ts 与扩写流水线整合：seed 后自动串 expand+fix+audit（一条命令重建全站内容）
 6. 文章字数/时长缓存列（现 wordCount 前端实时算，list 页 readMinutes 已入库，一致性 OK，量级再涨时考虑）
+
+---
+Task ID: R9（定时审查第 9 轮）
+Agent: main
+Task: QA 回归 + 四项新功能（签历拓历分享卡 / TTS 磁盘缓存+预热 / 文章 AI 一句话速览 / 内容重建流水线）+ 移动端动作行布局修复
+
+Work Log:
+- QA 回归（agent-browser）：首页/问签（明镜卦）/文章详情/笔谈落笔（#1 楼层+toast）/签筒/签历/关于统计/夜读/移动端 390px 全流程无阻塞 bug，R1~R8 功能全部存活；发现 2 条历史测试留言残留（R9 测试文 + author=2/body=3）已用 Prisma 清理，留言数回到 9 条种子态
+- 新功能 1「签历拓历（月历分享卡）」：
+  - share-card.ts 新增 downloadCalendarCard：750x1050 水墨月历——宣纸底/朱砂双线框/四角方印、「敖胤先生·签历」小字、年月大楷+历方印、鎏金统计行（本月 N 签·M 个朱印之日）、7 列月历网格（朱印之日=朱底圆角块+白描卦名末字小章+鎏金多签数量角标；素日=淡字+虚线框）、题记「朱印之日·皆有叩问」、QR+胤印落款；Web Share 优先/下载回退，复用 StampResult 三态
+  - qiantong-view QianCalendar 月份标题行新增「拓历」鎏金小胶囊按钮（Stamp 图标 + loading 旋转 + aria-label）；数据从 byDay Map 按当前年月提取
+  - 实测 blob 捕获预览：2026 年 9 月卡构图完整（14 日朱印+微字章+3 签角标）
+- 新功能 2「TTS 磁盘缓存」：
+  - /api/tts 重构：sha256(voice|speed|text) 为 key，落盘 .tts-cache/<key>.wav（存在且 >100B 直接回放，响应头 X-TTS-Cache: hit/miss）；合成后写盘 + 超过 80 个文件按 mtime 回收最旧
+  - 新脚本 scripts/preheat-tts.ts：取最热 N 篇文章预合成「摘要档」（标题+敖胤AI+导语，与前端 speechChunks.brief 严格一致）——bun run tts:preheat [N=5]
+  - 实测：同文本首次 2.35s（miss）→ 二次 hit 秒回；预热 5 篇全部落盘（4.3~12.8s/篇）
+- 新功能 3「文章 AI 一句话速览」：
+  - Prisma Article 新增 tldr 列（default ""），db:push + 重启 dev
+  - 新路由 GET/POST /api/articles/[slug]/tldr：POST 幂等（有缓存直返 cached:true）；无缓存取正文前 1200 字交 LLM（system=敖胤先生人设，60 字内单句古风、禁引号前缀），清洗后落库
+  - article-dialog 动作行新增「速览」按钮（Sparkles，shown 态朱红描边 aria-expanded）；点击后导语下方插入鎏金速览卡（左缘朱-金渐变竖条 + 「览」印 + 「一句话速览·敖胤先生撰」眉 + 楷体正文）；loading 文案「先生正掩卷而思，为君提炼一句…」
+  - 实测：RAG 文首问 1.4s 生成（"RAG调优之道，不在算法玄奇，而在结构切分、混合检索、重排改写、评测先行之朴实工程。"）、二次 cached 秒开；夜读模式卡片适配
+- 新功能 4「内容重建流水线」：package.json 新增 content:rebuild（seed → expand → fix-rag → audit-fix → recalc-reading → audit-check 六步一条命令）
+- Bug 修复「移动端动作行溢出」：390px 下动作按钮行（全文/摘要|听文|速览|荐|心许）不换行导致心许溢出屏幕、速览两字竖排 → 动作容器加 flex-wrap、四个按钮加 whitespace-nowrap；实测两行换行全部可见
+- lint 通过；/ /rss.xml /api/stats /api/categories /api/insight /api/articles 全 200；dev.log 无运行时错误
+
+验证结果（agent-browser + curl 实测）:
+- 拓历：月历卡 blob 预览构图正确（r9-calendar-card.png）
+- TTS 缓存：miss 2.35s → hit 秒回（X-TTS-Cache 头）；预热脚本 5/5 落盘
+- 速览：生成 1.4s（质量高）→ 缓存秒开；夜读/移动端适配
+- 移动端：动作行 flex-wrap 修复后心许按钮 rect right=235 ≤ 390 全可见（r9-mobile-tldr-fixed.png）
+- 截图存证：screenshots/r9-*.png（QA 回归、速览生成/缓存/夜读、月历卡、移动端修复）
+
+Stage Summary:
+- 本轮交付 4 项新功能 + 1 个移动端布局修复 + 2 条测试数据清理
+- AI 能力栈新增：文章级 LLM 速览（懒生成+DB 缓存）；TTS 性能质变：磁盘缓存 + 预热后热门文章「摘要档」秒开
+- 分享矩阵齐备：签卡/荐书签/月历三种水墨分享图（均带 QR 回流）
+- 关键教训：① 动作按钮行在移动端必须 flex-wrap + whitespace-nowrap 组合，否则两端 justify-between 布局下尾部按钮溢出；② 预热脚本合成文本必须与前端分片逻辑逐字节一致（含「敖胤AI。」衔接）否则缓存永不命中；③ 沙盒 sqlite3 CLI 不可用，数据清理走 bun + Prisma Client
+
+## 当前状态评估
+- 功能集全量可用：司南问签（自动/定向/上下文连贯/签筒隔离/签历/拓印+QR/拓历月历卡/听签）、文章（排序/加载更多/搜索/筛选/详情/进度/TOA spy/心许/速览/听文双档/荐书签/读毕印/插图/首字下沉/笔谈复言+楼层+只看先生+敏感词+限流+有同感/上下篇）、今日签运、本周热门、墨迹统计（折线+环形图+热力格子）、栏目预览、RSS、夜读、回顶、SEO
+- 分享矩阵：签卡 + 荐书签 + 月历卡三卡齐备；AI 栈：LLM 问签/速览 + TTS 听签/听文（磁盘缓存）+ canvas 拓印
+- lint 干净；全部路由 200；双主题 + 移动端覆盖全部新 UI；dev.log 无错误
+
+## 下一阶段建议（优先级从高到低）
+1. 速览扩展：文章列表卡片 hover 显示 tldr（已入库的秒出）；「全部速览」批量预热脚本（对 21 篇循环 POST tldr，一次跑完全站缓存）
+2. 听文体验：全文档 TTS 合成进度预取已有，可加「已播至 x%」进度条；TTS 磁盘缓存命中率统计进 /api/stats
+3. 签筒月历卡可加「年度 12 月总览」模式（一年问签热力）
+4. 评论治理升级：Comment 加 softDelete（留言主自删）、楼层链接锚点跳转
+5. OpenGraph 每篇文章动态题图（/api/og?title=&category= 已有基础，文章分享卡接 URL）
+6. e2e 清单 scripts/qa.md 增补 R9 专项（拓历/速览/TTS 缓存命中三条）

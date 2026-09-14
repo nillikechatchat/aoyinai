@@ -11,6 +11,7 @@ import {
   Heart,
   ListTree,
   Loader2,
+  Sparkles,
   Volume2,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -115,6 +116,9 @@ function ArticleBody({
   const [liked, setLiked] = useState(() => getLikedSlugs().includes(article.slug));
   const [likeCount, setLikeCount] = useState(article.likes);
   const [recommending, setRecommending] = useState(false);
+  /* 一句话速览：hidden 未展开 / loading 生成中 / shown 已展开 */
+  const [tldrState, setTldrState] = useState<"hidden" | "loading" | "shown">("hidden");
+  const [tldrText, setTldrText] = useState("");
   const [listenState, setListenState] = useState<"idle" | "loading" | "playing">("idle");
   /** 诵读范围：全文 / 仅摘要 */
   const [listenMode, setListenMode] = useState<"full" | "brief">("full");
@@ -265,6 +269,30 @@ function ArticleBody({
     }
   };
 
+  /* 一句话速览：懒生成（LLM 首次 ~2s，落库后秒开） */
+  const handleTldr = async () => {
+    if (tldrState === "loading") return;
+    if (tldrState === "shown") {
+      setTldrState("hidden");
+      return;
+    }
+    setTldrState("loading");
+    try {
+      const res = await fetch(`/api/articles/${article.slug}/tldr`, { method: "POST" });
+      const data = await res.json();
+      if (data.ok && data.tldr) {
+        setTldrText(data.tldr);
+        setTldrState("shown");
+      } else {
+        setTldrState("hidden");
+        toast({ title: "速览未成", description: "先生一时走神，请稍后再试。" });
+      }
+    } catch {
+      setTldrState("hidden");
+      toast({ title: "速览未成", description: "网络不佳，请稍后再试。" });
+    }
+  };
+
   /* 荐书签：将此文绘成水墨荐书卡 */
   const handleRecommend = async () => {
     if (recommending) return;
@@ -387,6 +415,31 @@ function ArticleBody({
             {article.excerpt}
           </p>
 
+          {/* 一句话速览（AI 生成，水墨卡） */}
+          {tldrState !== "hidden" && (
+            <div className="relative mt-4 overflow-hidden rounded-md border border-gilt/45 bg-paper-deep/50 px-4 py-3.5">
+              <span className="absolute left-0 inset-y-0 w-[3px] bg-gradient-to-b from-vermillion via-gilt to-vermillion opacity-70" aria-hidden />
+              <div className="flex items-start gap-3">
+                <span className="seal-stamp mt-0.5 h-6 w-6 shrink-0 text-[0.58rem]">览</span>
+                {tldrState === "loading" ? (
+                  <p className="flex items-center gap-2 py-0.5 font-song text-sm tracking-wider text-ink-faint">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-gilt" aria-hidden />
+                    先生正掩卷而思，为君提炼一句…
+                  </p>
+                ) : (
+                  <div className="min-w-0">
+                    <p className="font-song text-[0.6rem] uppercase tracking-[0.3em] text-gilt">
+                      一句话速览 · 敖胤先生撰
+                    </p>
+                    <p className="mt-1 font-kai text-[0.95rem] leading-relaxed tracking-wide text-ink">
+                      {tldrText}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="prose-guofeng mt-6">
             <ReactMarkdown
               components={{
@@ -455,7 +508,7 @@ function ArticleBody({
                 ))}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {/* 诵读档位：全文 / 摘要 */}
               <div
                 className="inline-flex h-10 overflow-hidden rounded-full border border-frame"
@@ -486,7 +539,7 @@ function ArticleBody({
                 aria-label={listenState === "playing" ? "停止诵读" : "听文（语音诵读此文）"}
                 title={listenState === "playing" ? "停止诵读" : "听文 · 敖胤先生为你诵读"}
                 className={cn(
-                  "inline-flex h-10 items-center gap-2 rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
+                  "inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
                   listenState === "playing"
                     ? "border-gilt bg-gilt/15 text-gilt shadow-sm"
                     : "border-frame bg-paper-card text-ink-soft hover:border-gilt/60 hover:text-gilt disabled:opacity-60"
@@ -520,13 +573,34 @@ function ArticleBody({
                 )}
               </button>
 
+              {/* 一句话速览（AI） */}
+              <button
+                onClick={handleTldr}
+                disabled={tldrState === "loading"}
+                aria-expanded={tldrState === "shown"}
+                aria-label="一句话速览（AI 提炼全文大意）"
+                title="速览 · 敖胤先生提炼一句大意"
+                className={cn(
+                  "inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
+                  tldrState === "shown"
+                    ? "border-vermillion bg-vermillion/10 text-vermillion shadow-sm"
+                    : "border-frame bg-paper-card text-ink-soft hover:border-vermillion/50 hover:text-vermillion disabled:opacity-60"
+                )}
+              >
+                <Sparkles
+                  className={cn("h-4 w-4 text-vermillion/80", tldrState === "loading" && "animate-pulse")}
+                  aria-hidden
+                />
+                {tldrState === "loading" ? "提炼中" : "速览"}
+              </button>
+
               {/* 荐书签 */}
               <button
                 onClick={handleRecommend}
                 disabled={recommending}
                 aria-label="生成荐书签图片"
                 title="荐此文（生成水墨荐书签）"
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-gilt/60 bg-paper-card px-4 font-kai text-sm tracking-[0.15em] text-ink-soft shadow-sm transition-all hover:border-gilt hover:text-gilt disabled:opacity-60"
+                className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-gilt/60 bg-paper-card px-4 font-kai text-sm tracking-[0.15em] text-ink-soft shadow-sm transition-all hover:border-gilt hover:text-gilt disabled:opacity-60"
               >
                 <Gift
                   className={cn("h-4 w-4 text-gilt", recommending && "animate-pulse")}
@@ -540,7 +614,7 @@ function ArticleBody({
                 disabled={liked}
                 aria-pressed={liked}
                 className={cn(
-                  "group inline-flex h-10 items-center gap-2 rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
+                  "group inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
                   liked
                     ? "border-vermillion bg-vermillion text-[#f8f3e7] shadow-md"
                     : "border-frame bg-paper-card text-ink-soft hover:border-vermillion/60 hover:text-vermillion"

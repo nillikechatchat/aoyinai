@@ -374,6 +374,235 @@ export interface ArticleCardData {
   publishedAt?: string; // ISO 日期
 }
 
+export interface CalendarCardDay {
+  day: number; // 1 起
+  seal: string; // 当日首签卦名末字（无签为空串）
+  count: number; // 当日签数
+}
+
+export interface CalendarCardData {
+  year: number;
+  month: number; // 1 起
+  days: CalendarCardDay[]; // 仅含有签之日
+  total: number; // 本月签数
+  dayCount: number; // 本月有签日数
+}
+
+/** 月历分享卡网格几何参数 */
+const CAL = {
+  cell: 76, // 单元格尺寸（正方形）
+  gap: 6,
+};
+
+/**
+ * 生成「签历月历卡」：将某月问签之日绘成水墨月历并导出（分享优先，回退下载）
+ */
+export async function downloadCalendarCard(data: CalendarCardData): Promise<StampResult> {
+  const W = 750;
+  const H = 1050;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("canvas unsupported");
+
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const qrDataUrl = siteUrl ? await makeQrDataUrl(siteUrl) : null;
+
+  drawPaper(ctx, W, H);
+  drawFrame(ctx, W, H);
+
+  const firstDay = new Date(data.year, data.month - 1, 1);
+  const daysInMonth = new Date(data.year, data.month, 0).getDate();
+  const leading = firstDay.getDay(); // 周日=0
+  const dayMap = new Map(data.days.map((d) => [d.day, d]));
+
+  const gridW = CAL.cell * 7 + CAL.gap * 6;
+  // 居中网格左缘
+  const gx = (W - gridW) / 2;
+  const headerY = 300; // 星期行
+  const rowH = CAL.cell + CAL.gap;
+  const rows = Math.ceil((leading + daysInMonth) / 7);
+  const gridBottom = headerY + 34 + rows * rowH;
+
+  // ---- 顶部小字 ----
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = C.inkFaint;
+  ctx.font = `24px ${FONT_SONG}`;
+  ctx.fillText("敖 胤 先 生 · 签 历", W / 2, 112);
+
+  ctx.strokeStyle = C.frame;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(W / 2 - 70, 134);
+  ctx.lineTo(W / 2 + 70, 134);
+  ctx.stroke();
+
+  // ---- 年月大字 + 印 ----
+  ctx.fillStyle = C.ink;
+  ctx.font = `bold 62px ${FONT_KAI}`;
+  ctx.fillText(`${data.year} 年 ${data.month} 月`, W / 2 - 20, 218);
+  drawSeal(ctx, "历", W / 2 + 172, 196, 50, 23);
+
+  // ---- 统计行 ----
+  ctx.fillStyle = C.gilt;
+  ctx.font = `25px ${FONT_KAI}`;
+  ctx.fillText(
+    data.total > 0
+      ? `本月 ${data.total} 签 · ${data.dayCount} 个朱印之日`
+      : "本月尚无问签 · 静待落笔",
+    W / 2,
+    262
+  );
+
+  // ---- 星期表头 ----
+  ctx.font = `22px ${FONT_KAI}`;
+  ctx.fillStyle = C.inkFaint;
+  const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+  weekdays.forEach((w, i) => {
+    ctx.fillText(w, gx + i * (CAL.cell + CAL.gap) + CAL.cell / 2, headerY);
+  });
+
+  // ---- 日期网格 ----
+  for (let i = 0; i < daysInMonth; i++) {
+    const day = i + 1;
+    const col = (leading + i) % 7;
+    const row = Math.floor((leading + i) / 7);
+    const cx = gx + col * (CAL.cell + CAL.gap);
+    const cy = headerY + 34 + row * rowH;
+    const info = dayMap.get(day);
+
+    if (info) {
+      // 朱印之日：朱底圆角块 + 卦名末字
+      ctx.fillStyle = C.vermillion;
+      roundRect(ctx, cx, cy, CAL.cell, CAL.cell, 8);
+      ctx.fill();
+      // 内衬白线
+      ctx.strokeStyle = "rgba(255,255,255,0.28)";
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, cx + 4, cy + 4, CAL.cell - 8, CAL.cell - 8, 6);
+      ctx.stroke();
+
+      ctx.fillStyle = "#f8f3e7";
+      ctx.font = `30px ${FONT_KAI}`;
+      ctx.textAlign = "center";
+      ctx.fillText(String(day), cx + CAL.cell / 2, cy + 40);
+
+      // 卦名末字小章（白描）
+      ctx.strokeStyle = "rgba(248,243,231,0.75)";
+      ctx.lineWidth = 1.2;
+      roundRect(ctx, cx + CAL.cell / 2 - 11, cy + 50, 22, 22, 3);
+      ctx.stroke();
+      ctx.fillStyle = "#f8f3e7";
+      ctx.font = `15px ${FONT_KAI}`;
+      ctx.textBaseline = "middle";
+      ctx.fillText(info.seal || "签", cx + CAL.cell / 2, cy + 62);
+      ctx.textBaseline = "alphabetic";
+
+      // 多签角标
+      if (info.count > 1) {
+        ctx.fillStyle = C.gilt;
+        ctx.beginPath();
+        ctx.arc(cx + CAL.cell - 6, cy + 6, 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#f8f3e7";
+        ctx.font = `13px ${FONT_SONG}`;
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(info.count), cx + CAL.cell - 6, cy + 7.5);
+        ctx.textBaseline = "alphabetic";
+      }
+    } else {
+      // 素日
+      ctx.fillStyle = C.inkFaint;
+      ctx.font = `24px ${FONT_SONG}`;
+      ctx.textAlign = "center";
+      ctx.globalAlpha = 0.55;
+      ctx.fillText(String(day), cx + CAL.cell / 2, cy + 42);
+      ctx.globalAlpha = 1;
+      // 虚线框
+      ctx.strokeStyle = C.frame;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      roundRect(ctx, cx + 2, cy + 2, CAL.cell - 4, CAL.cell - 4, 6);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // ---- 底部题记 + 二维码 ----
+  const footY = Math.min(gridBottom + 60, H - 190);
+
+  if (qrDataUrl) {
+    const qrImg = new Image();
+    await new Promise<void>((resolve) => {
+      qrImg.onload = () => resolve();
+      qrImg.onerror = () => resolve();
+      qrImg.src = qrDataUrl;
+    });
+    const qrSize = 100;
+    const qrX = 92;
+    const qrY = H - 176;
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    roundRect(ctx, qrX - 7, qrY - 7, qrSize + 14, qrSize + 14, 4);
+    ctx.fill();
+    ctx.strokeStyle = C.frame;
+    ctx.lineWidth = 1;
+    roundRect(ctx, qrX - 7, qrY - 7, qrSize + 14, qrSize + 14, 4);
+    ctx.stroke();
+    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    ctx.fillStyle = C.inkFaint;
+    ctx.font = `17px ${FONT_SONG}`;
+    ctx.textAlign = "center";
+    ctx.fillText("扫码 · 再问一卦", qrX + qrSize / 2, qrY + qrSize + 18);
+  }
+
+  // 题记（居中于网格下方）
+  ctx.textAlign = "center";
+  ctx.fillStyle = C.inkSoft;
+  ctx.font = `24px ${FONT_KAI}`;
+  ctx.fillText("朱印之日 · 皆有叩问", W / 2, footY);
+  ctx.fillStyle = C.inkFaint;
+  ctx.font = `20px ${FONT_SONG}`;
+  ctx.fillText("一念一签 · 皆有回响", W / 2, footY + 38);
+
+  ctx.textAlign = "left";
+  ctx.fillStyle = C.inkSoft;
+  ctx.font = `26px ${FONT_KAI}`;
+  ctx.fillText("敖胤AI · 观智能之潮", 252, H - 106);
+  drawSeal(ctx, "胤", W - 110, H - 108, 34, 16);
+
+  // 导出：优先系统分享，回退下载
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+  const fileName = `敖胤AI-签历-${data.year}年${data.month}月.png`;
+
+  if (blob && typeof navigator !== "undefined" && typeof navigator.share === "function") {
+    try {
+      const file = new File([blob], fileName, { type: "image/png" });
+      if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `敖胤AI · ${data.year} 年 ${data.month} 月签历`,
+          text: `${data.year} 年 ${data.month} 月，凡 ${data.total} 问，录于签历。`,
+        });
+        return "shared";
+      }
+    } catch (e) {
+      if ((e as Error)?.name === "AbortError") return "aborted";
+    }
+  }
+
+  const url = blob ? URL.createObjectURL(blob) : canvas.toDataURL("image/png");
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  if (blob) URL.revokeObjectURL(url);
+  return "downloaded";
+}
+
 /**
  * 生成「荐书签」：将一篇文章绘制成水墨荐书卡并导出（分享优先，回退下载）
  */
