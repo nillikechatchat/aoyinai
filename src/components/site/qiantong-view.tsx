@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Compass, Loader2, ScrollText, Stamp } from "lucide-react";
+import { Compass, Eye, Loader2, ScrollText, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { downloadInsightCard } from "@/lib/share-card";
+import { getSessionId } from "@/lib/session";
 import { formatDate } from "@/lib/types";
 
 interface InsightRecordItem {
@@ -50,7 +51,10 @@ export function QiantongView({ onAsk, refreshKey = 0 }: QiantongViewProps) {
     setLoading(true);
     (async () => {
       try {
-        const res = await fetch("/api/insight?limit=24");
+        const sid = getSessionId();
+        const res = await fetch(
+          `/api/insight?limit=24${sid ? `&sessionId=${encodeURIComponent(sid)}` : ""}`
+        );
         const data = await res.json();
         if (!cancelled && data.ok) setRecords(data.records);
       } catch {
@@ -73,6 +77,10 @@ export function QiantongView({ onAsk, refreshKey = 0 }: QiantongViewProps) {
           </h2>
           <p className="mt-2 pl-3.5 font-song text-sm tracking-[0.2em] text-ink-soft">
             一念一签 · 皆有回响
+          </p>
+          <p className="mt-1 flex items-center gap-1 pl-3.5 font-song text-[0.68rem] tracking-[0.12em] text-ink-faint">
+            <Eye className="h-3 w-3" aria-hidden />
+            签筒随访客留存，仅你可见
           </p>
         </div>
         <Button

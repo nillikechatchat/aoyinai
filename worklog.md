@@ -183,3 +183,55 @@ Stage Summary:
 4. 分页或无限滚动（文章 21 篇，全部视图一次加载尚可，30+ 后需分页）
 5. InsightRecord/Comment 数据治理：session id 过滤「我的签筒」、评论敏感词过滤
 6. 管理侧：浏览/点赞/评论数据小看板（/api/stats）
+---
+Task ID: R3（定时审查第 3 轮）
+Agent: main
+Task: QA 回归 + 五项新功能（本周热门 / 上下篇导航 / TOA scroll-spy / 签筒 session 隔离 / 分享卡二维码）+ 样式细节
+
+Work Log:
+- QA 回归（agent-browser）：首页/问签/文章详情/签筒/拓印/夜读/移动端全流程无阻塞 bug；发现 2 处 Radix Dialog `aria-describedby` 警告 → 已修复（DialogContent 加 aria-describedby={undefined}，重测警告清零）
+- 新功能 1「本周热门」：
+  - /api/articles 新增 sort=top（views desc + likes desc 次序）
+  - 新组件 weekly-hot.tsx：壹/贰/叁榜次（榜首朱红印章、贰叁鎏金描边）、榜首/榜眼/探花标签、大字水印、缩略图+标题+日期+时长、底部 views/likes 数据条、framer-motion whileInView 错开入场；首页置于推荐区与栏目区之间；双主题适配实测
+- 新功能 2「文章上下篇导航」：
+  - page.tsx 惰性拉取 /api/articles?limit=100 缓存于 allArticles，按同栏目计算前后篇（环形），经 props 传入 ArticleDialog
+  - ArticleBody 正文后新增 前一篇/后一篇 双卡导航（ChevronLeft/Right hover 位移 + 朱红高亮），点击 onNavigate 切换文章（key=slug 重挂载自动重置进度/点赞/TOC）
+- 新功能 3「目录 scroll-spy」：
+  - ArticleBody handleScroll 内根据 scrollTop+140 找最近 data-h2 小节，滚到底强制末节；aria-current=true 的 chip 朱红底高亮；折叠态在「目录（N）」旁显示当前小节名
+- 新功能 4「签筒 session 隔离」：
+  - Prisma InsightRecord 新增 sessionId 列（默认空 + [sessionId, createdAt] 索引），db:push + 重启 dev
+  - lib/session.ts：localStorage aoyin_session_id（crypto.randomUUID 兜底时间戳）
+  - POST /api/insight 存 sessionId；GET /api/insight?sessionId= 仅返回本人记录；page.tsx 问签与 qiantong-view 拉取均携带
+  - 签筒头部新增「签筒随访客留存，仅你可见」说明；实测：新会话空筒 → 问签（明镜卦）→ 签筒显示 1→2 支，旧无主记录不再混入
+- 新功能 5「分享卡二维码」：
+  - 安装 qrcode + @types/qrcode；lib/share-card.ts 生成站点 origin 的墨色透明底 QR（errorCorrectionLevel M）
+  - 卡片底部重排：QR（100px 衬底小卡+「扫码·再问一卦」）居左，日期+品牌居右、胤印贴右缘；两轮实测修正重叠与贴边问题
+- 样式细节：
+  - 回顶按钮：印章式固定悬浮（右下，rotate -4°，ChevronUp+「回顶」），AnimatePresence 弹入弹出，scrollY>600 出现
+  - 封面差异化：lib/utils coverFilter(slug) 基于 slug 哈希做 -12~+12° 色相/饱和/亮度微调，ArticleCard 应用（同栏目封面不再视觉重复，实测 6/6 生效）
+- 技术验证技巧沉淀：拓印产物捕获可先补丁 URL.revokeObjectURL 为空函数 + createObjectURL 记录，再将 blob 挂为 <img> 截图预览（绕开 download 事件与 blob 回收）
+
+验证结果（agent-browser 实测）:
+- 本周热门：views 排序正确（907/830/790）、双主题、入场动画 ✓
+- 上下篇：AI 教程栏目内切换成功（学习路径 ↔ Agent 记忆系统 ↔ RAG 实录）✓
+- TOA spy：滚动至中部「三、三条军规」chip 朱红高亮 ✓
+- 签筒隔离：新 sessionId 空筒 → 问签 → 仅本人 2 支 ✓
+- 分享卡：QR 渲染、扫码文案、落款区无重叠 ✓
+- aria 警告 0；console 无错误；lint 通过；5 个核心路由 200；移动端 390px 正常
+- 截图存证：screenshots/r3-*.png（热门榜明暗、TOA 高亮、卡片二维码、签筒隔离、移动端）
+
+Stage Summary:
+- 本轮交付 5 个新功能 + 1 个 a11y 修复 + 2 处样式细节；功能集：司南问签（自动/定向/签筒隔离/拓印+二维码）、文章（列表/搜索/筛选/详情/进度条/TOA spy/心许/笔谈/上下篇）、本周热门、栏目、关于、RSS、夜读模式、回顶
+- 数据：InsightRecord.sessionId 已上线（旧无主记录保留但不再显示于个人签筒）
+
+## 当前状态评估
+- 项目功能已相当完整，双主题覆盖全部视图，lint 干净，无 console 错误
+- 签筒为「私人数据」语义；分享卡具备传播闭环（二维码回流站点）
+
+## 下一阶段建议（优先级从高到低）
+1. 签筒分享卡海报模式：长按/右键保存替代下载（移动端体验），或 Web Share API 直接分享
+2. 首页 Hero 加「今日签运」一行小卡（取当日最近一支签的卦名，引去签筒）
+3. 文章列表分页/无限滚动（30+ 篇后必须）；ArticlesView 接入 sort=top 切换「最新/最热」排序
+4. 评论治理：敏感词/频率限制升级、评论点赞或回复（Comment 加 parentId）
+5. 管理看板 /api/stats（views/likes/comments/签数聚合）+ 关于页可视化
+6. SEO：每篇文章 meta 动态生成（现单路由限制下可用 document.title 更新 + JSON-LD）

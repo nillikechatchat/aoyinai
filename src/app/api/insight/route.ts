@@ -47,12 +47,14 @@ function extractJson(text: string): Record<string, string> | null {
   }
 }
 
-// GET /api/insight?limit= —— 最近问签记录（签筒）
+// GET /api/insight?limit=&sessionId= —— 最近问签记录（签筒；带 sessionId 时仅返回本人记录）
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const limit = Math.min(Number(searchParams.get("limit")) || 24, 60);
+    const sessionId = (searchParams.get("sessionId") || "").trim();
     const records = await db.insightRecord.findMany({
+      where: sessionId ? { sessionId } : undefined,
       orderBy: { createdAt: "desc" },
       take: limit,
       select: {
@@ -77,6 +79,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const question: string = (body?.question || "").toString().slice(0, 200).trim();
+    const sessionId: string = (body?.sessionId || "").toString().slice(0, 64).trim();
 
     const zai = await ZAI.create();
 
@@ -126,7 +129,7 @@ export async function POST(req: NextRequest) {
 
     // 记录入库（不阻塞）
     db.insightRecord
-      .create({ data: { question, ...insight } })
+      .create({ data: { question, sessionId, ...insight } })
       .catch(() => {});
 
     return NextResponse.json({ ok: true, insight });

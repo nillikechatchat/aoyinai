@@ -32,12 +32,15 @@ model Article {
 // AI 问签记录（司南问一事）
 model InsightRecord {
   id        String   @id @default(cuid())
+  sessionId String   @default("") // 访客会话 id，「我的签筒」据此隔离
   question  String   @default("")
   name      String // 卦名，如「青云卦」
   oracle    String // 卦辞（文言）
   interpret String // 解曰（白话，联系 AI 行业）
   advice    String // 建议（行动指南）
   createdAt DateTime @default(now())
+
+  @@index([sessionId, createdAt])
 }
 
 // 栏目定义

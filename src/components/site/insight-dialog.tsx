@@ -63,7 +63,10 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="paper-frame max-h-[88vh] overflow-y-auto border-none p-0 sm:max-w-md custom-scrollbar">
+      <DialogContent
+        aria-describedby={undefined}
+        className="paper-frame max-h-[88vh] overflow-y-auto border-none p-0 sm:max-w-md custom-scrollbar"
+      >
         {/* a11y：加载态也提供标题 */}
         <DialogTitle className="sr-only">{loading ? "司南推演中" : insight?.name ?? "签文"}</DialogTitle>
 

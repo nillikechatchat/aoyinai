@@ -1,7 +1,9 @@
 /**
  * 签文分享卡：用 Canvas 将一支签绘制成水墨风卡片并下载
- * 设计基准：洒金宣纸底、朱砂双线框、楷体卦名、签文引文框、宜字松绿印章条
+ * 设计基准：洒金宣纸底、朱砂双线框、楷体卦名、签文引文框、宜字松绿印章条、左下二维码
  */
+
+import QRCode from "qrcode";
 
 export interface ShareCardData {
   name: string; // 卦名，如「潜渊卦」
@@ -145,6 +147,20 @@ function drawSeal(
   ctx.restore();
 }
 
+/** 生成站点二维码 DataURL（墨色、透明底） */
+async function makeQrDataUrl(url: string): Promise<string | null> {
+  try {
+    return await QRCode.toDataURL(url, {
+      margin: 0,
+      width: 240,
+      errorCorrectionLevel: "M",
+      color: { dark: "#4a4437", light: "#00000000" },
+    });
+  } catch {
+    return null;
+  }
+}
+
 /** 生成签文分享卡并触发下载 */
 export async function downloadInsightCard(data: ShareCardData): Promise<void> {
   const W = 750;
@@ -154,6 +170,9 @@ export async function downloadInsightCard(data: ShareCardData): Promise<void> {
   canvas.height = H;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("canvas unsupported");
+
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const qrDataUrl = siteUrl ? await makeQrDataUrl(siteUrl) : null;
 
   drawPaper(ctx, W, H);
   drawFrame(ctx, W, H);
@@ -264,7 +283,32 @@ export async function downloadInsightCard(data: ShareCardData): Promise<void> {
     });
   }
 
-  // ---- 底部日期与品牌 ----
+  // ---- 底部：二维码（左） + 日期与品牌（右对齐排布） ----
+  if (qrDataUrl) {
+    const qrImg = new Image();
+    await new Promise<void>((resolve) => {
+      qrImg.onload = () => resolve();
+      qrImg.onerror = () => resolve();
+      qrImg.src = qrDataUrl;
+    });
+    const qrSize = 100;
+    const qrX = 92;
+    const qrY = H - 176;
+    // 衬底小卡
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    roundRect(ctx, qrX - 7, qrY - 7, qrSize + 14, qrSize + 14, 4);
+    ctx.fill();
+    ctx.strokeStyle = C.frame;
+    ctx.lineWidth = 1;
+    roundRect(ctx, qrX - 7, qrY - 7, qrSize + 14, qrSize + 14, 4);
+    ctx.stroke();
+    ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+    ctx.fillStyle = C.inkFaint;
+    ctx.font = `17px ${FONT_SONG}`;
+    ctx.textAlign = "center";
+    ctx.fillText("扫码 · 再问一卦", qrX + qrSize / 2, qrY + qrSize + 18);
+  }
+
   const dateStr = data.createdAt
     ? new Date(data.createdAt).toLocaleDateString("zh-CN", {
         year: "numeric",
@@ -272,15 +316,16 @@ export async function downloadInsightCard(data: ShareCardData): Promise<void> {
         day: "numeric",
       })
     : "";
-  ctx.textAlign = "center";
+  // 右侧落款区：日期在上、品牌在下（避开左侧二维码）
+  ctx.textAlign = "left";
   ctx.fillStyle = C.inkFaint;
   ctx.font = `22px ${FONT_SONG}`;
-  if (dateStr) ctx.fillText(dateStr, W / 2, H - 130);
+  if (dateStr) ctx.fillText(dateStr, 252, H - 150);
 
   ctx.fillStyle = C.inkSoft;
   ctx.font = `26px ${FONT_KAI}`;
-  ctx.fillText("敖胤AI · 观智能之潮 守问学之心", W / 2, H - 84);
-  drawSeal(ctx, "胤", W / 2, H - 52, 34, 16);
+  ctx.fillText("敖胤AI · 观智能之潮", 252, H - 106);
+  drawSeal(ctx, "胤", W - 110, H - 108, 34, 16);
 
   // 导出
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));

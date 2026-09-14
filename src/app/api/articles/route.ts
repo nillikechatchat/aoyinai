@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/articles?category=&search=&limit=&random=&exclude=
+// GET /api/articles?category=&search=&limit=&random=&exclude=&sort=top
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search") || undefined;
     const limit = Math.min(Number(searchParams.get("limit")) || 50, 100);
     const random = searchParams.get("random") === "1";
+    const sortTop = searchParams.get("sort") === "top";
     const exclude = searchParams.get("exclude") || undefined;
 
     const where: Record<string, unknown> = { published: true };
@@ -29,7 +30,11 @@ export async function GET(req: NextRequest) {
 
     let articles = await db.article.findMany({
       where,
-      orderBy: random ? undefined : { publishedAt: "desc" },
+      orderBy: sortTop
+        ? [{ views: "desc" }, { likes: "desc" }]
+        : random
+          ? undefined
+          : { publishedAt: "desc" },
       take: limit,
     });
 

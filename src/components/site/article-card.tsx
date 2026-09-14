@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowRight, BookOpen, Clock } from "lucide-react";
 import type { Article } from "@/lib/types";
 import { CATEGORY_META, formatDate } from "@/lib/types";
+import { coverFilter } from "@/lib/utils";
 
 interface ArticleCardProps {
   article: Article;
@@ -29,6 +30,7 @@ export function ArticleCard({ article, onOpen }: ArticleCardProps) {
           alt={article.title}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-105"
+          style={{ filter: coverFilter(article.slug) }}
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/45 via-ink/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
