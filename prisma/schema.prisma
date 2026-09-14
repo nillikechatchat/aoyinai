@@ -62,6 +62,7 @@ model Comment {
   replyToAuthor String? // 被复者落款（冗余存储，便于展示）
   author        String   @default("无名氏") // 昵称
   body          String // 留言内容
+  reactions     Int      @default(0) // 「有同感」计数
   createdAt     DateTime @default(now())
 
   @@index([articleSlug])

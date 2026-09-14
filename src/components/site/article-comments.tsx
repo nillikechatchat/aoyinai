@@ -16,6 +16,7 @@ interface CommentItem {
   replyToAuthor?: string | null;
   author: string;
   body: string;
+  reactions: number;
   createdAt: string;
 }
 
@@ -26,7 +27,29 @@ interface CommentThread {
 }
 
 const AUTHOR_KEY = "aoyin_comment_author";
+const REACTED_KEY = "aoyin_comment_reacted"; // 已印可的留言 id 集合
 const MASTER_AUTHOR = "敖胤先生"; // 站主落款，可「只看先生之言」
+
+/** 是否已对此言印可（同感） */
+function hasReacted(id: string): boolean {
+  try {
+    const set = new Set((localStorage.getItem(REACTED_KEY) ?? "").split(",").filter(Boolean));
+    return set.has(id);
+  } catch {
+    return false;
+  }
+}
+
+/** 记下印可痕迹 */
+function markReacted(id: string) {
+  try {
+    const set = new Set((localStorage.getItem(REACTED_KEY) ?? "").split(",").filter(Boolean));
+    set.add(id);
+    localStorage.setItem(REACTED_KEY, [...set].join(","));
+  } catch {
+    // ignore
+  }
+}
 
 /** 将扁平留言整理为两层会话树（复言一律归入顶端祖先之下，孤儿复言自动升为顶端） */
 function buildThreads(flat: CommentItem[]): CommentThread[] {
@@ -268,6 +291,7 @@ export function ArticleComments({ slug }: { slug: string }) {
               {/* 顶端留言 */}
               <CommentRow
                 c={t.comment}
+                slug={slug}
                 floor={floorMap.get(t.comment.id)}
                 onReply={beginReply}
                 replying={replyTo?.id === t.comment.id && replyTo?.author === t.comment.author}
@@ -279,6 +303,7 @@ export function ArticleComments({ slug }: { slug: string }) {
                     <CommentRow
                       key={r.id}
                       c={r}
+                      slug={slug}
                       floor={floorMap.get(r.id)}
                       onReply={beginReply}
                       replying={replyTo?.id === (r.parentId ?? r.id) && replyTo?.author === r.author}
@@ -351,15 +376,75 @@ export function ArticleComments({ slug }: { slug: string }) {
   );
 }
 
+/** 「有同感」印可此言：印章式按钮 + 计数，一人一言仅可印一次 */
+function ReactButton({ slug, id, initial }: { slug: string; id: string; initial: number }) {
+  // 笔谈列表在客户端拉取后才渲染，无 SSR 水合不一致风险
+  const [reacted, setReacted] = useState(() => hasReacted(id));
+  const [count, setCount] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [pulse, setPulse] = useState(false);
+
+  const react = async () => {
+    if (reacted || busy) return;
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/articles/${slug}/comments/${id}/react`, { method: "POST" });
+      const data = await res.json();
+      if (data.ok) {
+        markReacted(id);
+        setReacted(true);
+        setCount(data.reactions);
+        setPulse(true);
+        window.setTimeout(() => setPulse(false), 700);
+      }
+    } catch {
+      // 静默：印可失败不影响阅读
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={react}
+      disabled={reacted || busy}
+      aria-pressed={reacted}
+      aria-label={reacted ? "已印可此言" : "印可此言（有同感）"}
+      title={reacted ? "已印可此言" : "有同感 · 印可此言"}
+      className={cn(
+        "mt-1.5 inline-flex h-6 items-center gap-1 rounded-full border px-2 font-song text-[0.68rem] tracking-[0.12em] transition-colors",
+        reacted
+          ? "border-vermillion/60 bg-vermillion/10 text-vermillion"
+          : "border-frame/80 text-ink-faint hover:border-vermillion/50 hover:text-vermillion",
+        pulse && "react-pulse"
+      )}
+    >
+      <span
+        className={cn(
+          "inline-grid h-3.5 w-3.5 place-items-center rounded-[2px] border font-kai text-[0.55rem] leading-none",
+          reacted ? "border-vermillion/70 bg-vermillion text-[#f8f3e7]" : "border-current"
+        )}
+        aria-hidden
+      >
+        同
+      </span>
+      同感
+      {count > 0 && <span className="tabular-nums text-[0.66rem] opacity-80">{count}</span>}
+    </button>
+  );
+}
+
 /** 单条留言行 */
 function CommentRow({
   c,
+  slug,
   onReply,
   replying,
   compact,
   floor,
 }: {
   c: CommentItem;
+  slug: string;
   onReply: (c: CommentItem) => void;
   replying?: boolean;
   compact?: boolean;
@@ -429,14 +514,17 @@ function CommentRow({
         >
           {c.body}
         </p>
-        <button
-          onClick={() => onReply(c)}
-          className="mt-1.5 inline-flex items-center gap-1 font-song text-[0.68rem] tracking-[0.15em] text-ink-faint transition-colors hover:text-vermillion"
-          aria-label={`复 ${c.author} 的留言`}
-        >
-          <MessageCircle className="h-3 w-3" aria-hidden />
-          复
-        </button>
+        <div className="mt-1.5 flex items-center gap-3">
+          <button
+            onClick={() => onReply(c)}
+            className="inline-flex items-center gap-1 font-song text-[0.68rem] tracking-[0.15em] text-ink-faint transition-colors hover:text-vermillion"
+            aria-label={`复 ${c.author} 的留言`}
+          >
+            <MessageCircle className="h-3 w-3" aria-hidden />
+            复
+          </button>
+          <ReactButton slug={slug} id={c.id} initial={c.reactions} />
+        </div>
       </div>
     </article>
   );

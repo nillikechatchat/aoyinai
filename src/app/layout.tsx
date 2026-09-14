@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("http://localhost:3000"),
   title: "敖胤AI · 观智能之潮，守问学之心",
   description:
     "聚焦人工智能的中文博客：AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent 多智能体框架。以东方美学，观照 AI 时代。",
@@ -14,6 +15,13 @@ export const metadata: Metadata = {
     description: "观智能之潮，守问学之心 —— AI 时代的中文观察与修行",
     siteName: "敖胤AI",
     type: "website",
+    images: [{ url: "/api/og", width: 1200, height: 630, alt: "敖胤AI" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "敖胤AI",
+    description: "观智能之潮，守问学之心 —— AI 时代的中文观察与修行",
+    images: ["/api/og"],
   },
 };
 

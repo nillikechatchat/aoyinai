@@ -525,3 +525,26 @@ article:hover .card-arrow {
   transform: translateX(4px);
   color: var(--vermillion);
 }
+
+/* ── 「有同感」印可脉冲 ── */
+@keyframes reactPulse {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.18); box-shadow: 0 0 0 4px color-mix(in srgb, var(--vermillion) 18%, transparent); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; }
+}
+.react-pulse {
+  animation: reactPulse 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── 「听签」声波律动条 ── */
+@keyframes soundBar {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+.sound-bar {
+  transform-origin: center bottom;
+  animation: soundBar 0.9s ease-in-out infinite;
+}
+.sound-bar:nth-child(2) { animation-delay: 0.15s; }
+.sound-bar:nth-child(3) { animation-delay: 0.3s; }
+.sound-bar:nth-child(4) { animation-delay: 0.45s; }

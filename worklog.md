@@ -354,3 +354,55 @@ Stage Summary:
 4. 签筒年历视图（按月分布的签文日历）
 5. 游标分页/虚拟化（50+ 篇时）
 6. e2e 关键路径脚本化（存 scripts/qa.md 步骤清单，减少回归成本）
+
+---
+Task ID: R6（定时审查第 6 轮）
+Agent: main
+Task: QA 回归 + 四项新功能（笔谈有同感 / 签历视图 / 听签 TTS / OG 动态题图）+ 布局修复
+
+Work Log:
+- QA 回归（agent-browser）：首页/问签/签筒/文章详情/笔谈/夜读全流程无阻塞 bug，R1-R5 功能全部存活，console 无错误；lint 干净
+- 新功能 1「笔谈有同感」：
+  - Prisma Comment 新增 reactions 列（@default(0)），db:push + 重启 dev
+  - 新 API：POST /api/articles/[slug]/comments/[id]/react（校验留言归属 → increment → 返回新计数；实测 1→2 递增）
+  - ReactButton 组件：「同」字小印 + 「同感」+ 计数，localStorage aoyin_comment_reacted 集合防重复（一人一言仅可印一次），已印态朱红填充 + disabled + react-pulse 印章脉冲动画（globals.css 新增 keyframes）；slug 经 props 链传递（CommentRow → ReactButton），不用 DOM 查询
+- 新功能 2「签历视图」：
+  - qiantong-view 重构：头部新增 签卡/签历 双 chip 切换（LayoutGrid/CalendarDays，vermillion 激活态）；原签卡墙抽为 CardsBoard 组件
+  - QianCalendar 组件：paper-frame 月历（7 列周日起）、月份前后切换（跨年自动进位）、按日聚合 byDay（useMemo）、有签之日 vermillion 底 + 卦名末字小印 + 多签数量角标、今日鎏金描边、点选展开右侧详情面板（当日 N 支签：卦名+末字印+卦辞+所问+时刻+敖胤赐，custom-scrollbar 滚动）；空态「点选朱印之日」引导；底部「今日未问·再问一事」常驻按钮
+  - 签筒拉取 limit 24→60（覆盖更长历史）
+- 新功能 3「听签」TTS：
+  - 新 API：POST /api/tts（z-ai-web-dev-sdk zai.audio.tts.create，voice=xiaochen 沉稳专业、speed=0.9 缓诵、wav 非流式；1024 字上限校验；audio/wav 二进制直返）
+  - lib/listen-insight.ts：模块级 blob URL 缓存（同签文秒开，上限 16 条回收）+ 单例 Audio 播放器 + stopListening/listenToText(onEnded)
+  - ListenButton 组件置于「解曰」标题行尾：待机 Volume2+听签 / 生成中 Loader2 / 播放中金框+4 条声波律动（soundBar keyframes，错拍 0.15s）+「止」；卸载时自动停止（useEffect cleanup）；换签 key 重挂载天然复位
+- 新功能 4「OG 动态题图」：
+  - 新路由 /api/og（next/og ImageResponse，1200x630，nodejs runtime）：宣纸渐变底 + 朱砂双线框 + 栏目方印 + Noto Serif SC 大标题（>18 字自动降字号换行）+ 鎏金短线 + 落款胤印（rotate -4°）；字体从 /usr/share/fonts 读取（霞鹜文楷 Light + 思源宋体 Black），模块级 Map 缓存（首请求 ~1s，其后秒开）
+  - layout.tsx metadataBase 补齐 + openGraph.images/twitter.card 指向 /api/og（外链分享卡片补全）
+- 样式细节：react-pulse 印章脉冲、soundBar 声波律动、签历朱印日 hover 加深、双 chip 切换胶囊
+- 布局修复：听签按钮初版绝对定位于卦辞纸右上角，长卦辞「本自然。」与按钮重叠 → 移至「解曰」行尾（flex justify-between + shrink-0），实测无重叠
+
+验证结果（agent-browser 实测）:
+- 有同感：点击 → 计数 1 朱红激活 + disabled + aria-pressed；此前 API 测试计数 2 正确显示；移动端 390px 复/同感并排正常
+- 签历：2026年9月 本月 3 签 → 4 签实时更新；14 日朱印+云字印+数量角标；点选展开右侧 3 支签详情（流云 17:15/明镜 17:03/流云 16:22 时序正确）；月份切换/跨年逻辑在代码层覆盖
+- 听签：点击 → TTS 9.7s 生成（loading 旋转）→ aria-label 变「停止诵读」+ 金框声波律动 +「止」；再次点击即停（headless 无声但 play() 全链路通过）
+- OG：编码 URL 200（110KB PNG）；构图含双线框/栏目印/宋体标题/胤印，存证 download/og-test2.png；裸中文 URL 400 系 curl 未编码原始字节所致，浏览器 fetch 实测 200
+- 夜读：签历/今日框/朱印日/详情面板全部暗色适配（r6-dark-calendar.png）
+- 移动端 390px：签历单列自适应、视图 chip 完整、笔谈同感正常
+- lint 通过；/ /rss.xml /api/stats /api/categories /api/insight 全 200；dev.log 无运行时错误
+- 截图存证：screenshots/r6-*.png（QA 首页/问签/签筒/评论/夜读/同感前后/听签播放/签历日详情/暗色签历/移动端）
+
+Stage Summary:
+- 本轮交付 4 项新功能 + 1 处布局修复 + 2 组新动效；AI 能力栈新增 TTS 语音（LLM 问签 → 语音诵签闭环）
+- 功能集全量：司南问签（自动/定向/签筒隔离/签历视图/拓印+QR/听签 TTS）、文章（排序/加载更多/搜索/筛选/详情/进度/TOA/心许/荐书签/读毕印/笔谈复言+楼层+只看先生+敏感词+有同感/上下篇）、今日签运、本周热门、墨迹统计+七日折线、栏目预览、RSS、夜读、回顶、SEO（JSON-LD/动态标题/OG 题图）
+- 关键教训：① satori（next/og）不支持 CSS inset 简写，absolute 定位须写显式 top/left/right/bottom；② ImageResponse 中文须显式注册字体（沙盒 /usr/share/fonts 有霞鹜文楷与思源宋体可直接 fs 读取）；③ 沙盒 TTS 生成约 2.5~10s，loading 态必须显式；④ curl 裸中文 URL 会被 HTTP 层 400，测 API 须 encodeURIComponent
+
+## 当前状态评估
+- 功能集与 AI 能力（LLM 问签 + TTS 听签 + canvas 拓印）已形成完整闭环；双主题、移动端、a11y 全面覆盖
+- lint 干净；全部路由 200；无 console 错误
+
+## 下一阶段建议（优先级从高到低）
+1. 文章内图片支持（正文 markdown 插图：AI 生成插图或水墨占位框）
+2. 听签扩展至文章（正文 >1024 字需分段合成 + 顺序播放队列，或仅读摘要/「今日一读」）
+3. 签筒分享卡增加签历页截图模式；签文「再问」时保留所问历史上下文
+4. 评论治理升级：频率限制（每分钟 N 条）、回复通知角标（同楼层被复提示）
+5. 管理看板：/api/stats 增加 30 日趋势 + 栏目分布环形图（关于页可视化升级）
+6. e2e 脚本化（scripts/qa.md 步骤清单沉淀，降低回归成本）
