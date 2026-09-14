@@ -3,10 +3,10 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/stats —— 全站墨迹统计（关于页看板用）
+// GET /api/stats —— 全站墨迹统计（关于页看板用）：总量 + 近 30 日趋势 + 栏目分布
 export async function GET() {
   try {
-    const since = new Date(Date.now() - 7 * 24 * 3600 * 1000);
+    const since30 = new Date(Date.now() - 30 * 24 * 3600 * 1000);
     const [articleAgg, commentCount, insightCount, categoryCounts, recentArticles, recentComments, recentInsights] =
       await Promise.all([
         db.article.aggregate({
@@ -30,11 +30,11 @@ export async function GET() {
           select: { title: true, publishedAt: true },
         }),
         db.comment.findMany({
-          where: { createdAt: { gte: since } },
+          where: { createdAt: { gte: since30 } },
           select: { createdAt: true },
         }),
         db.insightRecord.findMany({
-          where: { createdAt: { gte: since } },
+          where: { createdAt: { gte: since30 } },
           select: { createdAt: true },
         }),
       ]);
@@ -48,7 +48,7 @@ export async function GET() {
       (a, b) => (b._sum.views ?? 0) - (a._sum.views ?? 0)
     )[0];
 
-    // 七日趋势：按访客无关的服务器日期聚合（近 7 天，含今日）
+    // 近 30 日趋势：按服务器日期聚合（含今日）
     const dayKey = (d: Date) => `${d.getMonth() + 1}/${d.getDate()}`;
     const days: Array<{ date: string; insights: number; comments: number }> = [];
     const insightByDay = new Map<string, number>();
@@ -61,7 +61,7 @@ export async function GET() {
       const k = dayKey(new Date(c.createdAt));
       commentByDay.set(k, (commentByDay.get(k) ?? 0) + 1);
     }
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 29; i >= 0; i--) {
       const d = new Date(Date.now() - i * 24 * 3600 * 1000);
       const k = dayKey(d);
       days.push({
@@ -70,6 +70,13 @@ export async function GET() {
         comments: commentByDay.get(k) ?? 0,
       });
     }
+
+    // 栏目分布：篇数 + 浏览量（环形图用）
+    const categoryDist = categoryCounts.map((c) => ({
+      category: c.category,
+      count: c._count._all,
+      views: c._sum.views ?? 0,
+    }));
 
     return NextResponse.json({
       ok: true,
@@ -82,6 +89,7 @@ export async function GET() {
         topCategory: topByViews?.category ?? null,
         latestArticle: recentArticles[0] ?? null,
         daily: days,
+        categoryDist,
       },
     });
   } catch (e) {

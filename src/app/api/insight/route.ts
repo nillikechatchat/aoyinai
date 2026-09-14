@@ -80,12 +80,14 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/insight  —— 司南问签：AI 生成签文
+// POST /api/insight  —— 司南问签：AI 生成签文（可携带上一签上下文，保持再问连贯）
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const question: string = (body?.question || "").toString().slice(0, 200).trim();
     const sessionId: string = (body?.sessionId || "").toString().slice(0, 64).trim();
+    const prevName: string = (body?.prevName || "").toString().slice(0, 16).trim();
+    const prevOracle: string = (body?.prevOracle || "").toString().slice(0, 60).trim();
 
     const zai = await ZAI.create();
 
@@ -98,11 +100,17 @@ export async function POST(req: NextRequest) {
    - "interpret": 解曰，用白话 2~3 句（60~110 字），将卦意与当下 AI 时代的学习、职业、技术抉择相联系，语气温暖而有定力；
    - "advice": 建议，一句可直接执行的小行动（20~40 字），具体可操作。
 2. 若求问者写下了具体问题，解曰须贴题而答，但保持含蓄与智慧，不做绝对断言。
-3. 只输出 JSON，不要任何其他文字。`;
+3. 若求问者先前已得一签，新签应与旧签意脉相承而不重复（如旧签言「进」，新签可言进中之守），解曰可自然呼应，但卦名不可与旧签相同。
+4. 只输出 JSON，不要任何其他文字。`;
 
+    const prevPart = prevName
+      ? `求问者先前曾得一签「${prevName}」，卦辞曰：「${prevOracle}」。`
+      : "";
     const user = question
-      ? `求问者心念一动，问曰：「${question}」。请赐签。`
-      : `求问者静默叩问，心无所指，唯愿见一卦以明今日之势。请赐签。`;
+      ? `${prevPart}此番心念一动，再问：「${question}」。请赐新签。`
+      : prevPart
+        ? `${prevPart}此番静默再叩，欲观前路变化。请赐新签。`
+        : `求问者静默叩问，心无所指，唯愿见一卦以明今日之势。请赐签。`;
 
     let insight: { name: string; oracle: string; interpret: string; advice: string } | null = null;
 

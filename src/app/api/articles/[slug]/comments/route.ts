@@ -100,6 +100,21 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "此言方才已录，无须重笔" }, { status: 429 });
     }
 
+    // 频率限制：同一作者同一文章 60 秒内至多 3 条（含复言），防连发刷屏
+    const recentCount = await db.comment.count({
+      where: {
+        articleSlug: slug,
+        author,
+        createdAt: { gte: new Date(Date.now() - 60_000) },
+      },
+    });
+    if (recentCount >= 3) {
+      return NextResponse.json(
+        { ok: false, error: "落笔稍密，且饮口茶，少顷再叙" },
+        { status: 429 }
+      );
+    }
+
     const comment = await db.comment.create({
       data: {
         articleSlug: slug,

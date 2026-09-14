@@ -150,27 +150,38 @@ export default function Home() {
     });
   }, []);
 
-  const askInsight = useCallback(async (question: string): Promise<Insight | null> => {
-    setAsking(true);
-    try {
-      const res = await fetch("/api/insight", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, sessionId: getSessionId() }),
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setInsight(data.insight);
-        setInsightCount((c) => c + 1); // 通知签筒刷新
-        return data.insight as Insight;
+  const askInsight = useCallback(
+    async (
+      question: string,
+      prev?: { name: string; oracle: string } | null
+    ): Promise<Insight | null> => {
+      setAsking(true);
+      try {
+        const res = await fetch("/api/insight", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question,
+            sessionId: getSessionId(),
+            prevName: prev?.name ?? "",
+            prevOracle: prev?.oracle ?? "",
+          }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          setInsight(data.insight);
+          setInsightCount((c) => c + 1); // 通知签筒刷新
+          return data.insight as Insight;
+        }
+        return null;
+      } catch {
+        return null;
+      } finally {
+        setAsking(false);
       }
-      return null;
-    } catch {
-      return null;
-    } finally {
-      setAsking(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const openInsightDialog = useCallback(() => {
     setInsight(null); // 重置签文，展示推演动画

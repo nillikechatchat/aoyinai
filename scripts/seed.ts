@@ -645,10 +645,13 @@ async function main() {
 
   const now = Date.now();
   for (const a of articles) {
-    const { daysAgo, ...rest } = a;
+    const { daysAgo, readMinutes: _stale, ...rest } = a;
+    void _stale;
     await db.article.create({
       data: {
         ...rest,
+        // 阅读时长按正文字数自动估算，避免与实际字数失真
+        readMinutes: estimateReadingMinutes(a.content),
         published: true,
         views: 80 + Math.floor(Math.random() * 900),
         likes: 3 + Math.floor(Math.random() * 90),
@@ -686,3 +689,12 @@ main()
     process.exit(1);
   })
   .finally(() => db.$disconnect());
+
+/**
+ * 阅读时长估算：中文技术文精读约 250 字/分钟，下限 1 分钟。
+ * 与前端「约 N 字」展示口径一致（去除空白后的字符数）。
+ */
+export function estimateReadingMinutes(content: string): number {
+  const chars = content.replace(/\s/g, "").length;
+  return Math.max(1, Math.round(chars / 250));
+}

@@ -23,7 +23,10 @@ interface InsightDialogProps {
   onOpenChange: (open: boolean) => void;
   loading: boolean;
   insight: Insight | null;
-  onAsk: (question: string) => Promise<Insight | null>;
+  onAsk: (
+    question: string,
+    prev?: { name: string; oracle: string } | null
+  ) => Promise<Insight | null>;
   onOpenQiantong?: () => void;
 }
 
@@ -31,6 +34,13 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
   const [question, setQuestion] = useState("");
   const [stamping, setStamping] = useState(false);
   const { toast } = useToast();
+
+  /** 再问：携带当前签作为上一签上下文，保持意脉相承 */
+  const askAgain = (q: string) =>
+    onAsk(
+      q,
+      insight ? { name: insight.name, oracle: insight.oracle } : null
+    );
 
   const copyInsight = async () => {
     if (!insight) return;
@@ -145,7 +155,7 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
             {/* 操作 */}
             <div className="mt-6 flex items-center gap-3">
               <Button
-                onClick={() => onAsk(question)}
+                onClick={() => askAgain(question)}
                 className="h-11 flex-1 gap-2 rounded-full bg-pine font-kai tracking-[0.25em] text-[#f3efdf] hover:bg-pine-deep"
               >
                 <RefreshCw className="h-4 w-4" />
@@ -192,7 +202,7 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") onAsk(question);
+                    if (e.key === "Enter") askAgain(question);
                   }}
                   maxLength={60}
                   placeholder="若有具体困惑，可先写下所问（可选）"
@@ -202,7 +212,7 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
                   variant="outline"
                   size="icon"
                   aria-label="叩问"
-                  onClick={() => onAsk(question)}
+                  onClick={() => askAgain(question)}
                   className="h-10 w-10 shrink-0 border-frame bg-paper-card text-vermillion hover:bg-vermillion hover:text-[#f8f3e7]"
                 >
                   <PenLine className="h-4 w-4" />

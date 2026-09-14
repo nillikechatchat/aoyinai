@@ -2,7 +2,17 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Clock, Eye, Gift, Heart, ListTree } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Eye,
+  Gift,
+  Heart,
+  ListTree,
+  Loader2,
+  Volume2,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import {
   Dialog,
@@ -17,6 +27,7 @@ import { CATEGORY_META, formatDate } from "@/lib/types";
 import { ArticleComments } from "@/components/site/article-comments";
 import { markRead } from "@/lib/read-history";
 import { downloadArticleCard } from "@/lib/share-card";
+import { listenToText, stopListening } from "@/lib/listen-insight";
 import { useToast } from "@/hooks/use-toast";
 
 interface ArticleDialogProps {
@@ -104,6 +115,7 @@ function ArticleBody({
   const [liked, setLiked] = useState(() => getLikedSlugs().includes(article.slug));
   const [likeCount, setLikeCount] = useState(article.likes);
   const [recommending, setRecommending] = useState(false);
+  const [listenState, setListenState] = useState<"idle" | "loading" | "playing">("idle");
   const { toast } = useToast();
 
   /* SEO：展卷时同步 document.title，合卷或换篇时复位；同时记入读书记忆 */
@@ -115,12 +127,24 @@ function ArticleBody({
     };
   }, [article.title, article.slug]);
 
+  /* 换篇/合卷时停止诵读 */
+  useEffect(() => () => stopListening(), []);
+
   const meta = CATEGORY_META[article.category];
   const toc = useMemo(() => extractToc(article.content), [article]);
   const wordCount = useMemo(
     () => article.content.replace(/\s/g, "").length,
     [article]
   );
+
+  /* 诵读文本：标题 + 摘要 + 正文去 markdown 结构符号（限制在 TTS 上限内） */
+  const speechText = useMemo(() => {
+    const stripped = article.content
+      .replace(/---[\s\S]*$/, "")
+      .replace(/[#*`>_[\]()\\-]/g, " ")
+      .replace(/\s+/g, " ");
+    return `${article.title}。敖胤AI。${article.excerpt} ${stripped}`.slice(0, 1000);
+  }, [article]);
 
   /* 同栏目上一篇/下一篇（首尾循环） */
   const { prev, next } = useMemo(() => {
@@ -177,6 +201,24 @@ function ArticleBody({
   const scrollToHeading = (index: number) => {
     const el = scrollRef.current?.querySelector(`[data-h2="${index}"]`);
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  /* 听文：敖胤先生诵读此文 */
+  const toggleListen = async () => {
+    if (listenState === "loading") return;
+    if (listenState === "playing") {
+      stopListening();
+      setListenState("idle");
+      return;
+    }
+    setListenState("loading");
+    const result = await listenToText(speechText, () => setListenState("idle"));
+    if (result === "error") {
+      setListenState("idle");
+      toast({ title: "听文未成", description: "诵读暂时未成，请稍后再试。" });
+      return;
+    }
+    setListenState("playing");
   };
 
   /* 荐书签：将此文绘成水墨荐书卡 */
@@ -336,6 +378,34 @@ function ArticleBody({
             </div>
 
             <div className="flex items-center gap-2">
+              {/* 听文（TTS 诵读） */}
+              <button
+                onClick={toggleListen}
+                disabled={listenState === "loading"}
+                aria-label={listenState === "playing" ? "停止诵读" : "听文（语音诵读此文）"}
+                title={listenState === "playing" ? "停止诵读" : "听文 · 敖胤先生为你诵读"}
+                className={cn(
+                  "inline-flex h-10 items-center gap-2 rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
+                  listenState === "playing"
+                    ? "border-gilt bg-gilt/15 text-gilt shadow-sm"
+                    : "border-frame bg-paper-card text-ink-soft hover:border-gilt/60 hover:text-gilt disabled:opacity-60"
+                )}
+              >
+                {listenState === "loading" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : listenState === "playing" ? (
+                  <span className="flex h-3.5 items-end gap-[2px]" aria-hidden>
+                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
+                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
+                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
+                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
+                  </span>
+                ) : (
+                  <Volume2 className="h-4 w-4" aria-hidden />
+                )}
+                {listenState === "playing" ? "止" : listenState === "loading" ? "诵读中" : "听文"}
+              </button>
+
               {/* 荐书签 */}
               <button
                 onClick={handleRecommend}

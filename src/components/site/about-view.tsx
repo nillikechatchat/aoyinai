@@ -18,6 +18,7 @@ interface SiteStats {
   topCategory: string | null;
   latestArticle: { title: string; publishedAt: string } | null;
   daily: Array<{ date: string; insights: number; comments: number }>;
+  categoryDist: Array<{ category: string; count: number; views: number }>;
 }
 
 const PRINCIPLES = [
@@ -43,24 +44,26 @@ function fmt(n: number): string {
   return n.toLocaleString("zh-CN");
 }
 
-/** 墨迹七日：纯 SVG 迷你折线（问签 / 笔谈 双线，随双主题变色） */
+/** 墨迹七日：纯 SVG 迷你折线（问签 / 笔谈 双线，随双主题变色；从 30 日序列取末 7 日） */
 function InkSparkline({ daily }: { daily: Array<{ date: string; insights: number; comments: number }> }) {
+  const recent = daily.slice(-7);
+  if (recent.length === 0) return null;
   const W = 560;
   const H = 118;
   const padX = 34;
   const topY = 22;
   const baseY = 84;
-  const maxVal = Math.max(1, ...daily.map((d) => Math.max(d.insights, d.comments)));
+  const maxVal = Math.max(1, ...recent.map((d) => Math.max(d.insights, d.comments)));
 
   const xAt = (i: number) =>
-    padX + (i * (W - padX * 2)) / Math.max(daily.length - 1, 1);
+    padX + (i * (W - padX * 2)) / Math.max(recent.length - 1, 1);
   const yAt = (v: number) => baseY - (v / maxVal) * (baseY - topY);
 
   const toPoints = (key: "insights" | "comments") =>
-    daily.map((d, i) => `${xAt(i)},${yAt(d[key])}`).join(" ");
+    recent.map((d, i) => `${xAt(i)},${yAt(d[key])}`).join(" ");
 
   return (
-    <div className="mt-5 rounded-sm border border-frame/60 bg-paper-deep/40 px-4 pb-2 pt-3">
+    <div className="rounded-sm border border-frame/60 bg-paper-deep/40 px-4 pb-2 pt-3">
       <div className="flex items-center justify-between">
         <p className="font-song text-[0.66rem] tracking-[0.25em] text-ink-faint">
           近七日 · 落墨之痕
@@ -104,7 +107,7 @@ function InkSparkline({ daily }: { daily: Array<{ date: string; insights: number
           strokeDasharray="1 0"
         />
         {/* 数据点 + 数值 + 日期 */}
-        {daily.map((d, i) => (
+        {recent.map((d, i) => (
           <g key={d.date}>
             {d.insights > 0 && (
               <>
@@ -124,6 +127,137 @@ function InkSparkline({ daily }: { daily: Array<{ date: string; insights: number
           </g>
         ))}
       </svg>
+    </div>
+  );
+}
+
+/** 墨迹三十日：热力格子（问签 + 笔谈 合计落墨热度，朱红深浅；6 行 × 5 列，从旧到新） */
+function InkHeatmap({ daily }: { daily: Array<{ date: string; insights: number; comments: number }> }) {
+  if (daily.length === 0) return null;
+  const levelOf = (v: number) => (v <= 0 ? 0 : v === 1 ? 1 : v === 2 ? 2 : v <= 4 ? 3 : 4);
+  const levelCls = [
+    "bg-paper-deep border-frame/50",
+    "bg-vermillion/20 border-vermillion/30",
+    "bg-vermillion/40 border-vermillion/40",
+    "bg-vermillion/65 border-vermillion/50",
+    "bg-vermillion border-vermillion/60",
+  ];
+  const cols = 10; // 每行 10 日，共 3 行
+  const rows = Math.ceil(daily.length / cols);
+  const totalInk = daily.reduce((s, d) => s + d.insights + d.comments, 0);
+
+  return (
+    <div className="mt-4 rounded-sm border border-frame/60 bg-paper-deep/40 px-4 pb-3.5 pt-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="font-song text-[0.66rem] tracking-[0.25em] text-ink-faint">
+          近三十日 · 落墨盈尺（共 {totalInk} 笔）
+        </p>
+        <p className="flex items-center gap-1 font-song text-[0.62rem] tracking-[0.1em] text-ink-faint">
+          淡
+          {levelCls.map((c, i) => (
+            <span key={i} className={`inline-block h-2.5 w-2.5 rounded-[2px] border ${c}`} aria-hidden />
+          ))}
+          浓
+        </p>
+      </div>
+      <div className="mt-3 flex flex-col gap-1.5" role="img" aria-label="近三十日问签与笔谈热力图">
+        {Array.from({ length: rows }).map((_, r) => (
+          <div key={r} className="flex gap-1.5">
+            {daily.slice(r * cols, r * cols + cols).map((d) => {
+              const v = d.insights + d.comments;
+              const lv = levelOf(v);
+              return (
+                <span
+                  key={d.date}
+                  title={`${d.date} · 问签 ${d.insights} · 笔谈 ${d.comments}`}
+                  className={`h-4 w-4 rounded-[3px] border transition-transform duration-200 hover:scale-125 ${levelCls[lv]} ${lv === 0 ? "border-dashed" : ""}`}
+                />
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** 栏目分布：国风环形图（按篇数份额，中心示总卷数；右侧图例带印章） */
+function CategoryDonut({ dist }: { dist: Array<{ category: string; count: number; views: number }> }) {
+  if (dist.length === 0) return null;
+  const total = dist.reduce((s, d) => s + d.count, 0);
+  // 国风七色：朱砂 / 松绿 / 鎏金 / 赭石 / 黛青 / 绛紫 / 苔绿（夜读下自动柔化：用 CSS 变量色 + 透明度）
+  const palette = [
+    "var(--color-vermillion, #a63c2a)",
+    "var(--color-pine, #3d5a47)",
+    "var(--color-gilt, #b28a3c)",
+    "color-mix(in srgb, var(--color-vermillion, #a63c2a) 55%, var(--color-gilt, #b28a3c))",
+    "color-mix(in srgb, var(--color-pine, #3d5a47) 60%, var(--color-ink, #2c2a26))",
+    "color-mix(in srgb, var(--color-gilt, #b28a3c) 50%, var(--color-paper, #f3efdf))",
+    "color-mix(in srgb, var(--color-vermillion, #a63c2a) 35%, var(--color-pine, #3d5a47))",
+  ];
+
+  const R = 44;
+  const C = 2 * Math.PI * R;
+  // 纯函数式前缀和：第 i 段的起点 = 前 i 段份额之和（避免渲染期变量重赋值）
+  const fracs = dist.map((d) => d.count / total);
+  const segs = dist.map((d, i) => {
+    const frac = fracs[i];
+    const before = fracs.slice(0, i).reduce((s, f) => s + f, 0);
+    return {
+      color: palette[i % palette.length],
+      dash: `${(frac * C).toFixed(2)} ${(C - frac * C).toFixed(2)}`,
+      offset: (-before * C + C * 0.25).toFixed(2), // 起点左上（-90°）
+      ...d,
+      frac,
+    };
+  });
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-5 rounded-sm border border-frame/60 bg-paper-deep/40 px-4 py-4 sm:flex-row sm:gap-7">
+      <svg viewBox="0 0 120 120" className="h-36 w-36 shrink-0" role="img" aria-label="栏目篇数分布环形图">
+        {/* 底环 */}
+        <circle cx="60" cy="60" r={R} fill="none" stroke="currentColor" strokeOpacity="0.08" strokeWidth="15" className="text-ink" />
+        {segs.map((s) => (
+          <circle
+            key={s.category}
+            cx="60"
+            cy="60"
+            r={R}
+            fill="none"
+            stroke={s.color}
+            strokeWidth="15"
+            strokeDasharray={s.dash}
+            strokeDashoffset={s.offset}
+            className="transition-all duration-700"
+          >
+            <title>{`${CATEGORY_META[s.category]?.name ?? s.category} ${s.count} 篇`}</title>
+          </circle>
+        ))}
+        <text x="60" y="57" textAnchor="middle" fontSize="20" fontWeight="bold" fill="currentColor" className="text-ink">
+          {total}
+        </text>
+        <text x="60" y="74" textAnchor="middle" fontSize="9" letterSpacing="2" fill="currentColor" fillOpacity="0.5" className="text-ink">
+          卷文章
+        </text>
+      </svg>
+      <ul className="grid w-full grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+        {segs.map((s) => (
+          <li key={s.category} className="flex items-center gap-2 font-song text-[0.72rem] tracking-[0.1em] text-ink-soft">
+            <span
+              className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+              style={{ backgroundColor: s.color }}
+              aria-hidden
+            />
+            <span className="seal-outline inline-flex h-4 w-4 shrink-0 items-center justify-center text-[0.5rem] leading-none">
+              {CATEGORY_META[s.category]?.seal ?? "文"}
+            </span>
+            <span className="truncate">{CATEGORY_META[s.category]?.name ?? s.category}</span>
+            <span className="ml-auto shrink-0 tabular-nums text-ink-faint">
+              {s.count} 篇 · {Math.round(s.frac * 100)}%
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -256,8 +390,12 @@ export function AboutView({ onAsk }: AboutViewProps) {
                 </div>
               ))}
             </div>
-            {/* 七日趋势迷你折线 */}
-            <InkSparkline daily={stats.daily ?? []} />
+            {/* 趋势与分布：七日折线 + 栏目环形图并排，三十日热力格子整行 */}
+            <div className="mt-5 grid gap-4 lg:grid-cols-2">
+              <InkSparkline daily={stats.daily ?? []} />
+              <CategoryDonut dist={stats.categoryDist ?? []} />
+            </div>
+            <InkHeatmap daily={stats.daily ?? []} />
 
             {/* 注脚：最热栏目 / 最近刊行 */}
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-frame/60 pt-3">
