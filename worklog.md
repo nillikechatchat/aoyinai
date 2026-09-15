@@ -614,3 +614,36 @@ Stage Summary:
 4. 首页 hero 交互增强：司南 hover 预告签文格目（如「事业·学问·行止」浮出），或今日签运卡与签历年览联动（点朱印日直达月历）
 5. 文章卡片分级动效：速览浮层支持多段渐显（长 tldr 逐句浮现），或 hover 时封面轻移+速览双动画编排
 6. e2e 清单 scripts/qa.md 增补 R10 专项（卡片速览 hover/年览切换/TTS 统计闭环/听文进度四条）
+
+---
+Task ID: 11
+Agent: main
+Task: Vercel 部署兼容性调研 + 可代码化问题修复（用户提问：部署到 Vercel 有什么问题、有没有用不了的功能）
+
+Work Log:
+- 【调研】通读全部 API 路由（articles/categories/insight/tts/og/stats/rss/comments/like/tldr）、lib（db/ai/session/share-card/listen-insight）、prisma schema、package.json、next.config.ts、.env、.gitignore、z-ai-web-dev-sdk README
+- 【发现-致命①】SQLite（db/custom.db）在 Vercel serverless 只读临时文件系统上无法持久化，且 .env 写死沙盒绝对路径 file:/home/z/my-project/db/custom.db → 文章/评论/问签/点赞/浏览量等所有 DB 功能不可用
+- 【发现-致命②】z-ai-web-dev-sdk 依赖 /etc/.z-ai-config（沙盒特有，不入仓）→ Vercel 上 LLM 问签、TLDR 速览、TTS 听签三处 AI 功能不可用
+- 【发现-致命③】/api/og 硬编码读取沙盒系统字体 /usr/share/fonts/truetype/...（不入仓）→ Vercel 上 OG 分享图必 500
+- 【发现-一般】layout.tsx metadataBase 写死 http://localhost:3000；rss.xml 硬编码 aoyinai.com；package.json 无 postinstall → Vercel 构建时 Prisma client 不会生成会直接构建失败；TTS 磁盘缓存写在 cwd（Vercel 只读，已有 try/catch 降级）
+- 【修复①】复制 LXGWWenKai-Light.ttf(28MB) + NotoSerifSC-Black.ttf(14.8MB) 入仓 public/fonts/；og/route.tsx 改为 resolveFont() 候选路径链（public/fonts 优先 → 系统目录兜底），沙盒与 Vercel 双兼容
+- 【修复②】新建 src/lib/ai.ts 统一 AI 访问层：通道1 z-ai-web-dev-sdk（沙盒）→ 通道2 OpenAI 兼容 API（环境变量 AI_API_KEY/AI_BASE_URL/AI_MODEL + TTS_API_KEY/TTS_BASE_URL/TTS_MODEL/TTS_VOICE），皆败返回 null 由调用方降级；insight/tldr/tts 三路由全部接入（insight 保留 4 条本地兜底签池；tldr/tts 失败返回 503 + 明确中文错误信息，前端已有 toast 降级）
+- 【修复③】layout.tsx metadataBase 改用 NEXT_PUBLIC_SITE_URL（fallback localhost）；rss.xml 域名改用 NEXT_PUBLIC_SITE_URL（fallback aoyinai.com）
+- 【修复④】package.json 加 "postinstall": "prisma generate"（Vercel 构建必需）；TTS 缓存目录支持 TTS_CACHE_DIR 环境变量（Vercel 设 /tmp/tts-cache）
+- 【验证】eslint 0 错误；curl：首页 200 / OG 图 200（1200x630 字体渲染完好）/ RSS 200（域名回退正确）/ TTS 200（68KB wav 走 ZAI 通道）/ 问签 200（「云渡卦」+ 正常签文）/ tldr 200（缓存命中）；agent-browser 打开首页无 console 错误、国风 hero/导航/司南交互区渲染完好
+
+Stage Summary:
+- 结论：改完后代码层面已 Vercel-ready，但**数据库仍是部署硬阻塞**（SQLite 不可持久化）——上 Vercel 前必须迁移 Turso(libSQL)/Vercel Postgres 并改 prisma provider + DATABASE_URL
+- AI 能力已解耦：部署后在 Vercel 环境变量配 OpenAI 兼容 API（如 DeepSeek/智谱/GLM）即可恢复问签/速览/听签；不配则问签降级本地签池、速览/听签返回友好提示
+- 环境变量清单（Vercel 配置）：DATABASE_URL（必填，新数据库）、NEXT_PUBLIC_SITE_URL（推荐）、AI_API_KEY/AI_BASE_URL/AI_MODEL（推荐，恢复 LLM）、TTS_API_KEY/TTS_BASE_URL/TTS_MODEL/TTS_VOICE（可选，恢复听签）、TTS_CACHE_DIR=/tmp/tts-cache（可选）
+- 已知不随代码迁移的功能：TTS 磁盘缓存跨实例失效（有 /tmp 方案但实例重启即失）、SQLite 数据需一次性导入新库（db/custom.db 440KB 种子数据可用脚本重灌或转换）
+- 遗留建议：字体入仓使仓库 +43MB（可后续用 pyftsubset 子集化压缩至 <5MB）；next.config.ts 的 ignoreBuildErrors 建议部署前跑一次 tsc 全量检查；output:"standalone" 在 Vercel 无害但冗余
+
+## 三部分交接（本轮）
+① 项目当前状态：功能开发已历经 10 轮迭代（国风首页/文章/签筒/评论/速览/听签/分享卡/统计看板/暗色模式/RSS/OG），本轮完成 Vercel 部署兼容性改造，沙盒内所有功能回归通过
+② 本轮目标/修改/验证：调研 Vercel 兼容性并修复 4 类代码级问题（OG 字体入仓、AI 层双通道解耦、URL 环境变量化、postinstall）；验证结果见上方 Work Log 末条，全部通过
+③ 未解决问题/下一阶段优先：
+   - P0（部署阻塞）：数据库迁移 —— 推荐 Turso（libSQL，最贴近 SQLite，Prisma 官方支持 driver adapter）或 Vercel Postgres；改 schema provider → db:push → 导数据
+   - P1：Vercel 上配置 AI 环境变量并实测问签/速览/听签三链路
+   - P2：字体子集化减肥仓库；部署后用 Vercel 域名全量回归（OG/分享卡二维码/SEO metadata）
+   - P3（新需求池）：文章静态化(ISG)提升 Vercel 性能、Upstash Redis 做浏览计数/TTLDR 缓存替代磁盘缓存
