@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import path from "path";
+import { aiTts, hasTtsCompat } from "@/lib/ai";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-/** TTS 磁盘缓存目录：同文本+音色+语速命中即秒开（首段合成 3~50s → 二次 <10ms） */
-const CACHE_DIR = path.join(process.cwd(), ".tts-cache");
+/** TTS 磁盘缓存目录：同文本+音色+语速命中即秒开（首段合成 3~50s → 二次 <10ms）
+ *  Vercel 等只读文件系统平台请设 TTS_CACHE_DIR=/tmp/tts-cache（实例内缓存，重启即失） */
+const CACHE_DIR =
+  process.env.TTS_CACHE_DIR || path.join(process.cwd(), ".tts-cache");
 const CACHE_MAX_FILES = 80;
 const STATS_FILE = path.join(CACHE_DIR, "stats.json");
 
@@ -105,22 +108,19 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const ZAI = (await import("z-ai-web-dev-sdk")).default;
-    const zai = await ZAI.create();
+    // 统一 AI 层：沙盒 SDK → OpenAI 兼容 TTS 通道
+    const buffer = await aiTts({ input: content, voice, speed: clampedSpeed });
 
-    const response = await zai.audio.tts.create({
-      input: content,
-      voice,
-      speed: clampedSpeed,
-      response_format: "wav",
-      stream: false,
-    });
-
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(new Uint8Array(arrayBuffer));
-
-    if (buffer.length < 100) {
-      return NextResponse.json({ ok: false, error: "诵签未成" }, { status: 502 });
+    if (!buffer) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: hasTtsCompat()
+            ? "诵签未成，请稍后再试"
+            : "语音服务未配置（部署时需设置 TTS_API_KEY / TTS_BASE_URL）",
+        },
+        { status: hasTtsCompat() ? 502 : 503 }
+      );
     }
 
     // 落盘缓存（失败不影响返回）

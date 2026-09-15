@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import ZAI from "z-ai-web-dev-sdk";
+import { aiChat } from "@/lib/ai";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -89,8 +89,6 @@ export async function POST(req: NextRequest) {
     const prevName: string = (body?.prevName || "").toString().slice(0, 16).trim();
     const prevOracle: string = (body?.prevOracle || "").toString().slice(0, 60).trim();
 
-    const zai = await ZAI.create();
-
     const system = `你是一位精通古典文言与 AI 行业的智者「敖胤先生」。求问者会敲响司南问一事，你以抽签形式作答。
 
 要求：
@@ -114,15 +112,15 @@ export async function POST(req: NextRequest) {
 
     let insight: { name: string; oracle: string; interpret: string; advice: string } | null = null;
 
-    try {
-      const completion = await zai.chat.completions.create({
-        messages: [
-          { role: "assistant", content: system },
-          { role: "user", content: user },
-        ],
-        thinking: { type: "disabled" },
-      });
-      const raw = completion.choices[0]?.message?.content || "";
+    // 统一 AI 层：沙盒 SDK → OpenAI 兼容通道，皆不可用则本地兑底签池
+    const raw = await aiChat(
+      [
+        { role: "assistant", content: system },
+        { role: "user", content: user },
+      ],
+      { temperature: 0.8 }
+    );
+    if (raw) {
       const parsed = extractJson(raw);
       if (parsed && parsed.name && parsed.oracle && parsed.interpret && parsed.advice) {
         insight = {
@@ -132,8 +130,6 @@ export async function POST(req: NextRequest) {
           advice: String(parsed.advice).slice(0, 120),
         };
       }
-    } catch (e) {
-      console.error("[POST /api/insight] LLM error:", e);
     }
 
     // 兜底：LLM 失败时用本地签池

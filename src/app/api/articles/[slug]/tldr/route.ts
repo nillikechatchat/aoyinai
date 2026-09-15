@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiChat } from "@/lib/ai";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -54,11 +55,9 @@ export async function POST(
       .replace(/\s+/g, " ")
       .slice(0, 1200);
 
-    const ZAI = (await import("z-ai-web-dev-sdk")).default;
-    const zai = await ZAI.create();
-
-    const completion = await zai.chat.completions.create({
-      messages: [
+    // 统一 AI 层：沙盒 SDK → OpenAI 兼容通道，皆不可用则明确报错（前端 toast 降级）
+    const raw = await aiChat(
+      [
         {
           role: "system",
           content:
@@ -69,11 +68,17 @@ export async function POST(
           content: `文章标题：${article.title}\n导语：${article.excerpt}\n正文：${bodyText}`,
         },
       ],
-      temperature: 0.6,
-      maxTokens: 120,
-    });
+      { temperature: 0.6, maxTokens: 120 }
+    );
 
-    const tldr = String(completion.choices[0]?.message?.content ?? "")
+    if (!raw) {
+      return NextResponse.json(
+        { ok: false, error: "AI 服务未配置（部署时需设置 AI_API_KEY / AI_BASE_URL）" },
+        { status: 503 }
+      );
+    }
+
+    const tldr = String(raw)
       .replace(/^["「『]|["」』]$/g, "")
       .replace(/\s+/g, " ")
       .trim()

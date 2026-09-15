@@ -2,6 +2,9 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+/** 站点地址：生产部署时通过 NEXT_PUBLIC_SITE_URL 注入（含协议，无尾斜杠） */
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://aoyinai.com").replace(/\/+$/, "");
+
 function escapeXml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -25,7 +28,7 @@ export async function GET() {
       .map((a) => {
         return `    <item>
       <title>${escapeXml(a.title)}</title>
-      <link>https://aoyinai.com/?article=${a.slug}</link>
+      <link>${SITE_URL}/?article=${a.slug}</link>
       <guid isPermaLink="false">aoyinai-${a.slug}</guid>
       <description>${escapeXml(a.excerpt)}</description>
       <category>${escapeXml(a.category)}</category>
@@ -38,11 +41,11 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>敖胤AI · 观智能之潮，守问学之心</title>
-    <link>https://aoyinai.com</link>
+    <link>${SITE_URL}</link>
     <description>聚焦人工智能的中文博客：AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent。</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="https://aoyinai.com/rss.xml" rel="self" type="application/rss+xml"/>
+    <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml"/>
 ${items}
   </channel>
 </rss>`;

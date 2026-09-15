@@ -4,7 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  // 生产部署时通过 NEXT_PUBLIC_SITE_URL 注入真实域名（如 https://aoyinai.vercel.app）
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: "敖胤AI · 观智能之潮，守问学之心",
   description:
     "聚焦人工智能的中文博客：AI 教程、市场分析、高校专业、赛事活动、黑客松、云厂商优惠与 T-agent 多智能体框架。以东方美学，观照 AI 时代。",

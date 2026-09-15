@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
+import { existsSync } from "fs";
 import { readFile } from "fs/promises";
+import path from "path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -8,13 +10,34 @@ export const dynamic = "force-dynamic";
 /** 字体模块级缓存（首请求加载，其后秒开） */
 const fontCache = new Map<string, ArrayBuffer>();
 
-async function loadFont(path: string): Promise<ArrayBuffer> {
-  const hit = fontCache.get(path);
-  if (hit) return hit;
-  const buf = await readFile(path);
-  const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
-  fontCache.set(path, ab);
-  return ab;
+/** 字体候选路径：先读仓内 public/fonts（Vercel/本地生产），再退回沙盒系统目录 */
+const FONT_FILES = {
+  wenkai: [
+    "public/fonts/LXGWWenKai-Light.ttf",
+    "/usr/share/fonts/truetype/lxgw-wenkai/LXGWWenKai-Light.ttf",
+  ],
+  noto: [
+    "public/fonts/NotoSerifSC-Black.ttf",
+    "/usr/share/fonts/truetype/noto-serif-sc/NotoSerifSC-Black.ttf",
+  ],
+} as const;
+
+async function resolveFont(key: keyof typeof FONT_FILES): Promise<ArrayBuffer> {
+  const cached = fontCache.get(key);
+  if (cached) return cached;
+  for (const p of FONT_FILES[key]) {
+    try {
+      const abs = path.isAbsolute(p) ? p : path.join(process.cwd(), p);
+      if (!existsSync(abs)) continue;
+      const buf = await readFile(abs);
+      const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+      fontCache.set(key, ab);
+      return ab;
+    } catch {
+      // 尝试下一个候选路径
+    }
+  }
+  throw new Error(`OG 字体缺失: ${key}（请确认 public/fonts/ 内已放置字体文件）`);
 }
 
 export async function GET(req: NextRequest) {
@@ -26,8 +49,8 @@ export async function GET(req: NextRequest) {
     const seal = (searchParams.get("seal") || "胤").slice(0, 1);
 
     const [wenkai, noto] = await Promise.all([
-      loadFont("/usr/share/fonts/truetype/lxgw-wenkai/LXGWWenKai-Light.ttf"),
-      loadFont("/usr/share/fonts/truetype/noto-serif-sc/NotoSerifSC-Black.ttf"),
+      resolveFont("wenkai"),
+      resolveFont("noto"),
     ]);
 
     return new ImageResponse(
