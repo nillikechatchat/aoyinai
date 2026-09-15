@@ -665,3 +665,20 @@ Stage Summary:
 - 站点现为「零模型全功能」：不配任何 AI 环境变量即可完整部署（问签=本地签池伪随机抽签，速览=导语兜底）；配置 AI_API_KEY/AI_BASE_URL/AI_MODEL 后问签与速览自动升级为 LLM 生成
 - TTS 相关环境变量（TTS_*）已无意义，Vercel 配置清单减为：DATABASE_URL + NEXT_PUBLIC_SITE_URL + 可选 AI_API_KEY/AI_BASE_URL/AI_MODEL
 - 下一阶段优先：P0 数据库迁移（Turso/Vercel Postgres）；P1 用 agent-browser 巡检样式细节；P2 新功能池（文章静态化/Redis 计数/签文日历分享优化）
+
+---
+Task ID: 13
+Agent: main
+Task: 使用用户提供的 GitHub token 推送重构代码到 nillikechatchat/aoyinai
+
+Work Log:
+- 验证 token 身份：账号 nillikechatchat（token 仅内联使用，未写入 .git/config 或任何文件）
+- 列出用户仓库，确认目标仓库为 aoyinai（原站仓库，远程 main = 2ef8e9b 原站博客代码，与本地重构版历史无关）
+- 通过 GitHub API 创建备份分支 backup/pre-refactor（指向原站最后提交 2ef8e9b8，可随时恢复）
+- force push 本地 main (db18f0d) → 远程 main（refactor 版替换原站，配合 Vercel 从 main 部署）
+- 验证：远程 main 已更新；字体(2个 ttf)、src/lib/ai.ts、prisma/schema.prisma、page.tsx、package.json 全部 200 存在
+
+Stage Summary:
+- 远程仓库 https://github.com/nillikechatchat/aoyinai 现为重构版（国风首页 + 零模型全功能运行）
+- 原站代码保留在 backup/pre-refactor 分支
+- 安全提醒：token 已在聊天中暴露，建议用户尽快在 GitHub Settings → Developer settings 撤销/轮换
