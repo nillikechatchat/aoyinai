@@ -2,6 +2,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// SQLite schema + Prisma driver adapter：
+// - 本地开发：DATABASE_URL=file:./db/custom.db（直连文件）
+// - Turso 部署：DATABASE_URL=libsql://<db>-<user>.turso.io?authToken=<token>（src/lib/db.ts 自动切换 libsql adapter）
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
