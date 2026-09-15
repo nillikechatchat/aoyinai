@@ -9,6 +9,8 @@
     "postinstall": "prisma generate",
     "lint": "eslint .",
     "db:push": "prisma db push --accept-data-loss",
+    "db:seed-turso": "bun run scripts/migrate-to-turso.ts --if-empty",
+    "db:migrate-turso": "bun run scripts/migrate-to-turso.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",

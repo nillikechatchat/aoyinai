@@ -2,9 +2,9 @@
  * 数据迁移：本地 SQLite → Turso（libSQL 云库）
  *
  * 用法（三选一）：
- *   1. TURSO_URL=libsql://xxx-xxx.turso.io TURSO_AUTH_TOKEN=eyJxxx bun run scripts/migrate-to-turso.ts
- *   2. bun run scripts/migrate-to-turso.ts --url 'libsql://xxx-xxx.turso.io?authToken=eyJxxx'
- *   3. bunx tsx scripts/migrate-to-turso.ts --url ...（等价）
+ *   1. TURSO_DATABASE_URL=libsql://xxx-xxx.turso.io TURSO_AUTH_TOKEN=eyJxxx bun run scripts/migrate-to-turso.ts
+ *   2. TURSO_URL=libsql://xxx-xxx.turso.io TURSO_AUTH_TOKEN=eyJxxx bun run scripts/migrate-to-turso.ts
+ *   3. bun run scripts/migrate-to-turso.ts --url 'libsql://xxx-xxx.turso.io?authToken=eyJxxx'
  *
  * 行为（幂等，可重复执行）：
  *   ① 从本地库读取全部建表 DDL（sqlite_master），在远程 CREATE TABLE IF NOT EXISTS
@@ -26,7 +26,9 @@ interface RemoteTarget {
 
 function parseRemoteTarget(): RemoteTarget | null {
   const args = process.argv.slice(2)
-  let raw = process.env.TURSO_URL?.trim() || ''
+  // 优先 Turso 官方变量（Vercel 集成注入），其次 TURSO_URL，再其次 --url 参数
+  let raw = process.env.TURSO_DATABASE_URL?.trim() || process.env.TURSO_URL?.trim() || ''
+  let envToken = process.env.TURSO_AUTH_TOKEN?.trim() || ''
 
   const urlIdx = args.indexOf('--url')
   if (urlIdx >= 0 && args[urlIdx + 1]) raw = args[urlIdx + 1].trim()
@@ -38,7 +40,7 @@ function parseRemoteTarget(): RemoteTarget | null {
   }
 
   let url = raw
-  let authToken = process.env.TURSO_AUTH_TOKEN?.trim() || ''
+  let authToken = envToken
   try {
     const u = new URL(raw)
     const q = u.searchParams.get('authToken')
@@ -52,11 +54,18 @@ function parseRemoteTarget(): RemoteTarget | null {
 }
 
 async function main() {
+  const args = process.argv.slice(2)
+  const ifEmpty = args.includes('--if-empty')
   const target = parseRemoteTarget()
   if (!target) {
+    if (ifEmpty) {
+      // 构建期播种模式：未配置远程库变量（如本地构建）→ 静默跳过，不报错
+      console.log('[turso-seed] 未配置远程库变量，跳过播种')
+      process.exit(0)
+    }
     console.error(
       '✗ 缺少远程库地址。用法：\n' +
-        '    TURSO_URL=libsql://xxx.turso.io TURSO_AUTH_TOKEN=xxx bun run scripts/migrate-to-turso.ts\n' +
+        '    TURSO_DATABASE_URL=libsql://xxx.turso.io TURSO_AUTH_TOKEN=xxx bun run scripts/migrate-to-turso.ts\n' +
         '  或\n' +
         "    bun run scripts/migrate-to-turso.ts --url 'libsql://xxx.turso.io?authToken=xxx'"
     )
@@ -78,8 +87,28 @@ async function main() {
     await remote.execute('SELECT 1')
     console.log(`✓ 远程库：${target.url}`)
   } catch (e) {
+    if (ifEmpty) {
+      // 构建期播种：远程不可达时不阻断部署（运行时仍有本地快照兑底）
+      console.error('[turso-seed] 远程库连接失败，跳过播种：', (e as Error).message)
+      process.exit(0)
+    }
     console.error('✗ 远程库连接失败，请检查 URL 与 authToken：', (e as Error).message)
     process.exit(1)
+  }
+
+  // 2.5 --if-empty 模式：远程已有数据则跳过（幂等，构建期安全重入）
+  if (ifEmpty) {
+    try {
+      const probe = await remote.execute('SELECT COUNT(*) AS c FROM Article')
+      if (Number(probe.rows[0]?.c ?? 0) > 0) {
+        console.log('[turso-seed] 远程库已有数据，跳过播种')
+        process.exit(0)
+      }
+      console.log('[turso-seed] 远程库为空，开始播种…')
+    } catch {
+      // Article 表不存在 → 继续播种
+      console.log('[turso-seed] 远程库无表，开始播种…')
+    }
   }
 
   // 3. 建表（DDL 同步，幂等）

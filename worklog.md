@@ -715,3 +715,24 @@ Stage Summary:
 - Vercel 部署无需再配置 DATABASE_URL 即可正常读取数据（重新部署后生效）
 - 注意：SQLite 在 Vercel 仍为只读快照，问签记录/点赞/浏览量写入不持久（P0 遗留，迁 Turso/Postgres 方可彻底解决）
 - 问签体验变更说明：同日同问不再固定同签，每次摇签独立随机（用户明确要求）
+
+---
+Task ID: 16
+Agent: main
+Task: 迁移数据库到 Turso（解决 Vercel SQLite 只读不持久问题）
+
+Work Log:
+- 用户已在 Vercel 连接 Turso 集成（TURSO_DATABASE_URL/TURSO_AUTH_TOKEN 由集成自动注入）
+- 调研 Prisma 6 正确接入方式：无 libsql provider，官方路径为 driver adapter @prisma/adapter-libsql（新导出名 PrismaLibSql，构造参数为 libsql Config 而非 client 实例）
+- 安装 @libsql/client + @prisma/adapter-libsql；schema 保持 sqlite provider
+- 重写 src/lib/db.ts 三级连接策略：①TURSO_DATABASE_URL+TURSO_AUTH_TOKEN（Vercel 集成变量）→ adapter；②DATABASE_URL（libsql:// 或 file:）→ adapter/直连；③兜底打包内 SQLite 快照
+- 编写 scripts/migrate-to-turso.ts：读本地 sqlite_master 自动建表+索引+全量搬数据，幂等；--if-empty 模式（空库才播种、无变量静默跳过、连接失败不阻断部署）
+- vercel.json buildCommand 接入 --if-empty 播种：每次 Vercel 部署自动检测 Turso 空库并灌入数据，用户零手动操作
+- package.json 新增 db:seed-turso / db:migrate-turso scripts
+- 验证：迁移脚本本地 file: 模拟远程 90 行（Article 21/Category 7/InsightRecord 53/Comment 9）+7 索引全部成功；PrismaLibSql adapter 读写删全通；--if-empty 三场景（无变量/空库/有数据）全部正确；修复 turbo 缓存旧 db.ts导致的 API 500（重启 dev 清 .next）；回归 7 栏目/赛事 3 篇/问签随机/lint 0 错误
+- 提交推送 GitHub main（Vercel 将自动重新部署，构建期自动播种 Turso）
+
+Stage Summary:
+- Vercel 部署后：构建期自动播种 Turso → 运行时全部读写走 Turso 云库 → 问签记录/点赞/浏览量真正持久化
+- 本地开发不受影响（DATABASE_URL=file: 原生直连）
+- 用户可选的手动全量迁移命令：vercel link && vercel env pull .env.development.local && bun run db:migrate-turso
