@@ -12,7 +12,6 @@ import {
   ListTree,
   Loader2,
   Sparkles,
-  Volume2,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import {
@@ -28,7 +27,6 @@ import { CATEGORY_META, formatDate } from "@/lib/types";
 import { ArticleComments } from "@/components/site/article-comments";
 import { markRead } from "@/lib/read-history";
 import { downloadArticleCard } from "@/lib/share-card";
-import { listenToChunks, stopListening } from "@/lib/listen-insight";
 import { useToast } from "@/hooks/use-toast";
 
 interface ArticleDialogProps {
@@ -119,13 +117,6 @@ function ArticleBody({
   /* 一句话速览：hidden 未展开 / loading 生成中 / shown 已展开 */
   const [tldrState, setTldrState] = useState<"hidden" | "loading" | "shown">("hidden");
   const [tldrText, setTldrText] = useState("");
-  const [listenState, setListenState] = useState<"idle" | "loading" | "playing">("idle");
-  /** 诵读范围：全文 / 仅摘要 */
-  const [listenMode, setListenMode] = useState<"full" | "brief">("full");
-  /** 分段诵读进度（全文多段时显示 i/n） */
-  const [listenProgress, setListenProgress] = useState<{ i: number; n: number } | null>(null);
-  /** 当前段播放进度（0~100） */
-  const [listenPct, setListenPct] = useState(0);
   const { toast } = useToast();
 
   /* SEO：展卷时同步 document.title，合卷或换篇时复位；同时记入读书记忆 */
@@ -137,40 +128,12 @@ function ArticleBody({
     };
   }, [article.title, article.slug]);
 
-  /* 换篇/合卷时停止诵读 */
-  useEffect(() => () => stopListening(), []);
-
   const meta = CATEGORY_META[article.category];
   const toc = useMemo(() => extractToc(article.content), [article]);
   const wordCount = useMemo(
     () => article.content.replace(/\s/g, "").length,
     [article]
   );
-
-  /* 诵读文本：摘要档=标题+导语；全文档=去 markdown 与插图后按句切分为 ≤900 字分段（TTS 上限 1024） */
-  const speechChunks = useMemo(() => {
-    const brief = `${article.title}。敖胤AI。${article.excerpt}`;
-    const stripped = article.content
-      .replace(/!\[[^\]]*\]\([^)]*\)/g, "") // 去插图
-      .replace(/---[\s\S]*$/, "")
-      .replace(/[#*`>_[\]()\\-]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const full = `${article.title}。敖胤AI。${article.excerpt} ${stripped}`;
-    const sentences = full.split(/(?<=[。！？；])/g);
-    const chunks: string[] = [];
-    let cur = "";
-    for (const s of sentences) {
-      if (cur && (cur + s).length > 900) {
-        chunks.push(cur);
-        cur = s;
-      } else {
-        cur += s;
-      }
-    }
-    if (cur.trim()) chunks.push(cur);
-    return { brief: [brief], full: chunks };
-  }, [article]);
 
   /* 同栏目上一篇/下一篇（首尾循环） */
   const { prev, next } = useMemo(() => {
@@ -229,56 +192,7 @@ function ArticleBody({
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  /* 听文：敖胤先生诵读此文（全文分段续播 / 仅读摘要） */
-  const toggleListen = async () => {
-    if (listenState === "loading") return;
-    if (listenState === "playing") {
-      stopListening();
-      setListenState("idle");
-      setListenProgress(null);
-      setListenPct(0);
-      return;
-    }
-    setListenState("loading");
-    setListenProgress(null);
-    setListenPct(0);
-    const chunks = listenMode === "brief" ? speechChunks.brief : speechChunks.full;
-    const result = await listenToChunks(chunks, {
-      onChunk: (i, n) => {
-        setListenProgress({ i, n });
-        setListenPct(0);
-        setListenState("playing");
-      },
-      onProgress: (pct) => setListenPct(pct),
-      onEnded: () => {
-        setListenState("idle");
-        setListenProgress(null);
-        setListenPct(0);
-      },
-    });
-    if (result === "error") {
-      setListenState("idle");
-      setListenProgress(null);
-      setListenPct(0);
-      toast({ title: "听文未成", description: "诵读暂时未成，请稍后再试。" });
-      return;
-    }
-    setListenState("playing");
-  };
-
-  /* 切换诵读档位：若正在诵读则先止声 */
-  const switchListenMode = (m: "full" | "brief") => {
-    if (m === listenMode) return;
-    setListenMode(m);
-    if (listenState !== "idle") {
-      stopListening();
-      setListenState("idle");
-      setListenProgress(null);
-      setListenPct(0);
-    }
-  };
-
-  /* 一句话速览：懒生成（LLM 首次 ~2s，落库后秒开） */
+  /* 一句话速览：懒生成（LLM 首次 ~2s，落库后秒开；未配模型时用导语兑底） */
   const handleTldr = async () => {
     if (tldrState === "loading") return;
     if (tldrState === "shown") {
@@ -518,87 +432,6 @@ function ArticleBody({
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              {/* 诵读档位：全文 / 摘要 */}
-              <div
-                className="inline-flex h-10 overflow-hidden rounded-full border border-frame"
-                role="group"
-                aria-label="诵读范围"
-              >
-                {(["full", "brief"] as const).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => switchListenMode(m)}
-                    aria-pressed={listenMode === m}
-                    className={cn(
-                      "flex h-full items-center px-3 font-kai text-xs tracking-[0.12em] transition-colors",
-                      listenMode === m
-                        ? "bg-paper-deep text-vermillion"
-                        : "bg-paper-card text-ink-faint hover:text-ink-soft"
-                    )}
-                  >
-                    {m === "full" ? "全文" : "摘要"}
-                  </button>
-                ))}
-              </div>
-
-              {/* 听文（TTS 诵读） */}
-              <button
-                onClick={toggleListen}
-                disabled={listenState === "loading"}
-                aria-label={listenState === "playing" ? "停止诵读" : "听文（语音诵读此文）"}
-                title={listenState === "playing" ? "停止诵读" : "听文 · 敖胤先生为你诵读"}
-                className={cn(
-                  "relative inline-flex h-10 items-center gap-2 overflow-hidden whitespace-nowrap rounded-full border px-4 font-kai text-sm tracking-[0.15em] transition-all",
-                  listenState === "playing"
-                    ? "border-gilt bg-gilt/15 text-gilt shadow-sm"
-                    : "border-frame bg-paper-card text-ink-soft hover:border-gilt/60 hover:text-gilt disabled:opacity-60"
-                )}
-              >
-                {/* 播放进度：按钮底缘鎏金细线随 timeupdate 前行 */}
-                {listenState === "playing" && listenPct > 0 && (
-                  <span
-                    className="absolute inset-x-0 bottom-0 h-[3px] bg-gilt/30"
-                    aria-hidden
-                  >
-                    <span
-                      className="block h-full bg-gilt transition-[width] duration-500 ease-linear"
-                      style={{ width: `${listenPct}%` }}
-                    />
-                  </span>
-                )}
-                {listenState === "loading" ? (
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                ) : listenState === "playing" ? (
-                  <span className="flex h-3.5 items-end gap-[2px]" aria-hidden>
-                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
-                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
-                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
-                    <span className="sound-bar h-3.5 w-[2px] rounded-full bg-gilt" />
-                  </span>
-                ) : (
-                  <Volume2 className="h-4 w-4" aria-hidden />
-                )}
-                {listenState === "playing" ? (
-                  <>
-                    止
-                    {listenProgress && listenProgress.n > 1 && (
-                      <span className="listen-progress">
-                        {listenProgress.i + 1}/{listenProgress.n}
-                      </span>
-                    )}
-                    {listenPct > 0 && (
-                      <span className="listen-progress tabular-nums">
-                        {Math.round(listenPct)}%
-                      </span>
-                    )}
-                  </>
-                ) : listenState === "loading" ? (
-                  "诵读中"
-                ) : (
-                  "听文"
-                )}
-              </button>
-
               {/* 一句话速览（AI） */}
               <button
                 onClick={handleTldr}

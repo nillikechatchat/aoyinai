@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Copy, Loader2, PenLine, RefreshCw, ScrollText, Stamp, Volume2 } from "lucide-react";
+import { Copy, Loader2, PenLine, RefreshCw, ScrollText, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { downloadInsightCard } from "@/lib/share-card";
-import { listenToText, stopListening } from "@/lib/listen-insight";
 import {
   Dialog,
   DialogContent,
@@ -135,10 +134,9 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
               </p>
             </div>
 
-            {/* 解曰（行尾听签） */}
-            <div className="mt-5 flex items-center justify-between gap-3">
+            {/* 解曰 */}
+            <div className="mt-5">
               <p className="font-kai text-sm tracking-[0.25em] text-gilt">解曰</p>
-              <ListenButton insight={insight} />
             </div>
             <p className="mt-2 font-song text-[0.92rem] leading-8 text-ink-soft">
               {insight.interpret}
@@ -226,63 +224,5 @@ export function InsightDialog({ open, onOpenChange, loading, insight, onAsk, onO
         )}
       </DialogContent>
     </Dialog>
-  );
-}
-
-/** 听签按钮：敖胤先生诵读签文（播放中显示声波律动） */
-function ListenButton({ insight }: { insight: Insight }) {
-  const [state, setState] = useState<"idle" | "loading" | "playing">("idle");
-  const { toast } = useToast();
-
-  const text = `${insight.name}。卦辞曰：${insight.oracle}。解曰：${insight.interpret}。宜：${insight.advice}。敖胤AI，司南问事。`;
-
-  // 卸载（合卷/换签）时停止诵读
-  useEffect(() => () => stopListening(), []);
-
-  const toggle = async () => {
-    if (state === "loading") return;
-    if (state === "playing") {
-      stopListening();
-      setState("idle");
-      return;
-    }
-    setState("loading");
-    const result = await listenToText(text, () => setState("idle"));
-    if (result === "error") {
-      setState("idle");
-      toast({ title: "听签未成", description: "诵签暂时未成，请稍后再试。" });
-      return;
-    }
-    setState("playing");
-  };
-
-  return (
-    <button
-      onClick={toggle}
-      aria-label={state === "playing" ? "停止诵读" : "听签（语音诵读签文）"}
-      title={state === "playing" ? "停止诵读" : "听签 · 敖胤先生为你诵签"}
-      className={cn(
-        "inline-flex h-7 shrink-0 items-center gap-1 rounded-full border px-2 transition-colors",
-        state === "playing"
-          ? "border-gilt/70 bg-gilt/15 text-gilt"
-          : "border-frame/70 text-ink-faint hover:border-gilt/60 hover:text-gilt"
-      )}
-    >
-      {state === "loading" ? (
-        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
-      ) : state === "playing" ? (
-        <span className="flex h-3 items-end gap-[2px]" aria-hidden>
-          <span className="sound-bar h-3 w-[2px] rounded-full bg-gilt" />
-          <span className="sound-bar h-3 w-[2px] rounded-full bg-gilt" />
-          <span className="sound-bar h-3 w-[2px] rounded-full bg-gilt" />
-          <span className="sound-bar h-3 w-[2px] rounded-full bg-gilt" />
-        </span>
-      ) : (
-        <Volume2 className="h-3.5 w-3.5" aria-hidden />
-      )}
-      <span className="font-kai text-[0.62rem] tracking-[0.15em]">
-        {state === "playing" ? "止" : "听签"}
-      </span>
-    </button>
   );
 }

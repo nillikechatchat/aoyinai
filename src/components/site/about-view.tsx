@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Compass, Github, Mail, ScrollText, TrendingUp, Volume2 } from "lucide-react";
+import { Compass, Github, Mail, ScrollText, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CATEGORY_META } from "@/lib/types";
 
@@ -19,13 +19,6 @@ interface SiteStats {
   latestArticle: { title: string; publishedAt: string } | null;
   daily: Array<{ date: string; insights: number; comments: number }>;
   categoryDist: Array<{ category: string; count: number; views: number }>;
-  tts?: {
-    hits: number;
-    misses: number;
-    hitRate: number | null;
-    files: number;
-    bytes: number;
-  };
 }
 
 const PRINCIPLES = [
@@ -45,53 +38,6 @@ const PRINCIPLES = [
     text: "AI 可以代笔，不可以代思考。所有观点，皆出自一个具体的人。",
   },
 ];
-
-/** 听闻应声：TTS 诵读次数与磁盘缓存命中率（双色比例条） */
-function TtsEcho({
-  tts,
-}: {
-  tts: { hits: number; misses: number; hitRate: number | null; files: number; bytes: number };
-}) {
-  const total = tts.hits + tts.misses;
-  const mb = (tts.bytes / 1024 / 1024).toFixed(1);
-  return (
-    <div className="rounded-sm border border-frame/60 bg-paper-deep/40 px-4 py-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="flex items-center gap-2 font-song text-[0.66rem] tracking-[0.25em] text-ink-faint">
-          <Volume2 className="h-3.5 w-3.5 text-gilt" aria-hidden />
-          听闻应声 · 诵读与缓存
-        </p>
-        <p className="font-song text-[0.66rem] tracking-[0.12em] text-ink-faint">
-          <span className="tabular-nums text-ink-soft">{fmt(total)}</span> 回诵读
-          {tts.hitRate !== null && (
-            <>
-              <span className="mx-1.5 text-frame">·</span>
-              缓存应声
-              <span className="ml-1 font-kai tabular-nums text-vermillion">{tts.hitRate}%</span>
-            </>
-          )}
-          <span className="mx-1.5 text-frame">·</span>
-          藏音
-          <span className="mx-1 tabular-nums text-ink-soft">{fmt(tts.files)}</span>
-          段（{mb} MB）
-        </p>
-      </div>
-      {total > 0 && (
-        <div
-          className="mt-2.5 flex h-1.5 overflow-hidden rounded-full bg-frame/50"
-          role="img"
-          aria-label={`缓存命中率 ${tts.hitRate ?? 0}%：${tts.hits} 次命中，${tts.misses} 次新诵`}
-        >
-          <span
-            className="h-full bg-vermillion/80 transition-[width] duration-700"
-            style={{ width: `${((tts.hits / total) * 100).toFixed(1)}%` }}
-          />
-          <span className="h-full flex-1 bg-gilt/40" />
-        </div>
-      )}
-    </div>
-  );
-}
 
 /** 千分位 */
 function fmt(n: number): string {
@@ -450,7 +396,6 @@ export function AboutView({ onAsk }: AboutViewProps) {
               <CategoryDonut dist={stats.categoryDist ?? []} />
             </div>
             <InkHeatmap daily={stats.daily ?? []} />
-            {stats.tts && <TtsEcho tts={stats.tts} />}
 
             {/* 注脚：最热栏目 / 最近刊行 */}
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-frame/60 pt-3">

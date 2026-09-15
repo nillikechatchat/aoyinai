@@ -72,10 +72,17 @@ export async function POST(
     );
 
     if (!raw) {
-      return NextResponse.json(
-        { ok: false, error: "AI 服务未配置（部署时需设置 AI_API_KEY / AI_BASE_URL）" },
-        { status: 503 }
-      );
+      // 未配模型或生成失败：用导语精简兜底，速览功能不缺席
+      const fallback = article.excerpt
+        .replace(/\s+/g, " ")
+        .replace(/[#*`>_[\]()]/g, "")
+        .trim()
+        .slice(0, 60);
+      if (fallback) {
+        await db.article.update({ where: { slug }, data: { tldr: fallback } });
+        return NextResponse.json({ ok: true, tldr: fallback, cached: false, source: "excerpt" });
+      }
+      return NextResponse.json({ ok: false, error: "速览未成，请稍后再试" }, { status: 502 });
     }
 
     const tldr = String(raw)
