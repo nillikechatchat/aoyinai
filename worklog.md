@@ -647,3 +647,21 @@ Stage Summary:
    - P1：Vercel 上配置 AI 环境变量并实测问签/速览/听签三链路
    - P2：字体子集化减肥仓库；部署后用 Vercel 域名全量回归（OG/分享卡二维码/SEO metadata）
    - P3（新需求池）：文章静态化(ISG)提升 Vercel 性能、Upstash Redis 做浏览计数/TTLDR 缓存替代磁盘缓存
+
+---
+Task ID: 12
+Agent: main
+Task: 移除 TTS 听签/听文功能 + 实现「零模型全功能运行」（用户要求：去掉 tts 部分，可以不用模型）
+
+Work Log:
+- 【删除】src/app/api/tts/route.ts、src/lib/listen-insight.ts、scripts/preheat-tts.ts、.tts-cache/
+- 【前端去 TTS】insight-dialog.tsx（删 ListenButton 听签组件）、article-dialog.tsx（删听文按钮/全文摘要档位/分段诵读状态与 speechChunks）、about-view.tsx（删 TtsEcho 听闻应声看板 + tts 类型字段）、globals.css（删 .listen-progress 与 .sound-bar 声波律动样式）
+- 【后端去 TTS】api/stats/route.ts 删 ttsCacheStats 与 tts 返回字段；src/lib/ai.ts 删除整条 TTS 双通道（aiTts/hasTtsCompat），只保留可选 aiChat
+- 【零模型·问签】FALLBACK_INSIGHTS 4→16 支（观澜/启明/守拙/结网/潜渊/问津/磨镜/积薪/望山/渡口/燃灯/舍筏/澄心/拾级/听雨/乘风），新增 pickLocalInsight()：sessionId+question+日期 FNV-1a+ murmur 雪崩哈希 → 同日同问抽同签、隔日/改问换签（首版纯 FNV 有低位偏置，200 次仅覆盖 8 支，加雪崩后 1600 次覆盖 16/16、分布 90-114 均匀）
+- 【零模型·速览】tldr POST 无模型时用导语精简(≤60字)兜底落库返回（source:"excerpt"），不再 503，功能不缺席
+- 【验证】grep TTS 零残留；eslint 0 错误；stats API 无 tts 字段；问签/速览接口 200；agent-browser 端到端：签文弹窗无听签按钮、文章弹窗无听文/档位按钮、关于页无听闻应声看板、console 零错误；已 git 提交
+
+Stage Summary:
+- 站点现为「零模型全功能」：不配任何 AI 环境变量即可完整部署（问签=本地签池伪随机抽签，速览=导语兜底）；配置 AI_API_KEY/AI_BASE_URL/AI_MODEL 后问签与速览自动升级为 LLM 生成
+- TTS 相关环境变量（TTS_*）已无意义，Vercel 配置清单减为：DATABASE_URL + NEXT_PUBLIC_SITE_URL + 可选 AI_API_KEY/AI_BASE_URL/AI_MODEL
+- 下一阶段优先：P0 数据库迁移（Turso/Vercel Postgres）；P1 用 agent-browser 巡检样式细节；P2 新功能池（文章静态化/Redis 计数/签文日历分享优化）
