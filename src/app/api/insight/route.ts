@@ -105,22 +105,9 @@ const FALLBACK_INSIGHTS = [
   },
 ];
 
-/** 本地签池抽签：sessionId+question+日期 做稳定哈希 → 同日同问抽同签，隔日或改问则换签（如真抽签，非纯随机） */
-function pickLocalInsight(question: string, sessionId: string) {
-  const dayKey = new Date().toISOString().slice(0, 10);
-  const seedStr = `${sessionId}|${question}|${dayKey}`;
-  // FNV-1a + murmur 雪崩混淆（消除低位偏置，保证 16 支签分布均匀）
-  let h = 2166136261;
-  for (let i = 0; i < seedStr.length; i++) {
-    h ^= seedStr.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  h ^= h >>> 15;
-  h = Math.imul(h, 2246822507);
-  h ^= h >>> 13;
-  h = Math.imul(h, 3266489909);
-  h ^= h >>> 16;
-  return FALLBACK_INSIGHTS[(h >>> 0) % FALLBACK_INSIGHTS.length];
+/** 本地签池抽签：每次摇签独立随机（如真实摇签筒，筒内 16 支签机会均等，摇一次抽一支） */
+function pickLocalInsight() {
+  return FALLBACK_INSIGHTS[Math.floor(Math.random() * FALLBACK_INSIGHTS.length)];
 }
 
 function extractJson(text: string): Record<string, string> | null {
@@ -223,9 +210,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 兑底：未配模型或 LLM 失败时，走本地签池（同日同问抽同签）
+    // 兑底：未配模型或 LLM 失败时，走本地签池（每次摇签独立随机）
     if (!insight) {
-      insight = pickLocalInsight(question, sessionId);
+      insight = pickLocalInsight();
     }
 
     // 记录入库（不阻塞）

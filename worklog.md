@@ -697,3 +697,21 @@ Work Log:
 Stage Summary:
 - 用户需在 Vercel 重新部署（Redeploy）即可生效；若 dashboard 里 Framework Preset 仍是 Other，vercel.json 的 framework 声明在多数情况下可在重新部署时纠正，最稳妥是同时在 Settings → General → Framework Preset 手动选 Next.js
 - 遗留：SQLite 在 Vercel 为只读文件系统，问签记录/点赞等写操作数据不持久（P0，需迁 Turso/Postgres）；AI 双通道 env 可选
+
+---
+Task ID: 15
+Agent: main
+Task: 修复线上三 bug —— 栏目文章看不到 / 赛事活动看不到 / 司南问签始终一个结果
+
+Work Log:
+- 诊断：本地 API 与前端全部正常（21 篇文章、7 栏目、问签多次不同签），定位为 Vercel serverless 环境特有问题
+- 根因 1（bug1/2）：prisma datasource url=env("DATABASE_URL")，Vercel 未配置该变量时 PrismaClient 构造即抛错 → 所有 DB API 500 → 栏目/赛事文章全部空白
+- 根因 2（bug3）：本地兜底签池 pickLocalInsight 用 sessionId|question|日期做稳定哈希，不填问题直接摇司南时同日必同签（且 Vercel 未配 AI 必走兜底池）
+- 修复：① src/lib/db.ts 增加 datasourceUrl 兜底（DATABASE_URL 未设时回退 file:cwd/db/custom.db）；② next.config.ts 增加 outputFileTracingIncludes 将 db/custom.db 打入 /api/** serverless bundle；③ insight 改为真随机抽签（摇一次抽一支）
+- 验证：lint 0 错误；DATABASE_URL 置空模拟 Vercel 场景 → 兜底路径读取 21 文章/7 栏目/47 签记录全部成功；agent-browser 实测栏目菜单、赛事活动 3 篇文章、司南连摇两签（明心卦→守拙卦）均正常
+- 提交推送至 GitHub main
+
+Stage Summary:
+- Vercel 部署无需再配置 DATABASE_URL 即可正常读取数据（重新部署后生效）
+- 注意：SQLite 在 Vercel 仍为只读快照，问签记录/点赞/浏览量写入不持久（P0 遗留，迁 Turso/Postgres 方可彻底解决）
+- 问签体验变更说明：同日同问不再固定同签，每次摇签独立随机（用户明确要求）
