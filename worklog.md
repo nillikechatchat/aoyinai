@@ -682,3 +682,18 @@ Stage Summary:
 - 远程仓库 https://github.com/nillikechatchat/aoyinai 现为重构版（国风首页 + 零模型全功能运行）
 - 原站代码保留在 backup/pre-refactor 分支
 - 安全提醒：token 已在聊天中暴露，建议用户尽快在 GitHub Settings → Developer settings 撤销/轮换
+
+---
+Task ID: 14
+Agent: main
+Task: 修复 Vercel 部署报错「No Output Directory named "dist"」
+
+Work Log:
+- 定位根因：用户日志显示 next build 实际成功（路由列表已打印），但 Vercel Framework Preset 未识别为 Next.js，按 Other 框架去找 dist 输出目录（Vite 类目录）而失败
+- 新增 vercel.json：framework=nextjs + buildCommand=next build + installCommand=bun install，强制框架预设，不依赖 dashboard 设置
+- 确认 bun.lock 存在（Vercel 自动 bun install）、db/custom.db 已入仓（运行时数据可读）
+- lint 通过；提交 748ab35 已推送远程 main
+
+Stage Summary:
+- 用户需在 Vercel 重新部署（Redeploy）即可生效；若 dashboard 里 Framework Preset 仍是 Other，vercel.json 的 framework 声明在多数情况下可在重新部署时纠正，最稳妥是同时在 Settings → General → Framework Preset 手动选 Next.js
+- 遗留：SQLite 在 Vercel 为只读文件系统，问签记录/点赞等写操作数据不持久（P0，需迁 Turso/Postgres）；AI 双通道 env 可选
