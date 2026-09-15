@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Compass, Menu, BookOpen, Home, Info, LayoutGrid, ScrollText } from "lucide-react";
+import { Compass, Menu, BookOpen, Home, Info, LayoutGrid, ScrollText, Telescope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import { ThemeToggle } from "@/components/site/theme-toggle";
 import type { Category } from "@/lib/types";
 import { CATEGORY_META } from "@/lib/types";
 
-export type ViewKey = "home" | "articles" | "qiantong" | "about";
+export type ViewKey = "home" | "articles" | "sky" | "qiantong" | "about";
 
 interface SiteHeaderProps {
   view: ViewKey;
@@ -31,6 +31,7 @@ export function SiteHeader({ view, onNavigate, categories, onTodayRead }: SiteHe
   const navItems: Array<{ key: ViewKey; label: string; icon: React.ReactNode }> = [
     { key: "home", label: "首页", icon: <Home className="h-4 w-4" /> },
     { key: "articles", label: "文章", icon: <BookOpen className="h-4 w-4" /> },
+    { key: "sky", label: "观天", icon: <Telescope className="h-4 w-4" /> },
     { key: "qiantong", label: "签筒", icon: <ScrollText className="h-4 w-4" /> },
     { key: "about", label: "关于", icon: <Info className="h-4 w-4" /> },
   ];

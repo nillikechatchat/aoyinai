@@ -96,15 +96,17 @@ async function main() {
     process.exit(1)
   }
 
-  // 2.5 --if-empty 模式：远程已有数据则跳过（幂等，构建期安全重入）
+  // 2.5 --if-empty 模式：探测远程是否已有数据（仅决定是否搬数据；DDL 同步总是执行，保证新增模型/新表能自动上线）
+  let seedData = true
   if (ifEmpty) {
     try {
       const probe = await remote.execute('SELECT COUNT(*) AS c FROM Article')
       if (Number(probe.rows[0]?.c ?? 0) > 0) {
-        console.log('[turso-seed] 远程库已有数据，跳过播种')
-        process.exit(0)
+        console.log('[turso-seed] 远程库已有数据，跳过数据搬运（仍同步表结构）')
+        seedData = false
+      } else {
+        console.log('[turso-seed] 远程库为空，开始播种…')
       }
-      console.log('[turso-seed] 远程库为空，开始播种…')
     } catch {
       // Article 表不存在 → 继续播种
       console.log('[turso-seed] 远程库无表，开始播种…')
@@ -137,8 +139,12 @@ async function main() {
   }
   console.log(`✓ 索引同步完成（${idxRes.rows.length} 个）`)
 
-  // 5. 数据搬运
+  // 5. 数据搬运（--if-empty 且远程已有数据时跳过；表结构总是同步）
   let total = 0
+  if (!seedData) {
+    console.log('🎉 表结构已同步（含新增表），数据保持远程现状。')
+    process.exit(0)
+  }
   for (const t of tableNames) {
     const res = await local.execute({ sql: `SELECT * FROM "${t}"`, args: [] })
     await remote.execute(`DELETE FROM "${t}"`)

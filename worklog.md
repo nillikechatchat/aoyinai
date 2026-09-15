@@ -736,3 +736,28 @@ Stage Summary:
 - Vercel 部署后：构建期自动播种 Turso → 运行时全部读写走 Turso 云库 → 问签记录/点赞/浏览量真正持久化
 - 本地开发不受影响（DATABASE_URL=file: 原生直连）
 - 用户可选的手动全量迁移命令：vercel link && vercel env pull .env.development.local && bun run db:migrate-turso
+
+---
+Task ID: 17
+Agent: main
+Task: 新增「观天」栏目 —— GitHub issue 收录社区博客，自动预览，点击率排序
+
+Work Log:
+- 数据层：Prisma 新增 BlogSky 模型（issueNumber 唯一、title/url/description/author/avatar/ogImage/clicks/hidden），db push 完成
+- 后端 lib：
+  - github-issues.ts —— 抓取仓库 open issues（GITHUB_REPO 默认 nillikechatchat/aoyinai，GITHUB_TOKEN 可选），解析正文第一个 URL 为博客地址、清洗「博客名：」前缀与「博客地址/介绍：」标签为介绍文字；优先带「观天」label 的 issue，无 label 则解析所有含 URL 的 open issue
+  - og-fetch.ts —— 抓博客页 og:image/twitter:image → 页面首张内容图（过滤 logo/icon/小图）两级预览，8s 超时
+  - sky-sync.ts —— 同步状态机：10 分钟最小间隔 + stale（30min）标记；upsert 收录；OG 缺图补抓（每批 6 个，失败记空格占位防重试风暴）
+- API：GET /api/sky（sort=clicks|new，stale 时后台静默同步）、POST/GET /api/sky/sync（手动/cron 触发）、POST /api/sky/[id]/click（点击率 +1）
+- 前端：
+  - 导航新增「观天」（Telescope 图标），ViewKey 扩展
+  - SkyView 视图：魁/亚/季印章观星榜、最新收录切换、重新同步、收录我的博客（GitHub issue 模板预填）、卡片网格（预览图三级兜底：库内图 → mshots 实时截图 → 水墨「博文」字样）
+  - SkyPick 首页精选条：点击率 top3（魁亚季），空数据不渲染；「观天全览」入口
+- 种子数据：创建 issue #3 阮一峰的网络日志 / #4 美团技术团队 / #5 云风的 BLOG；用户实测提交了 #6（模板未改，已关闭并隐藏）
+- 踩坑修复：GitHub 匿名 API 60 次/时限流 → 生产需配 GITHUB_TOKEN；中文老博客普遍无 og:image → 增加首图+mshots 兜底；turbo 缓存旧 Prisma client → 重启 dev
+- 验证：同步 added4/ogFetched4；点击 1→2 实时生效；观星榜按点击排序正确；agent-browser 实测导航/卡片/点击外跳（Cloudflare 验证页出现）/精选条/全览跳转全部通过；lint 0 错 0 警
+
+Stage Summary:
+- 观天完整闭环：用户开 issue → 网站「重新同步」或访问时自动后台同步 → 卡片展示（自动预览）→ 点击计数 → 点击率排序（观星榜）
+- 生产部署注意：Vercel 环境变量建议配 GITHUB_TOKEN（否则匿名 60 次/时限流，stale 同步会间歇失败但不影响读）；GITHUB_REPO 可覆盖默认仓库
+- 播种脚本已升级：DDL 总是同步 → 新表 BlogSky 会自动出现在 Turso

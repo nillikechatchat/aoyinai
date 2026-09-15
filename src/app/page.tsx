@@ -11,6 +11,8 @@ import { TodayReadCard } from "@/components/site/today-read-card";
 import { CategoriesSection } from "@/components/site/categories-section";
 import { ArticlesView } from "@/components/site/articles-view";
 import { QiantongView } from "@/components/site/qiantong-view";
+import { SkyView } from "@/components/site/sky-view";
+import { SkyPick } from "@/components/site/sky-pick";
 import { AboutView } from "@/components/site/about-view";
 import { ArticleDialog } from "@/components/site/article-dialog";
 import { InsightDialog } from "@/components/site/insight-dialog";
@@ -236,6 +238,9 @@ export default function Home() {
               onOpen={openArticle}
             />
 
+            {/* 观天精选（社区博文，点击率前三） */}
+            <SkyPick onMore={() => navigate("sky")} />
+
             <div className="h-14" aria-hidden />
 
             <CategoriesSection
@@ -254,6 +259,8 @@ export default function Home() {
             onOpen={openArticle}
           />
         )}
+
+        {view === "sky" && <SkyView />}
 
         {view === "qiantong" && (
           <QiantongView

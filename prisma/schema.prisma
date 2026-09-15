@@ -72,3 +72,19 @@ model Comment {
   @@index([articleSlug])
   @@index([parentId])
 }
+
+// 观天 · 社区博客收录（源自 GitHub issue，自动抓取预览，按点击率排序）
+model BlogSky {
+  id          String   @id @default(cuid())
+  issueNumber Int      @unique // 来源 GitHub issue 编号
+  title       String // 博客名（issue 标题）
+  url         String // 博客地址
+  description String   @default("") // 介绍（issue 正文提取）
+  author      String   @default("") // 提交者 GitHub 用户名
+  avatar      String   @default("") // 提交者头像
+  ogImage     String   @default("") // 自动抓取的博客预览图
+  clicks      Int      @default(0) // 点击率（观览次数）
+  hidden      Boolean  @default(false) // 下架标记
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
