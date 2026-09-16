@@ -15,6 +15,9 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "content:rebuild": "bun run scripts/seed.ts && bun run scripts/expand-articles.ts && bun run scripts/fix-rag-article.ts && bun run scripts/audit-fix-articles.ts && bun run scripts/recalc-reading.ts && bun run scripts/audit-check.ts",
+    "content:export": "node scripts/dump-articles.mjs | node scripts/export-content.mjs",
+    "content:sync": "DATABASE_URL=file:./db/custom.db node scripts/sync-content.mjs",
+    "postinstall": "prisma generate && node scripts/build-sync.mjs",
     "tts:preheat": "bun run scripts/preheat-tts.ts",
     "tldr:preheat": "bun run scripts/preheat-tldr.ts"
   },

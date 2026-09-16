@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "buildCommand": "bun run scripts/migrate-to-turso.ts --if-empty && next build",
+  "buildCommand": "bun run scripts/migrate-to-turso.ts --if-empty && node scripts/build-sync.mjs && next build",
   "installCommand": "bun install"
 }
