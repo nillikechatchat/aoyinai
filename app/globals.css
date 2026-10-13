@@ -797,3 +797,33 @@ mark {
 .content-page {
   background: transparent;
 }
+
+
+/* Shared chrome for the immersive site direction */
+.site-header { border-bottom:1px solid rgba(137,199,218,.14); background:rgba(6,16,29,.78); backdrop-filter:blur(18px); }
+.site-header-inner { min-height:4rem; }
+.site-brand { color:#f0f4f2; }
+.site-brand-name { display:flex; flex-direction:column; color:#f0f4f2; font-family:'Noto Serif SC',serif; font-size:1rem; font-weight:600; letter-spacing:.05em; line-height:1.1; }
+.site-brand-name small { margin-top:.2rem; color:#7f9bad; font-family:'Noto Sans SC',sans-serif; font-size:.46rem; font-weight:400; letter-spacing:.18em; }
+.site-nav-link { position:relative; padding:.45rem .65rem; color:#9bb0c0; font-size:.72rem; transition:color .2s; }
+.site-nav-link:hover, .site-nav-menu:hover { color:#ffc196; }
+.site-nav-link[aria-current=page]::after { content:''; position:absolute; left:.65rem; right:.65rem; bottom:.08rem; height:1px; background:#f0a77c; box-shadow:0 0 7px #f0a77c; }
+.site-nav-dropdown { border:1px solid rgba(128,199,220,.2); border-radius:8px; background:rgba(9,25,43,.96); box-shadow:0 18px 35px rgba(0,0,0,.28); backdrop-filter:blur(16px); }
+.site-nav-dropdown-link { color:#9ab1c1; transition:background .2s, color .2s; }
+.site-nav-dropdown-link:hover { color:#ffd0b0; background:rgba(113,176,196,.12); }
+.site-icon-button { display:inline-flex; align-items:center; justify-content:center; padding:.45rem; color:#87a7b7; transition:color .2s, transform .2s; }
+.site-icon-button:hover { color:#ffc196; transform:translateY(-1px); }
+.site-write-button { align-items:center; gap:.4rem; margin-left:.35rem; padding:.48rem .8rem; border:1px solid rgba(255,184,143,.56); border-radius:999px; color:#ffd0b2; font-size:.68rem; letter-spacing:.06em; }
+.site-write-button:hover { color:#081525; background:#f8b185; }
+.site-mobile-nav { border-color:rgba(137,199,218,.14); background:rgba(7,18,32,.97); }
+.site-mobile-link { color:#9db4c1; }
+.site-mobile-link:hover { color:#ffd0b0; background:rgba(113,176,196,.12); }
+.site-footer { border-top:1px solid rgba(137,199,218,.14); color:#7793a5; background:#07111f; }
+.site-footer-brand { color:#e8f0ef; font-family:'Noto Serif SC',serif; font-size:.85rem; }
+.site-footer-nav a { color:#88a5b6; transition:color .2s; }
+.site-footer-nav a:hover { color:#ffc196; }
+.site-footer-desc { max-width:48rem; color:#6c8799; font-size:.7rem; line-height:1.8; }
+.site-footer-meta { color:#96b1c2; }
+.site-footer-desc { color:#a3bac9; }
+.site-header :is(a, button):focus-visible, .site-footer a:focus-visible { outline:2px solid #ffd09b; outline-offset:3px; }
+.site-mobile-nav { max-height:calc(100dvh - 64px); overflow-y:auto; }

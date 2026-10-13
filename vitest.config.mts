@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url'
+
 export default {
   oxc: false,
   esbuild: {
@@ -5,7 +7,7 @@ export default {
   },
   resolve: {
     alias: {
-      '@': new URL('./', import.meta.url).pathname,
+      '@': fileURLToPath(new URL('./', import.meta.url)),
     },
   },
   test: {
