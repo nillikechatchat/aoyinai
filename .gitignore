@@ -1,0 +1,40 @@
+# Next.js
+.next/
+out/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Logs
+*.log
+
+# Build
+dist/
+build/
+
+# Local env
+.env.local
+.env*.local
+
+# Misc
+*.tsbuildinfo
+next-env.d.ts.bak
+
+# Local quality reports and visual regression captures
+.lighthouseci/
+.monkeycode/lighthouse/
+.monkeycode/lighthouse-mobile/
+.monkeycode/visual-regression/

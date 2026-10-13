@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Datawhale 南京 AI 共创会</title>
+  <desc id="desc">开发者围绕大屏和电脑共同构建 AI 产品的活动插画</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111b38"/>
+      <stop offset="0.55" stop-color="#213764"/>
+      <stop offset="1" stop-color="#ba613d"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2ce6cb"/>
+      <stop offset="1" stop-color="#3c78ea"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="20"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <circle cx="1300" cy="160" r="180" fill="#ffba67" opacity=".28" filter="url(#glow)"/>
+  <circle cx="270" cy="760" r="230" fill="#36c6df" opacity=".18" filter="url(#glow)"/>
+  <path d="M0 680 C300 590 530 760 780 670 S1260 540 1600 680 V900 H0Z" fill="#0b1127" opacity=".68"/>
+  <rect x="485" y="142" width="630" height="348" rx="22" fill="#091128" stroke="#7de8dd" stroke-width="4"/>
+  <rect x="510" y="167" width="580" height="296" rx="12" fill="url(#screen)"/>
+  <path d="M567 392 C660 272 738 410 820 288 S977 382 1040 244" fill="none" stroke="#e8fffc" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="567" cy="392" r="12" fill="#ffd77d"/>
+  <circle cx="820" cy="288" r="12" fill="#ffd77d"/>
+  <circle cx="1040" cy="244" r="12" fill="#ffd77d"/>
+  <text x="560" y="228" fill="#ffffff" font-family="Arial, sans-serif" font-size="36" font-weight="700">BUILD WITH AGENT</text>
+  <text x="560" y="272" fill="#d5fff8" font-family="Arial, sans-serif" font-size="20">CO-CREATE · TEST · FEEDBACK</text>
+  <rect x="723" y="491" width="154" height="35" rx="12" fill="#162546"/>
+  <path d="M650 526 H950" stroke="#1e3158" stroke-width="20" stroke-linecap="round"/>
+  <rect x="270" y="600" width="1060" height="115" rx="34" fill="#1b2a4d"/>
+  <g fill="#f3bb7c">
+    <circle cx="392" cy="530" r="48"/>
+    <circle cx="592" cy="570" r="48"/>
+    <circle cx="805" cy="535" r="48"/>
+    <circle cx="1010" cy="570" r="48"/>
+    <circle cx="1204" cy="530" r="48"/>
+  </g>
+  <g fill="#0d1834">
+    <path d="M332 670 Q392 575 452 670Z"/>
+    <path d="M532 710 Q592 615 652 710Z"/>
+    <path d="M745 675 Q805 580 865 675Z"/>
+    <path d="M950 710 Q1010 615 1070 710Z"/>
+    <path d="M1144 670 Q1204 575 1264 670Z"/>
+  </g>
+  <g fill="#8ee9df">
+    <rect x="330" y="634" width="124" height="65" rx="7"/>
+    <rect x="743" y="639" width="124" height="65" rx="7"/>
+    <rect x="1142" y="634" width="124" height="65" rx="7"/>
+  </g>
+  <text x="118" y="130" fill="#f8f1e7" font-family="Arial, sans-serif" font-size="28" letter-spacing="5">DATAWHALE CO-CREATE</text>
+  <text x="118" y="183" fill="#ffffff" font-family="Arial, sans-serif" font-size="52" font-weight="700">NANJING · AI COMMUNITY</text>
+  <text x="118" y="807" fill="#d7e2ff" font-family="Arial, sans-serif" font-size="25">A SMALL ROOM. REAL BUILDING. DIRECT FEEDBACK.</text>
+</svg>

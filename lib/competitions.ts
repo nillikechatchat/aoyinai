@@ -1,0 +1,1307 @@
+export type CompetitionStatus = '报名中' | '报名截止' | '待核验' | '已结束'
+export type CompetitionDeadlineType = '报名截止' | '赛事截止'
+
+export type TimelineItemType = 'deadline' | 'result' | 'final' | 'award'
+
+export type CompetitionTimelineItem = {
+  id: string
+  competitionId: string
+  date: string
+  label: string
+  type: TimelineItemType
+}
+
+export type CompetitionSnapshot = {
+  name: string
+  category: string
+  prize: number | null
+  prizeUnit: string
+  status: CompetitionStatus
+  deadline: string | null
+  deadlineLabel: string
+  deadlineType: CompetitionDeadlineType
+  sourceUrl: string
+  color: string
+  keyDates: CompetitionTimelineItem[]
+}
+
+export type CompetitionChange = {
+  date: string
+  summary: string
+  sourceUrl: string
+  changes: Partial<CompetitionSnapshot>
+}
+
+export type CompetitionRecord = CompetitionSnapshot & {
+  id: string
+  verifiedAt: string
+  changes: CompetitionChange[]
+}
+
+export type ResolvedCompetition = CompetitionSnapshot & {
+  id: string
+  verifiedAt: string
+  changes: CompetitionChange[]
+  lastUpdatedAt: string
+}
+
+export const competitionDataVerifiedAt = '2026-10-11'
+
+export const competitionRecords: CompetitionRecord[] = [
+  {
+    id: 'build-small-hackathon-2026',
+    name: 'Build Small Hackathon 2026',
+    category: '开源AI',
+    prize: null,
+    prizeUnit: '$48,000+',
+    status: '已结束',
+    deadline: '2026-06-15',
+    deadlineLabel: '6月15日（UTC）',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://huggingface.co/build-small-hackathon',
+    color: '#8c7044',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'build-small-hackathon-2026-deadline',
+        competitionId: 'build-small-hackathon-2026',
+        date: '2026-06-15',
+        label: 'Build Small Hackathon 2026 提交截止（UTC）',
+        type: 'deadline',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'bilibili-ai-creation-2026',
+    name: 'B站 AI 创造公开赛',
+    category: '综合',
+    prize: 130,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-20',
+    deadlineLabel: '8月20日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.bilibili.com/blackboard/era/Vf5kaXL0HnJyfqIG.html',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'bilibili-ai-creation-2026-deadline',
+        competitionId: 'bilibili-ai-creation-2026',
+        date: '2026-08-20',
+        label: 'B站 AI 创造公开赛 投稿截止',
+        type: 'deadline',
+      },
+      {
+        id: 'bilibili-ai-creation-2026-result',
+        competitionId: 'bilibili-ai-creation-2026',
+        date: '2026-09-05',
+        label: 'B站 AI 创造公开赛 结果公布',
+        type: 'result',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：作品投稿已于 8 月 20 日截止，赛事进入评审阶段，结果将于 9 月 5 日公布。',
+        sourceUrl: 'https://www.bilibili.com/blackboard/era/Vf5kaXL0HnJyfqIG.html',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月20日（投稿已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'intern-ai-science-challenge-2026',
+    name: '书生国智科探挑战赛',
+    category: '学术',
+    prize: 60,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-09-20',
+    deadlineLabel: '9月下旬',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.intern-ai.org.cn/',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'intern-ai-science-challenge-2026-award',
+        competitionId: 'intern-ai-science-challenge-2026',
+        date: '2026-09-20',
+        label: '书生国智科探挑战赛 专家评审结束',
+        type: 'award',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：专家评审已于 9 月下旬结束，赛事归档为已结束。',
+        sourceUrl: 'https://www.intern-ai.org.cn/',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '9月下旬（评审已结束）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'ccf-bdci-2026',
+    name: 'CCF BDCI 2026',
+    category: 'Agent',
+    prize: 10,
+    prizeUnit: '万元/题',
+    status: '报名中',
+    deadline: '2026-09-15',
+    deadlineLabel: '9月中旬',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.xir.cn/competition/races/BDCI2026',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'ccf-bdci-2026-deadline',
+        competitionId: 'ccf-bdci-2026',
+        date: '2026-09-15',
+        label: 'CCF BDCI 2026 初赛截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：初赛截止日已过，赛事归档为已结束。',
+        sourceUrl: 'https://www.xir.cn/competition/races/BDCI2026',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '9月中旬（初赛已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'alibaba-ai-for-good-2026',
+    name: '阿里小有可为',
+    category: '公益',
+    prize: 21,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-13',
+    deadlineLabel: '8月13日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://opc.aliyun.com/xiaoyoukewei?display_mode=3',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'alibaba-ai-for-good-2026-deadline',
+        competitionId: 'alibaba-ai-for-good-2026',
+        date: '2026-08-13',
+        label: '阿里小有可为 初赛材料截止',
+        type: 'deadline',
+      },
+      {
+        id: 'alibaba-ai-for-good-2026-result',
+        competitionId: 'alibaba-ai-for-good-2026',
+        date: '2026-08-21',
+        label: '阿里小有可为 决赛名单公布',
+        type: 'result',
+      },
+      {
+        id: 'alibaba-ai-for-good-2026-final',
+        competitionId: 'alibaba-ai-for-good-2026',
+        date: '2026-09-03',
+        label: '阿里小有可为 决赛材料截止',
+        type: 'final',
+      },
+      {
+        id: 'alibaba-ai-for-good-2026-award',
+        competitionId: 'alibaba-ai-for-good-2026',
+        date: '2026-09-05',
+        label: '阿里小有可为 线下决赛拟举行',
+        type: 'award',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-08-17',
+        summary: '8 月 17 日复核：初赛材料已于 8 月 13 日截止，进入评审阶段，决赛名单 8 月 21 日公布。',
+        sourceUrl: 'https://opc.aliyun.com/xiaoyoukewei?display_mode=3',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月13日（初赛材料已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'ai-new-talent-scout-2026',
+    name: 'AI 新睿人才星探计划',
+    category: '产业AI',
+    prize: 9,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.datafountain.cn/competitions/1169',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'ai-new-talent-scout-2026-deadline',
+        competitionId: 'ai-new-talent-scout-2026',
+        date: '2026-08-31',
+        label: 'AI 新睿人才星探计划 截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：DataFountain 赛题页显示赛事已于 8 月 31 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1169',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'falcon-microwave-detection-2026',
+    name: '猎鹰微波智探挑战',
+    category: '智能感知',
+    prize: 14.5,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.datafountain.cn/competitions/1166',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'falcon-microwave-detection-2026-deadline',
+        competitionId: 'falcon-microwave-detection-2026',
+        date: '2026-08-31',
+        label: '猎鹰微波智探挑战 截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：DataFountain 赛题页显示赛事已于 8 月 31 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1166',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'multimodal-customer-agent-2026',
+    name: '多模态客服智能体设计',
+    category: 'Agent',
+    prize: 14.5,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.datafountain.cn/competitions/1165',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'multimodal-customer-agent-2026-deadline',
+        competitionId: 'multimodal-customer-agent-2026',
+        date: '2026-08-31',
+        label: '多模态客服智能体设计 截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：DataFountain 赛题页显示赛事已于 8 月 31 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1165',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'infrared-open-world-segmentation-2026',
+    name: '红外开放世界分割挑战',
+    category: '计算机视觉',
+    prize: 14.5,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-07-30',
+    deadlineLabel: '7月30日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.datafountain.cn/competitions/1164',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'infrared-open-world-segmentation-2026-deadline',
+        competitionId: 'infrared-open-world-segmentation-2026',
+        date: '2026-07-30',
+        label: '红外开放世界分割挑战 截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：赛事已于 7 月 30 日截止。',
+        sourceUrl: 'https://www.datafountain.cn/competitions/1164',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '7月30日（已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'goai-global-open-source-ai-challenge-2026',
+    name: 'GOAI 世界人工智能开源大赛',
+    category: '开源AI',
+    prize: 500,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-15',
+    deadlineLabel: '8月中旬',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://goaihz.com',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'goai-global-open-source-ai-challenge-2026-deadline',
+        competitionId: 'goai-global-open-source-ai-challenge-2026',
+        date: '2026-08-15',
+        label: 'GOAI 世界人工智能开源大赛 初赛作品提交预计截止',
+        type: 'deadline',
+      },
+      {
+        id: 'goai-global-open-source-ai-challenge-2026-final',
+        competitionId: 'goai-global-open-source-ai-challenge-2026',
+        date: '2026-09-22',
+        label: 'GOAI 世界人工智能开源大赛 线下决赛',
+        type: 'final',
+      },
+      {
+        id: 'goai-global-open-source-ai-challenge-2026-award',
+        competitionId: 'goai-global-open-source-ai-challenge-2026',
+        date: '2026-09-23',
+        label: 'GOAI DAY 与颁奖典礼',
+        type: 'award',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-07-22',
+        summary: '官网赛道页公布初赛提交截止与分赛道赛程。',
+        sourceUrl: 'https://goaihz.com/tracks?track=infra',
+        changes: {
+          deadline: '2026-08-16',
+          deadlineLabel: '8月16日（最早节点）',
+          keyDates: [
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-16',
+              label: 'GOAI 三条赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-embodied-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-20',
+              label: 'GOAI 具身未来赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-final',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-22',
+              label: 'GOAI 世界人工智能开源大赛 线下决赛',
+              type: 'final',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-award',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-23',
+              label: 'GOAI DAY 与颁奖典礼',
+              type: 'award',
+            },
+          ],
+        },
+      },
+      {
+        date: '2026-08-07',
+        summary: '官方赛道页复核：初赛作品于 8 月 16 日截止，复赛提交于 9 月 3 日截止。',
+        sourceUrl: 'https://goaihz.com/tracks?track=infra',
+        changes: {
+          deadline: '2026-08-16',
+          deadlineLabel: '8月16日（初赛作品提交）',
+          keyDates: [
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-16',
+              label: 'GOAI 三条赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-embodied-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-20',
+              label: 'GOAI 具身未来赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-semifinal',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-03',
+              label: 'GOAI Agent Infra 复赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-final',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-22',
+              label: 'GOAI 世界人工智能开源大赛线下决赛',
+              type: 'final',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-award',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-23',
+              label: 'GOAI DAY 与颁奖典礼',
+              type: 'award',
+            },
+          ],
+        },
+      },
+      {
+        date: '2026-08-17',
+        summary: '8 月 17 日复核：三条赛道初赛作品提交已于 8 月 16 日截止，具身未来赛道 8 月 20 日截止，赛事仍在报名期。',
+        sourceUrl: 'https://goaihz.com',
+        changes: {
+          deadline: '2026-08-20',
+          deadlineLabel: '8月20日（具身赛道）',
+          keyDates: [
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-embodied-deadline',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-08-20',
+              label: 'GOAI 具身未来赛道初赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-semifinal',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-03',
+              label: 'GOAI Agent Infra 复赛作品提交截止',
+              type: 'deadline',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-final',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-22',
+              label: 'GOAI 世界人工智能开源大赛线下决赛',
+              type: 'final',
+            },
+            {
+              id: 'goai-global-open-source-ai-challenge-2026-award',
+              competitionId: 'goai-global-open-source-ai-challenge-2026',
+              date: '2026-09-23',
+              label: 'GOAI DAY 与颁奖典礼',
+              type: 'award',
+            },
+          ],
+        },
+      },
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：具身未来赛道初赛作品已于 8 月 20 日截止，各赛道初赛阶段全部收官，赛事转入复赛评审，Agent Infra 复赛作品 9 月 3 日提交截止，线下决赛 9 月 22 日举行。',
+        sourceUrl: 'https://goaihz.com',
+        changes: {
+          status: '已结束',
+          deadline: '2026-09-03',
+          deadlineLabel: '9月3日（Agent Infra 复赛提交）',
+        },
+      },
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：官网发布复赛评审启动公告，初赛共收到 2999 份作品，线下决赛与 GOAI DAY 仍定于 9 月 22 日至 23 日在杭州举行。',
+        sourceUrl: 'https://goaihz.com',
+        changes: {
+          deadlineLabel: '9月3日（复赛提交已截止，评审进行中）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'postgraduate-ai-innovation-2026',
+    name: '第八届中国研究生人工智能创新大赛',
+    category: '学术',
+    prize: 30,
+    prizeUnit: '万元起',
+    status: '报名中',
+    deadline: '2026-08-25',
+    deadlineLabel: '8月25日',
+    deadlineType: '报名截止',
+    sourceUrl:
+      'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'postgraduate-ai-innovation-2026-deadline',
+        competitionId: 'postgraduate-ai-innovation-2026',
+        date: '2026-08-25',
+        label: '中国研究生人工智能创新大赛 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'postgraduate-ai-innovation-2026-submission',
+        competitionId: 'postgraduate-ai-innovation-2026',
+        date: '2026-09-01',
+        label: '中国研究生人工智能创新大赛 作品提交截止',
+        type: 'deadline',
+      },
+      {
+        id: 'postgraduate-ai-innovation-2026-result',
+        competitionId: 'postgraduate-ai-innovation-2026',
+        date: '2026-09-30',
+        label: '中国研究生人工智能创新大赛 晋级决赛名单预计公布',
+        type: 'result',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：报名已于 8 月 25 日截止，已报名队伍进入作品冲刺阶段，作品提交 9 月 1 日截止。',
+        sourceUrl:
+          'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+        changes: {
+          deadlineLabel: '8月25日（报名已截止）',
+        },
+      },
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：作品提交已于 9 月 1 日截止，晋级决赛名单预计 9 月 30 日公布。',
+        sourceUrl:
+          'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+        changes: {
+          deadlineLabel: '8月25日（报名已截止，作品提交已于9月1日结束）',
+        },
+      },
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：报名与作品提交均已截止，晋级决赛名单窗口已过。',
+        sourceUrl:
+          'https://cpipc.acge.org.cn/cw/contestNews/detail/2c9088a5696cbf370169a3f8101510bd/2c9080179e403028019e4963ef9f149e?page=0',
+        changes: {
+          deadlineLabel: '8月25日（报名已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'national-ai-creation-2026',
+    name: '2026 全民 AI 创作大赛',
+    category: 'AIGC',
+    prize: 15,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://zhjw.jnu.edu.cn/2026/0720/c7164a860655/page.htm',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'national-ai-creation-2026-deadline',
+        competitionId: 'national-ai-creation-2026',
+        date: '2026-08-31',
+        label: '全民 AI 创作大赛 作品征集截止',
+        type: 'deadline',
+      },
+      {
+        id: 'national-ai-creation-2026-result',
+        competitionId: 'national-ai-creation-2026',
+        date: '2026-09-15',
+        label: '全民 AI 创作大赛 结果公示结束',
+        type: 'result',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：作品征集已于 8 月 31 日截止，结果公示窗口持续至 9 月 15 日。',
+        sourceUrl: 'https://zhjw.jnu.edu.cn/2026/0720/c7164a860655/page.htm',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月31日（作品征集已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'ai-information-literacy-zhejiang-2026',
+    name: '2026 大学生“AI+信息素养”大赛（高职高专组）',
+    category: '教育AI',
+    prize: null,
+    prizeUnit: '奖项待主办方公布',
+    status: '报名中',
+    deadline: '2026-09-24',
+    deadlineLabel: '9月24日',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://www.zjitc.net/info/1012/65627.htm',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'ai-information-literacy-zhejiang-2026-deadline',
+        competitionId: 'ai-information-literacy-zhejiang-2026',
+        date: '2026-09-24',
+        label: '大学生“AI+信息素养”大赛 高职高专组报名截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：高职高专组报名已于 9 月 24 日截止。',
+        sourceUrl: 'https://www.zjitc.net/info/1012/65627.htm',
+        changes: {
+          deadlineLabel: '9月24日（报名已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'dat-parkinsons-challenge-2026',
+    name: "DaT Parkinson's Challenge",
+    category: '医疗AI',
+    prize: null,
+    prizeUnit: '€25,000',
+    status: '报名中',
+    deadline: '2026-09-16',
+    deadlineLabel: '9月16日（UTC）',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.drivendata.org/competitions/311/dat-parkinsons-challenge/',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'dat-parkinsons-challenge-2026-deadline',
+        competitionId: 'dat-parkinsons-challenge-2026',
+        date: '2026-09-16',
+        label: "DaT Parkinson's Challenge 提交截止（UTC）",
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：提交已于 9 月 16 日（UTC）截止，赛事归档为已结束。',
+        sourceUrl: 'https://www.drivendata.org/competitions/311/dat-parkinsons-challenge/',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '9月16日（UTC，提交已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'trace-the-ace-2026',
+    name: 'Trace the Ace',
+    category: '教育AI',
+    prize: null,
+    prizeUnit: '$50,000',
+    status: '报名中',
+    deadline: '2026-08-27',
+    deadlineLabel: '8月27日（UTC）',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'trace-the-ace-2026-model-deadline',
+        competitionId: 'trace-the-ace-2026',
+        date: '2026-08-27',
+        label: 'Trace the Ace 模型提交截止（UTC）',
+        type: 'deadline',
+      },
+      {
+        id: 'trace-the-ace-2026-writeup-deadline',
+        competitionId: 'trace-the-ace-2026',
+        date: '2026-09-15',
+        label: 'Trace the Ace 入围队伍技术报告截止（UTC）',
+        type: 'final',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-08-27',
+        summary: '8 月 27 日复核：模型提交于今日（UTC）截止，入围队伍技术报告 9 月 15 日截止。',
+        sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
+        changes: {
+          deadlineLabel: '8月27日（UTC，今日截止）',
+        },
+      },
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：模型提交已于 8 月 27 日（UTC）截止，入围队伍技术报告仍定于 9 月 15 日截止。',
+        sourceUrl: 'https://platform.k12-ai-infrastructure.org/competitions/3/tutoring-outcomes/',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '8月27日（UTC，模型提交已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'a-chao-transport-ai-2026',
+    name: '2026 “A超”交通创新大赛暨全国综合交通运输大模型智能体创新应用大赛国际赛道',
+    category: '交通AI',
+    prize: null,
+    prizeUnit: '奖金待主办方公布',
+    status: '报名中',
+    deadline: '2026-09-04',
+    deadlineLabel: '9月4日',
+    deadlineType: '报名截止',
+    sourceUrl: 'http://jtt.gxzf.gov.cn/zfxxgk/fdzdgk/tzgg/t27959432.shtml',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'a-chao-transport-ai-2026-deadline',
+        competitionId: 'a-chao-transport-ai-2026',
+        date: '2026-09-04',
+        label: 'A超交通创新大赛 征集报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'a-chao-transport-ai-2026-final',
+        competitionId: 'a-chao-transport-ai-2026',
+        date: '2026-09-20',
+        label: 'A超交通创新大赛 创新赛道决赛',
+        type: 'final',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：征集报名已于 9 月 4 日截止，创新赛道决赛窗口已过。',
+        sourceUrl: 'http://jtt.gxzf.gov.cn/zfxxgk/fdzdgk/tzgg/t27959432.shtml',
+        changes: {
+          deadlineLabel: '9月4日（报名已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'mediaaiac-2026',
+    name: '第五届广播电视和网络视听人工智能应用创新大赛（MediaAIAC）',
+    category: '视听AI',
+    prize: null,
+    prizeUnit: '奖项待主办方公布',
+    status: '报名中',
+    deadline: '2026-08-31',
+    deadlineLabel: '8月31日 24:00',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://hunan.gov.cn/zqt/zcsd/202607/t20260722_34031486.html',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'mediaaiac-2026-deadline',
+        competitionId: 'mediaaiac-2026',
+        date: '2026-08-31',
+        label: 'MediaAIAC 项目申报截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：项目申报已于 8 月 31 日 24:00 截止。',
+        sourceUrl: 'https://hunan.gov.cn/zqt/zcsd/202607/t20260722_34031486.html',
+        changes: {
+          deadlineLabel: '8月31日 24:00（申报已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'loreal-beauty-tech-hackathon-2026',
+    name: '欧莱雅第二届美妆科技黑客松',
+    category: 'AI黑客松',
+    prize: 20,
+    prizeUnit: '万元/赛题',
+    status: '报名中',
+    deadline: '2026-10-20',
+    deadlineLabel: '10月20日 23:59（UTC+8）',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532497',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'loreal-beauty-tech-hackathon-2026-deadline',
+        competitionId: 'loreal-beauty-tech-hackathon-2026',
+        date: '2026-10-20',
+        label: '欧莱雅美妆科技黑客松 报名与作品提交截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：天池页面仍开放报名与作品提交，截止为 10 月 20 日 23:59（UTC+8）。',
+        sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532497',
+        changes: {
+          deadlineLabel: '10月20日 23:59（UTC+8）',
+        },
+      },
+      {
+        date: '2026-10-11',
+        summary: '10 月 11 日核验：赛事以“用AI造点美”为题持续开放报名与作品提交，截止 10 月 20 日 23:59（UTC+8）。',
+        sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532497',
+        changes: {
+          deadlineLabel: '10月20日 23:59（UTC+8）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'cuhk-x-multimodal-challenge-2026',
+    name: 'CUHK-X 多模态人类活动挑战赛',
+    category: '多模态AI',
+    prize: null,
+    prizeUnit: '$20,000',
+    status: '报名中',
+    deadline: '2026-09-15',
+    deadlineLabel: '9月15日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://openaiotlab.github.io/CUHK-X-Challenge/',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'cuhk-x-multimodal-challenge-2026-deadline',
+        competitionId: 'cuhk-x-multimodal-challenge-2026',
+        date: '2026-09-15',
+        label: 'CUHK-X 多模态人类活动挑战赛截止',
+        type: 'deadline',
+      },
+      {
+        id: 'cuhk-x-multimodal-challenge-2026-final',
+        competitionId: 'cuhk-x-multimodal-challenge-2026',
+        date: '2026-10-11',
+        label: 'CUHK-X 多模态人类活动挑战赛决赛',
+        type: 'final',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：提交已于 9 月 15 日截止，决赛定于 10 月 11 日。',
+        sourceUrl: 'https://openaiotlab.github.io/CUHK-X-Challenge/',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '9月15日（提交已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'hack-for-humanity-summer-2026',
+    name: 'Hack for Humanity Summer 2026',
+    category: '健康AI',
+    prize: null,
+    prizeUnit: '13 项非现金奖',
+    status: '报名中',
+    deadline: '2026-09-04',
+    deadlineLabel: '9月4日',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://hack-for-humanity-summer-26.devpost.com/',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'hack-for-humanity-summer-2026-deadline',
+        competitionId: 'hack-for-humanity-summer-2026',
+        date: '2026-09-04',
+        label: 'Hack for Humanity Summer 2026 提交截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-09-04',
+        summary: '9 月 4 日复核：Devpost 页面显示提交截止为 9 月 4 日 23:45 EDT，当日仍可提交。',
+        sourceUrl: 'https://hack-for-humanity-summer-26.devpost.com/',
+        changes: {
+          deadlineLabel: '9月4日 23:45（EDT）',
+        },
+      },
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日复核：提交已于 9 月 4 日 23:45 EDT 截止，赛事归档为已结束。',
+        sourceUrl: 'https://hack-for-humanity-summer-26.devpost.com/',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '9月4日 23:45（EDT，提交已截止）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'ant-lingbo-embodied-challenge-2026',
+    name: '首届蚂蚁灵波具身大模型挑战赛',
+    category: '具身智能',
+    prize: 28,
+    prizeUnit: '万元',
+    status: '报名中',
+    deadline: '2026-10-26',
+    deadlineLabel: '10月26日 24:00',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532514',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'ant-lingbo-embodied-challenge-2026-deadline',
+        competitionId: 'ant-lingbo-embodied-challenge-2026',
+        date: '2026-10-26',
+        label: '蚂蚁灵波具身大模型挑战赛 初赛提交截止',
+        type: 'deadline',
+      },
+      {
+        id: 'ant-lingbo-embodied-challenge-2026-final',
+        competitionId: 'ant-lingbo-embodied-challenge-2026',
+        date: '2026-11-13',
+        label: '蚂蚁灵波具身大模型挑战赛 上海真机决赛',
+        type: 'final',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日核验：天池入口 532514 仍开放，初赛提交截止 10 月 26 日 24:00。',
+        sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532514',
+        changes: {
+          deadlineLabel: '10月26日 24:00',
+        },
+      },
+      {
+        date: '2026-10-11',
+        summary: '10 月 11 日核验：报名与线上初赛持续至 10 月 26 日，入围团队 11 月 13—15 日赴上海参加真机决赛。',
+        sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532514',
+        changes: {
+          deadlineLabel: '10月26日 24:00',
+        },
+      },
+    ],
+  },
+  {
+    id: 'cpipc-cybersecurity-innovation-2026',
+    name: '2026 中国研究生网络安全创新大赛',
+    category: '安全AI',
+    prize: null,
+    prizeUnit: '奖项待主办方公布',
+    status: '报名中',
+    deadline: '2026-10-18',
+    deadlineLabel: '10月18日 23:59',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/2c90800c8093eef401809d33b36f0652',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'cpipc-cybersecurity-innovation-2026-deadline',
+        competitionId: 'cpipc-cybersecurity-innovation-2026',
+        date: '2026-10-18',
+        label: '中国研究生网络安全创新大赛 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'cpipc-cybersecurity-innovation-2026-submission',
+        competitionId: 'cpipc-cybersecurity-innovation-2026',
+        date: '2026-10-22',
+        label: '中国研究生网络安全创新大赛 揭榜与创意作品提交截止',
+        type: 'deadline',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日核验：高校通知与 CPIPC 页面显示报名截至 10 月 18 日 23:59。',
+        sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/2c90800c8093eef401809d33b36f0652',
+        changes: {
+          deadlineLabel: '10月18日 23:59',
+        },
+      },
+      {
+        date: '2026-10-11',
+        summary: '10 月 11 日核验：报名截至 10 月 18 日 23:59，揭榜与创意作品提交 10 月 22 日，实网对抗赛初赛 10 月 24 日。',
+        sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/2c90800c8093eef401809d33b36f0652',
+        changes: {
+          deadlineLabel: '10月18日 23:59',
+        },
+      },
+    ],
+  },
+  {
+    id: 'cpipc-smart-city-2026',
+    name: '第十二届中国研究生智慧城市技术与创意设计大赛',
+    category: '智慧城市',
+    prize: null,
+    prizeUnit: '奖项待主办方公布',
+    status: '报名中',
+    deadline: '2026-10-23',
+    deadlineLabel: '10月23日 12:00',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/1',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'cpipc-smart-city-2026-deadline',
+        competitionId: 'cpipc-smart-city-2026',
+        date: '2026-10-23',
+        label: '中国研究生智慧城市大赛 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'cpipc-smart-city-2026-submission',
+        competitionId: 'cpipc-smart-city-2026',
+        date: '2026-10-25',
+        label: '中国研究生智慧城市大赛 作品提交截止',
+        type: 'deadline',
+      },
+      {
+        id: 'cpipc-smart-city-2026-final',
+        competitionId: 'cpipc-smart-city-2026',
+        date: '2026-12-26',
+        label: '中国研究生智慧城市大赛 全国决赛',
+        type: 'final',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日核验：报名与培养单位审核截至 10 月 23 日 12:00，作品提交截至 10 月 25 日 12:00。',
+        sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/1',
+        changes: {
+          deadlineLabel: '10月23日 12:00',
+        },
+      },
+      {
+        date: '2026-10-11',
+        summary: '10 月 11 日核验：报名截至 10 月 23 日 12:00，作品提交 10 月 25 日，全国决赛定于 12 月 26 日。',
+        sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/1',
+        changes: {
+          deadlineLabel: '10月23日 12:00',
+        },
+      },
+    ],
+  },
+  {
+    id: 'kaggle-benchmarking-challenge-2026',
+    name: 'Kaggle Benchmarking Challenge',
+    category: '评测',
+    prize: null,
+    prizeUnit: '$2,500',
+    status: '报名中',
+    deadline: '2026-10-11',
+    deadlineLabel: '10月11日 23:59（PDT）',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://dev.to/challenges/kaggle-2026-09-23',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'kaggle-benchmarking-challenge-2026-deadline',
+        competitionId: 'kaggle-benchmarking-challenge-2026',
+        date: '2026-10-11',
+        label: 'Kaggle Benchmarking Challenge 提交截止（PDT）',
+        type: 'deadline',
+      },
+      {
+        id: 'kaggle-benchmarking-challenge-2026-result',
+        competitionId: 'kaggle-benchmarking-challenge-2026',
+        date: '2026-11-05',
+        label: 'Kaggle Benchmarking Challenge 公布获奖',
+        type: 'result',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-10-10',
+        summary: '10 月 10 日核验：DEV Challenge 页面仍为 Live，提交截止 10 月 11 日。',
+        sourceUrl: 'https://dev.to/challenges/kaggle-2026-09-23',
+        changes: {
+          deadlineLabel: '10月11日 23:59（PDT）',
+        },
+      },
+      {
+        date: '2026-10-11',
+        summary: '10 月 11 日核验：提交于今日 23:59（PDT）截止，获奖名单定于 11 月 5 日公布。',
+        sourceUrl: 'https://dev.to/challenges/kaggle-2026-09-23',
+        changes: {
+          deadlineLabel: '10月11日 23:59（PDT）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'china-ai-competition-2026',
+    name: '第七届中国人工智能大赛',
+    category: '综合',
+    prize: null,
+    prizeUnit: 'A / B 级获奖证书',
+    status: '报名中',
+    deadline: '2026-10-18',
+    deadlineLabel: '10月18日',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://ai.xm.gov.cn',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'china-ai-competition-2026-deadline',
+        competitionId: 'china-ai-competition-2026',
+        date: '2026-10-18',
+        label: '第七届中国人工智能大赛 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'china-ai-competition-2026-submission',
+        competitionId: 'china-ai-competition-2026',
+        date: '2026-11-12',
+        label: '第七届中国人工智能大赛 厦门颁奖',
+        type: 'award',
+      },
+    ],
+    changes: [],
+  },
+]
+
+function isValidDate(value: string | null): value is string {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
+
+  const date = new Date(`${value}T00:00:00.000Z`)
+  return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(value)
+}
+
+function isValidSourceUrl(value: string): boolean {
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
+export function resolveCompetition(record: CompetitionRecord): ResolvedCompetition {
+  const changes = [...record.changes].sort((left, right) => left.date.localeCompare(right.date))
+  const snapshot: CompetitionSnapshot = { ...record }
+  let lastUpdatedAt = record.verifiedAt
+
+  for (const change of changes) {
+    Object.assign(snapshot, change.changes)
+    if (isValidDate(change.date) && change.date >= lastUpdatedAt) {
+      lastUpdatedAt = change.date
+    }
+  }
+
+  if (!isValidSourceUrl(snapshot.sourceUrl) || !isValidDate(snapshot.deadline)) {
+    snapshot.status = '待核验'
+  }
+
+  return {
+    ...snapshot,
+    id: record.id,
+    verifiedAt: record.verifiedAt,
+    changes: record.changes,
+    lastUpdatedAt,
+  }
+}
+
+export function getActiveCompetitions(
+  asOf: string,
+  records: CompetitionRecord[] = competitionRecords,
+): ResolvedCompetition[] {
+  if (!isValidDate(asOf)) return []
+
+  return records
+    .map(resolveCompetition)
+    .map((competition) => resolveCompetitionStatus(competition, asOf))
+    .filter(
+      (competition) =>
+        (competition.status === '报名中' || competition.status === '报名截止') &&
+        isValidSourceUrl(competition.sourceUrl) &&
+        isValidDate(competition.deadline) &&
+        (competition.status === '报名截止' || competition.deadline >= asOf),
+    )
+}
+
+export function getArchivedCompetitions(
+  asOf: string,
+  records: CompetitionRecord[] = competitionRecords,
+): ResolvedCompetition[] {
+  if (!isValidDate(asOf)) return []
+
+  return records
+    .map(resolveCompetition)
+    .map((competition) => resolveCompetitionStatus(competition, asOf))
+    .filter((competition) => competition.status === '已结束')
+}
+
+function resolveCompetitionStatus(competition: ResolvedCompetition, asOf: string): ResolvedCompetition {
+  if (competition.status !== '报名中' || !isValidDate(competition.deadline) || competition.deadline >= asOf) {
+    return competition
+  }
+
+  return {
+    ...competition,
+    status: competition.deadlineType === '报名截止' ? '报名截止' : '已结束',
+  }
+}
+
+export function getTotalPrize(competitions: ResolvedCompetition[]): number {
+  return competitions.reduce((total, competition) => total + (competition.prize ?? 0), 0)
+}
+
+export function getTimelineItems(
+  records: CompetitionRecord[],
+  asOf: string,
+): CompetitionTimelineItem[] {
+  const activeIds = new Set(getActiveCompetitions(asOf, records).map((competition) => competition.id))
+
+  return records
+    .flatMap((record) => resolveCompetition(record).keyDates)
+    .filter((item) => activeIds.has(item.competitionId) && isValidDate(item.date) && item.date >= asOf)
+    .sort((left, right) => left.date.localeCompare(right.date))
+}
+
+export const competitionTimeline = getTimelineItems(competitionRecords, competitionDataVerifiedAt)
