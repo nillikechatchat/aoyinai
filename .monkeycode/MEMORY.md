@@ -114,3 +114,23 @@ Agent 在任务执行过程中发现的条目应遵循以下格式：
 - Category: 环境配置
 - Instructions:
   - 工作区可能缺少本地 `node_modules`；使用全局依赖时，以 `NODE_PATH="/usr/local/lib/node_modules" /usr/local/bin/next build` 运行构建，以同样前缀执行 Vitest 专项测试。
+
+[npm 安装需使用 --legacy-peer-deps]
+- Date: 2026-10-15
+- Context: Agent 安装依赖并构建博客时发现
+- Category: 构建方法
+- Instructions:
+  - 直接执行 `npm install` 会因 vitest 4.x 的 peer 依赖解析在 arborist 抛出 `Cannot read properties of null (reading 'edgesOut')` 而失败。
+  - 使用 `npm install --legacy-peer-deps --no-audit --no-fund` 可正常安装（268 个包）。
+  - 安装后可正常执行 `npm run build`（静态导出到 `out/`）与 `npm test`（vitest，全部通过）。
+  - 文章内容目录为 `content/posts/`，构建产物的栏目页位于 `out/categories/<slug>.html`。
+
+[内容写作必须事实可核验]
+- Date: 2026-10-15
+- Context: 用户明确长文写作标准
+- Category: 工作流协作
+- Instructions:
+  - 撰写文章必须符合法律法规，以事实为依据，不得造假、招摇或胡编乱造。
+  - 引用概念与法规须给出公开可核验的出处（论文作者/年份/会议、官方公告、法规原文）。
+  - 涉及价格、免费额度、榜单、版本号、招生政策等易变信息，一律提示以官方最新公告为准，不作记忆性转述。
+  - 示例数字须显式标注为「假设」或示意，避免被误读为真实统计。

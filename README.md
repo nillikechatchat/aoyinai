@@ -1,18 +1,19 @@
 # 敖胤AI
 
-一个聚焦人工智能的中文博客，覆盖 **7 大主题分类**，持续更新。
+一个聚焦人工智能的中文博客，覆盖 **8 大主题分类**，持续更新。
 
 ## 内容栏目
 
 | 栏目 | 简介 |
 |------|------|
-| [AI 教程](/categories/tutorials) | LLM 入门、RAG、Agent 实战的入门到进阶 |
-| [市场分析](/categories/market) | 大模型厂商竞争格局、价格趋势 |
-| [高校专业](/categories/majors) | 国内 AI 强校课程与就业去向 |
-| [赛事活动](/categories/events) | Kaggle、NeurIPS 等顶赛清单 |
-| [黑客松](/categories/hackathons) | 高质量 AI 黑客松实时推荐 |
-| [云厂商优惠](/categories/cloud-deals) | 阿里云、腾讯云、华为云、火山引擎大模型 API 优惠汇总 |
-| [T-agent](/categories/t-agent) | 我正在做的多智能体协作框架 |
+| [AI 入门实战](/categories/tutorials) | LLM 入门、RAG、Agent 实战的入门到进阶 |
+| [行业动态](/categories/market) | 大模型厂商竞争格局、投融资与价格趋势 |
+| [升学就业](/categories/majors) | AI 强校专业选择、课程师资与求职路径 |
+| [竞赛活动](/categories/events) | Kaggle、顶会赛题、算法大赛报名与攻略 |
+| [黑客松](/categories/hackathons) | AI 黑客松最新资讯与获奖经验分享 |
+| [算力优惠](/categories/cloud-deals) | GPU 云服务器、大模型 API 免费额度汇总 |
+| [T-agent](/categories/t-agent) | 多智能体协作框架教程与落地案例 |
+| [灵感](/categories/inspiration) | AI 落地场景启发，用技术解决真实问题 |
 
 ## 技术栈
 
@@ -31,7 +32,7 @@
 - **代码高亮** — rehype-pretty-code + Shiki 双主题，标题栏 + 行号 + 高亮行
 - **本地全文搜索** — `/search` 页面，标题/描述/标签/分类/正文多字段加权匹配 + 高亮
 - **RSS 订阅** — `/rss.xml`，标准 RSS 2.0 + Atom 自描述
-- **SEO 优化** — 自动 sitemap.xml（5 静态 + 7 分类 + 23 标签 + 8 文章）、robots.txt、OpenGraph、Twitter Card、每篇文章独立 metadata
+- **SEO 优化** — 自动 sitemap.xml（静态页 + 8 分类 + 全量标签 + 全量文章）、robots.txt、OpenGraph、Twitter Card、每篇文章独立 metadata
 - **阅读时长统计** — 中文 350 字 / 分钟 + 英文 200 词 / 分钟，中英混合精确计算
 - **科技感动效** — AI 渐变文字循环、Hero 网格背景、卡片悬浮上浮、Framer Motion 错开入场
 
@@ -57,7 +58,7 @@ npm start
 
 ## 写新文章
 
-在 `content/blog/` 下新建 `.md` 文件：
+在 `content/posts/` 下新建 `.md` 文件：
 
 ```markdown
 ---
@@ -114,7 +115,7 @@ draft: false
 ├── lib/
 │   ├── posts.ts             # 文章处理
 │   └── categories.ts        # 分类配置
-├── content/blog/            # 8 篇文章（Markdown）
+├── content/posts/           # 文章（Markdown，当前 146 篇）
 ├── public/covers/           # 文章封面 SVG
 └── package.json
 ```
