@@ -5,6 +5,10 @@ const nextConfig = {
   output: 'export',
   images: { unoptimized: true },
   trailingSlash: false,
+  allowedDevOrigins: ['.monkeycode-ai.online'],
+  experimental: {
+    allowedHosts: ['.monkeycode-ai.online']
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
