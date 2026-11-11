@@ -45,7 +45,7 @@ export type ResolvedCompetition = CompetitionSnapshot & {
   lastUpdatedAt: string
 }
 
-export const competitionDataVerifiedAt = '2026-10-11'
+export const competitionDataVerifiedAt = '2026-11-10'
 
 export const competitionRecords: CompetitionRecord[] = [
   {
@@ -889,6 +889,15 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '10月20日 23:59（UTC+8）',
         },
       },
+      {
+        date: '2026-11-10',
+        summary: '11 月 10 日复核：报名与作品提交已于 10 月 20 日 23:59（UTC+8）截止，赛事归档。',
+        sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532497',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '10月20日 23:59（UTC+8，已截止）',
+        },
+      },
     ],
   },
   {
@@ -1020,6 +1029,15 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '10月26日 24:00',
         },
       },
+      {
+        date: '2026-11-10',
+        summary: '11 月 10 日复核：初赛提交已于 10 月 26 日 24:00 截止，入围团队 11 月 13—15 日赴上海参加真机决赛。',
+        sourceUrl: 'https://tianchi.aliyun.com/competition/entrance/532514',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '10月26日 24:00（初赛提交已截止）',
+        },
+      },
     ],
   },
   {
@@ -1066,6 +1084,14 @@ export const competitionRecords: CompetitionRecord[] = [
         sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/2c90800c8093eef401809d33b36f0652',
         changes: {
           deadlineLabel: '10月18日 23:59',
+        },
+      },
+      {
+        date: '2026-11-10',
+        summary: '11 月 10 日复核：报名已于 10 月 18 日 23:59 截止，揭榜与创意作品提交已于 10 月 22 日截止。',
+        sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/2c90800c8093eef401809d33b36f0652',
+        changes: {
+          deadlineLabel: '10月18日 23:59（报名已截止）',
         },
       },
     ],
@@ -1123,6 +1149,14 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '10月23日 12:00',
         },
       },
+      {
+        date: '2026-11-10',
+        summary: '11 月 10 日复核：报名与作品提交均已截止（作品提交 10 月 25 日 12:00），全国决赛定于 12 月 26 日。',
+        sourceUrl: 'https://cpipc.acge.org.cn/cw/hp/1',
+        changes: {
+          deadlineLabel: '10月23日 12:00（报名已截止，决赛12月26日）',
+        },
+      },
     ],
   },
   {
@@ -1171,6 +1205,15 @@ export const competitionRecords: CompetitionRecord[] = [
           deadlineLabel: '10月11日 23:59（PDT）',
         },
       },
+      {
+        date: '2026-11-10',
+        summary: '11 月 10 日复核：提交已于 10 月 11 日 23:59（PDT）截止，赛事归档为已结束。',
+        sourceUrl: 'https://dev.to/challenges/kaggle-2026-09-23',
+        changes: {
+          status: '已结束',
+          deadlineLabel: '10月11日 23:59（PDT，提交已截止）',
+        },
+      },
     ],
   },
   {
@@ -1200,6 +1243,170 @@ export const competitionRecords: CompetitionRecord[] = [
         date: '2026-11-12',
         label: '第七届中国人工智能大赛 厦门颁奖',
         type: 'award',
+      },
+    ],
+    changes: [
+      {
+        date: '2026-11-10',
+        summary: '11 月 10 日复核：报名已于 10 月 18 日截止，颁奖定于 11 月 12 日在厦门举行。',
+        sourceUrl: 'https://ai.xm.gov.cn',
+        changes: {
+          deadlineLabel: '10月18日（报名已截止，11月12日厦门颁奖）',
+        },
+      },
+    ],
+  },
+  {
+    id: 'ai-for-good-autumn-npi-2026',
+    name: '2026 AI For Good 公益黑客松·秋季赛',
+    category: '公益',
+    prize: 1,
+    prizeUnit: '万元（最高单项）',
+    status: '报名中',
+    deadline: '2026-11-15',
+    deadlineLabel: '11月15日 08:00',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://fund.npi.org.cn/community/kols/applys/10/0?program=33',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'ai-for-good-autumn-npi-2026-deadline',
+        competitionId: 'ai-for-good-autumn-npi-2026',
+        date: '2026-11-15',
+        label: 'AI For Good 秋季赛 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'ai-for-good-autumn-npi-2026-final',
+        competitionId: 'ai-for-good-autumn-npi-2026',
+        date: '2026-12-18',
+        label: 'AI For Good 秋季赛 决赛（12月18—20日，上海）',
+        type: 'final',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'presage-smartspectra-dev-challenge-2026',
+    name: 'Presage SmartSpectra SDK 开发挑战',
+    category: '健康AI',
+    prize: null,
+    prizeUnit: '$3,000',
+    status: '报名中',
+    deadline: '2026-11-22',
+    deadlineLabel: '11月22日 23:59（PST）',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://dev.to/challenges/presage-2026-11-04',
+    color: '#b8860b',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'presage-smartspectra-dev-challenge-2026-deadline',
+        competitionId: 'presage-smartspectra-dev-challenge-2026',
+        date: '2026-11-22',
+        label: 'Presage SmartSpectra SDK 挑战 提交截止（PST）',
+        type: 'deadline',
+      },
+      {
+        id: 'presage-smartspectra-dev-challenge-2026-result',
+        competitionId: 'presage-smartspectra-dev-challenge-2026',
+        date: '2026-12-10',
+        label: 'Presage SmartSpectra SDK 挑战 公布获奖',
+        type: 'result',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'alipay-payathon-2026',
+    name: '支付宝 AI 付 PAYATHON 2026 年度黑客松',
+    category: 'AI黑客松',
+    prize: 20,
+    prizeUnit: '万元（总奖池）',
+    status: '报名中',
+    deadline: '2026-12-01',
+    deadlineLabel: '12月1日 23:59',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://aipay.alipay.com/community/events/payathon-2026',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'alipay-payathon-2026-deadline',
+        competitionId: 'alipay-payathon-2026',
+        date: '2026-12-01',
+        label: 'PAYATHON 2026 报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'alipay-payathon-2026-submission',
+        competitionId: 'alipay-payathon-2026',
+        date: '2026-12-09',
+        label: 'PAYATHON 2026 作品提交截止',
+        type: 'deadline',
+      },
+      {
+        id: 'alipay-payathon-2026-final',
+        competitionId: 'alipay-payathon-2026',
+        date: '2026-12-26',
+        label: 'PAYATHON 2026 线下决赛路演',
+        type: 'final',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'alipay-emerge-award-2026',
+    name: '支付宝「智能体涌现奖」2026 首轮',
+    category: 'Agent',
+    prize: 1000,
+    prizeUnit: '万元（总奖池）',
+    status: '报名中',
+    deadline: '2026-12-06',
+    deadlineLabel: '12月6日',
+    deadlineType: '报名截止',
+    sourceUrl: 'https://emerge.alipay.com/',
+    color: '#c53d43',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'alipay-emerge-award-2026-deadline',
+        competitionId: 'alipay-emerge-award-2026',
+        date: '2026-12-06',
+        label: '智能体涌现奖 2026 首轮报名截止',
+        type: 'deadline',
+      },
+      {
+        id: 'alipay-emerge-award-2026-review',
+        competitionId: 'alipay-emerge-award-2026',
+        date: '2026-12-15',
+        label: '智能体涌现奖 2026 首轮评审（12月7—15日）',
+        type: 'result',
+      },
+    ],
+    changes: [],
+  },
+  {
+    id: 'doe-gems-prize-challenge-2026',
+    name: 'GEMS 地热增强制图挑战赛（DOE GEMS Prize Challenge）',
+    category: '能源AI',
+    prize: null,
+    prizeUnit: '$300,000',
+    status: '报名中',
+    deadline: '2026-12-03',
+    deadlineLabel: '12月3日 22:00（UTC）',
+    deadlineType: '赛事截止',
+    sourceUrl: 'https://www.drivendata.org/competitions/306/competition-doe-gems/',
+    color: '#2e8b57',
+    verifiedAt: competitionDataVerifiedAt,
+    keyDates: [
+      {
+        id: 'doe-gems-prize-challenge-2026-deadline',
+        competitionId: 'doe-gems-prize-challenge-2026',
+        date: '2026-12-03',
+        label: 'GEMS Prize Challenge 报名与提交截止（UTC）',
+        type: 'deadline',
       },
     ],
     changes: [],

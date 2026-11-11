@@ -20,7 +20,7 @@ declare const expect: (actual: unknown) => {
 
 describe('赛事数据派生', () => {
   it('赛事数据使用本次核验日期', () => {
-    expect(competitionDataVerifiedAt).toBe('2026-10-11')
+    expect(competitionDataVerifiedAt).toBe('2026-11-10')
     expect(competitionRecords.every((record) => record.verifiedAt === competitionDataVerifiedAt)).toBe(true)
   })
 
@@ -36,6 +36,11 @@ describe('赛事数据派生', () => {
       'cpipc-smart-city-2026',
       'kaggle-benchmarking-challenge-2026',
       'china-ai-competition-2026',
+      'ai-for-good-autumn-npi-2026',
+      'presage-smartspectra-dev-challenge-2026',
+      'alipay-payathon-2026',
+      'alipay-emerge-award-2026',
+      'doe-gems-prize-challenge-2026',
     ]) {
       expect(competitionRecords.some((record) => record.id === id)).toBe(true)
     }
